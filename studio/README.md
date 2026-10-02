@@ -1,0 +1,33 @@
+# Studio Command Bar UI builders
+
+The colorful lobby has already been created in the current place as editable `Workspace.Lobby`. For a new place, [build_lobby.lua](build_lobby.lua) recreates its grass plaza, paths, blocky trees, orange walls, mine gate, shop stands, sell stand, and spawn. It preserves an existing Lobby. Only the diggable ore blocks are generated during Play because they are personal to each player.
+
+The mine shell has also been saved as editable `Workspace.MineArea`. [build_mine_area.lua](build_mine_area.lua) recreates it in a fresh place and moves the mine gate into it. Edit the deck, cyan rim, walls, bedrock, and entrance here. Keep the 12×12 opening centered at `(0, 0, 0)` and the wall dimensions aligned with `Config.BlockSize` and `Config.Width`; the personal ore grid is still calculated from those values during Play.
+
+Paste [build_surface_hud.lua](build_surface_hud.lua) into Roblox Studio's **Command Bar while not playing**. It creates `StarterGui.SurfaceLoopHUD` with editable cash, bag, and sale feedback. The UI follows the supplied bright simulator reference: thick black outlines, white Fredoka text, vivid gradients, and large readable counters.
+
+Paste [build_progress_hud.lua](build_progress_hud.lua) the same way to create the editable Level, XP, and Power display. The game provides a small runtime fallback until this builder is used.
+
+Paste [build_mining_ui.lua](build_mining_ui.lua) in Edit mode to create the editable Materials panel and add `DepthLabel` plus `ReturnButton` to the existing `ProgressHUD`. In the lobby the Power label shows your current power and click gain. Inside the shaft it switches to depth and the Return button; the old top-right Depth/Blocks/Bag test panel is gone. The script preserves an existing MaterialsHUD and existing Depth/Return controls, so you can edit them in Explorer and run it again safely.
+
+Paste [build_feedback_hud.lua](build_feedback_hud.lua) in Edit mode to create `StarterGui.FeedbackHUD`. Its hidden Power, Ore, and Sale TextLabels are editable templates for the animated text effects. Power gains scatter across the screen, ore pickups appear around the center, and sale cash flies toward the money counter. These popups have no background panel; the cash and bag rows pulse when their values increase.
+
+Paste [build_shop_gui.lua](build_shop_gui.lua) in Edit mode to create `StarterGui.ShopGui`. The purple upgrade page and orange weapon page open from their storefront ProximityPrompts. Buying happens only after pressing the green button. The GUI is fully editable in Explorer; the Rojo client controller updates its prices, stats, cash, and owned/equipped state.
+
+Paste [expand_shop_gui.lua](expand_shop_gui.lua) in Edit mode after the shop builder. It preserves the existing ShopGui, adds scrolling catalogs, Chain Targets and Magnet Range upgrades, and six weapon tiers. Each Card remains editable in Explorer. The starter weapon breaks one block; five Chain purchases increase that to six. Weapons share the same temporary tool shape until you add your own Tool models. Later, put a Tool named after a weapon in `ServerStorage.WeaponTools` with a `Handle` BasePart; the server will clone it instead of the placeholder and add a `Muzzle` attachment if needed.
+
+For your lobby map, name the shop Models `UpgradeStore` and `WeaponStore`. Put an anchored BasePart (ideally named `Counter`) inside each model. On Play, the server attaches an **Open shop** ProximityPrompt if you have not placed one, or configures the existing prompt. The temporary part-built storefronts appear only when a named model is missing. Keep the NPC model named `showcase npc` for selling.
+
+Run [setup_sell_npc.lua](setup_sell_npc.lua) once to place `Workspace.showcase npc` at the lobby sell stand and disable its sample conversation. Its model, `ReplicatedStorage.DialogModule`, and `StarterGui.dialog` stay editable in Studio; the source-controlled `NPCSellController` supplies the real sell conversation.
+
+The matching client controller will bind to those names but will not rebuild or restyle the hierarchy. This lets you edit positions, colors, strokes, gradients, and constraints directly in Studio without fighting Rojo.
+
+The builder preserves an existing `SurfaceLoopHUD`, so running it again will not erase your Studio edits. The client creates a simple fallback at runtime if you have not pasted the builder yet; it does not write that fallback into `StarterGui`.
+
+Unknown Cores now appear as server-created Tools in the Roblox hotbar. [build_core_hud.lua](build_core_hud.lua) disables the old CoreHUD if it exists; it no longer builds a HUD.
+
+Paste [build_stabilizer_gui.lua](build_stabilizer_gui.lua) in Edit mode to create editable `StarterGui.StabilizerGui`. `Shade.Panel` contains the station controls, exact odds, `Reel.Track`, and hidden `CardTemplate` with its `CoreViewport` and `RarityLabel`. The client clones the card template for the silhouette spin and colors the winning core at the end. An existing GUI is preserved.
+
+Paste [build_core_labels_and_signs.lua](build_core_labels_and_signs.lua) in Edit mode for core earnings labels and scale-based lobby signs. Edit world templates in `ReplicatedStorage.UITemplates`, reveal earnings in `StarterGui.StabilizerGui.Shade.Panel.EarningsLabel`, and the actual mine/shop/sell signs under `Workspace.Lobby`. Income rates are in `Shared.StabilizerDefinitions`; they represent reactor income after installation, not cash generated by a hotbar Tool.
+
+[build_mobile_mining_hud.lua](build_mobile_mining_hud.lua) creates the editable `StarterGui.MobileMiningHUD` with a centered Crosshair. Phones mine by tapping/holding a visible nearby block directly; the extra zap button has been removed. Mining follows the attacking finger only; camera swipes cancel direct mining, and movement/jump releases do not stop the attack. Outside the mine, a world tap trains on release, while camera swipes do not train.

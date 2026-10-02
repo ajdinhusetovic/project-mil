@@ -1,0 +1,173 @@
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
+
+local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+local gui = playerGui:FindFirstChild("FeedbackHUD") or playerGui:WaitForChild("FeedbackHUD", 2)
+if not gui then
+	local authored = StarterGui:FindFirstChild("FeedbackHUD")
+	if authored then
+		gui = authored:Clone()
+		gui.Parent = playerGui
+	end
+end
+if not gui then
+	gui = Instance.new("ScreenGui")
+	gui.Name = "FeedbackHUD"
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 20
+	gui.Parent = playerGui
+	for _, name in { "PowerTemplate", "OreTemplate", "SaleTemplate" } do
+		local item = Instance.new("TextLabel")
+		item.Name = name
+		item.AnchorPoint = Vector2.new(0.5, 0.5)
+		item.Size = UDim2.fromOffset(320, 55)
+		item.BackgroundTransparency = 1
+		item.Font = Enum.Font.FredokaOne
+		item.TextSize = 31
+		item.TextColor3 = Color3.fromRGB(255, 220, 69)
+		item.TextStrokeColor3 = Color3.new(0, 0, 0)
+		item.TextStrokeTransparency = 0
+		item.Visible = false
+		item.Parent = gui
+	end
+end
+
+local FeedbackEffects = {}
+local rng = Random.new()
+local orePopups = {}
+local pulseTweens = {}
+local corePopup
+
+local function makeText(templateName, value, color)
+	local template = gui:FindFirstChild(templateName)
+	if not template or not template:IsA("TextLabel") then return nil end
+	local item = template:Clone()
+	item.Name = templateName .. "Effect"
+	item.Text = value
+	if color then item.TextColor3 = color end
+	item.TextTransparency = 0
+	item.TextStrokeTransparency = 0
+	item.Visible = true
+	item.Parent = gui
+	local scale = Instance.new("UIScale")
+	scale.Name = "EffectScale"
+	scale.Scale = 0.65
+	scale.Parent = item
+	TweenService:Create(scale, TweenInfo.new(0.19, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	return item, scale
+end
+
+local function fadeText(item, duration)
+	local info = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+	TweenService:Create(item, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+end
+
+function FeedbackEffects.Pulse(target)
+	if not target then return end
+	local scale = target:FindFirstChild("FeedbackPulse")
+	if not scale then
+		scale = Instance.new("UIScale")
+		scale.Name = "FeedbackPulse"
+		scale.Parent = target
+	end
+	if pulseTweens[target] then pulseTweens[target]:Cancel() end
+	scale.Scale = 1.16
+	local tween = TweenService:Create(scale, TweenInfo.new(0.31, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 })
+	pulseTweens[target] = tween
+	tween.Completed:Once(function()
+		if pulseTweens[target] == tween then pulseTweens[target] = nil end
+	end)
+	tween:Play()
+end
+
+function FeedbackEffects.ShowPower(amount)
+	if amount <= 0 then return end
+	local item = makeText("PowerTemplate", string.format("+%d POWER", amount))
+	if not item then return end
+	local x = rng:NextNumber(0.25, 0.75)
+	local y = rng:NextNumber(0.32, 0.68)
+	item.Position = UDim2.fromScale(x, y)
+	item.Rotation = rng:NextInteger(-9, 9)
+	task.delay(0.32, function()
+		if not item.Parent then return end
+		TweenService:Create(item, TweenInfo.new(0.68, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Position = UDim2.fromScale(x + rng:NextNumber(-0.06, 0.06), y - 0.14),
+		}):Play()
+		fadeText(item, 0.68)
+		task.delay(0.7, function() item:Destroy() end)
+	end)
+end
+
+function FeedbackEffects.ShowOre(materialName, amount, color)
+	local popup = orePopups[materialName]
+	if not popup then
+		local item, scale = makeText("OreTemplate", "", color)
+		if not item then return end
+		local x = rng:NextNumber(0.33, 0.67)
+		local y = rng:NextNumber(0.43, 0.7)
+		item.Position = UDim2.fromScale(x, y)
+		item.Rotation = rng:NextInteger(-7, 7)
+		popup = { Item = item, Scale = scale, Amount = 0, Token = 0, X = x, Y = y }
+		orePopups[materialName] = popup
+	end
+	popup.Amount += amount
+	popup.Token += 1
+	local token = popup.Token
+	popup.Item.Text = string.format("x%d  %s", popup.Amount, string.upper(materialName))
+	popup.Item.TextTransparency = 0
+	popup.Item.TextStrokeTransparency = 0
+	popup.Scale.Scale = 1.16
+	TweenService:Create(popup.Scale, TweenInfo.new(0.17, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	task.delay(0.48, function()
+		if orePopups[materialName] ~= popup or popup.Token ~= token then return end
+		orePopups[materialName] = nil
+		TweenService:Create(popup.Item, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Position = UDim2.fromScale(popup.X + rng:NextNumber(-0.05, 0.05), popup.Y - 0.12),
+		}):Play()
+		fadeText(popup.Item, 0.6)
+		task.delay(0.62, function() popup.Item:Destroy() end)
+	end)
+end
+
+function FeedbackEffects.ShowCore(text, color)
+	if corePopup then corePopup:Destroy() end
+	local item = makeText("OreTemplate", text, color)
+	if not item then return end
+	corePopup = item
+	item.Position = UDim2.fromScale(0.5, 0.35)
+	item.Size = UDim2.fromScale(0.65, 0.09)
+	item.Rotation = 0
+	task.delay(1.5, function()
+		if not item.Parent then return end
+		fadeText(item, 0.5)
+		task.delay(0.52, function() item:Destroy() end)
+	end)
+end
+
+function FeedbackEffects.ShowSale(cash, count, cashTarget)
+	if cash <= 0 then return end
+	local item, scale = makeText("SaleTemplate", string.format("SOLD %d ORE  +$%d", count, cash))
+	if not item then return end
+	item.Position = UDim2.fromScale(0.5, 0.48)
+	scale.Scale = 1.2
+	TweenService:Create(scale, TweenInfo.new(0.24, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	task.delay(0.46, function()
+		if not item.Parent then return end
+		local center = cashTarget.AbsolutePosition + cashTarget.AbsoluteSize / 2
+		local tween = TweenService:Create(item, TweenInfo.new(0.72, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+			Position = UDim2.fromOffset(center.X, center.Y),
+			TextTransparency = 1,
+			TextStrokeTransparency = 1,
+		})
+		TweenService:Create(scale, TweenInfo.new(0.72, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Scale = 0.25 }):Play()
+		tween.Completed:Once(function()
+			item:Destroy()
+			FeedbackEffects.Pulse(cashTarget)
+		end)
+		tween:Play()
+	end)
+end
+
+return FeedbackEffects

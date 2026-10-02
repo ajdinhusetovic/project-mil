@@ -1,0 +1,28 @@
+return {
+	SchemaVersion = 1,
+	Power = 0,
+	XP = 0,
+	Level = 1,
+	Cash = 0,
+	BlocksMined = 0,
+	Materials = {},
+	BackpackCapacity = 50,
+	EquippedWeapon = "Scrap Zapper",
+	Weapons = {
+		["Scrap Zapper"] = true,
+	},
+	Upgrades = {
+		Storage = 0,
+		MovementSpeed = 0,
+		CollectionRange = 0,
+		ChainTargets = 0,
+		Magnet = 0,
+	},
+	UnknownCores = {},
+	UnknownCoreCapacity = 3,
+	HasCollectedCore = false,
+	StabilizedCores = {},
+	Stabilizer = {},
+	Reactor = {},
+	Overcharges = 0,
+}
