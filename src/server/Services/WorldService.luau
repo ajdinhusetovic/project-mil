@@ -127,6 +127,8 @@ function WorldService.Initialize()
 	local half = Config.Width * Config.BlockSize / 2
 	if not workspace:FindFirstChild("MineArea") then
 		MineAreaService.Build(world, makePart)
+	else
+		MineAreaService.AlignSeams(workspace.MineArea)
 	end
 	local authoredLobby = workspace:FindFirstChild("Lobby")
 	local lobby = authoredLobby and LobbyService.Positions() or LobbyService.Build(world, makePart, half)
@@ -135,6 +137,7 @@ function WorldService.Initialize()
 		oldSpawn.Enabled = false
 		oldSpawn.Transparency = 1
 		oldSpawn.CanCollide = false
+		oldSpawn.CanQuery = false
 	end
 	if npc then
 		npc:PivotTo(CFrame.new(lobby.SellNpc) * npc:GetPivot().Rotation)

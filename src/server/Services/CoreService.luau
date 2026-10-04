@@ -34,11 +34,10 @@ function CoreService.TryDiscover(player, blockId)
 	for _ in session.Drops do pending += 1 end
 	if pending >= Config.Cores.MaxPending then return end
 	local x, depth, z = Grid.Coordinates(blockId)
-	local layerIndex = math.ceil(depth / (Config.Depth / #Config.Layers))
+	local layer = Grid.Layer(depth)
 	local guaranteed = not data.HasCollectedCore and pending == 0 and session.Broken >= Config.Cores.FirstDiscoveryAfter
-	if not guaranteed and rng:NextNumber() >= Config.Cores.LayerChances[layerIndex] then return end
-	local grade = layerIndex == 1 and "Cracked" or "Charged"
-	if layerIndex == 2 and rng:NextNumber() < 0.5 then grade = "Cracked" end
+	if not guaranteed and rng:NextNumber() >= layer.CoreChance then return end
+	local grade = rng:NextNumber() < layer.ChargedChance and "Charged" or "Cracked"
 	local id = HttpService:GenerateGUID(false)
 	local position = Grid.Position(x, depth, z)
 	local drop = { Position = position, Grade = grade, Depth = depth * Config.BlockSize, Expires = os.clock() + Config.Cores.DropLifetime }

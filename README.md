@@ -10,7 +10,7 @@ With Rojo connected, stop and press **Play** to run the latest scripts. The Scra
 - Hold left click over a block to channel flickering electricity. When it breaks, the zapper blasts that block plus its two nearest neighbors and throws debris and material chunks from all three.
 - Move within 18 studs of a material chunk to pull it magnetically into the player. The material HUD tracks each ore separately.
 - Successful pickups create simulator-style popups that combine rapid collections of the same material before fading.
-- Walk into excavated spaces and aim downward to descend. Six rows per color, three strata, 108 studs deep.
+- Walk into excavated spaces and aim downward to descend. Five strata, 60 rows and 360 studs deep. Buried blocks render when uncovered.
 - Press **R** or **Surface** to return to the deck.
 - Click **Reset Mine** to refill your own grid and return to the surface. Reset has a five-second cooldown.
 - Click with the zapper equipped outside the mine to gain Power and XP. Training responds immediately and supports 25 clicks per second, with server validation and a short cooldown after combat. Clicking blocks or the stabilizer never trains. Breaking blocks also grants XP. Power increases mining damage, and Level 2 unlocks the Arc Pistol.

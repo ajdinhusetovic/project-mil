@@ -1,3 +1,4 @@
+local Format = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared").NumberFormat)
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService")
@@ -84,7 +85,7 @@ end
 
 function FeedbackEffects.ShowPower(amount)
 	if amount <= 0 then return end
-	local item = makeText("PowerTemplate", string.format("+%d POWER", amount))
+	local item = makeText("PowerTemplate", "+" .. Format.Compact(amount) .. " POWER")
 	if not item then return end
 	local x = rng:NextNumber(0.25, 0.75)
 	local y = rng:NextNumber(0.32, 0.68)
@@ -115,7 +116,7 @@ function FeedbackEffects.ShowOre(materialName, amount, color)
 	popup.Amount += amount
 	popup.Token += 1
 	local token = popup.Token
-	popup.Item.Text = string.format("x%d  %s", popup.Amount, string.upper(materialName))
+	popup.Item.Text = string.format("x%s  %s", Format.Compact(popup.Amount), string.upper(materialName))
 	popup.Item.TextTransparency = 0
 	popup.Item.TextStrokeTransparency = 0
 	popup.Scale.Scale = 1.16
@@ -146,9 +147,10 @@ function FeedbackEffects.ShowCore(text, color)
 	end)
 end
 
-function FeedbackEffects.ShowSale(cash, count, cashTarget)
+function FeedbackEffects.ShowSale(cash, count, cashTarget, coreName)
 	if cash <= 0 then return end
-	local item, scale = makeText("SaleTemplate", string.format("SOLD %d ORE  +$%d", count, cash))
+	local label = coreName and string.format("SOLD %s  +$%s", string.upper(coreName), Format.Compact(cash)) or string.format("SOLD %s ORE  +$%s", Format.Compact(count), Format.Compact(cash))
+	local item, scale = makeText("SaleTemplate", label)
 	if not item then return end
 	item.Position = UDim2.fromScale(0.5, 0.48)
 	scale.Scale = 1.2

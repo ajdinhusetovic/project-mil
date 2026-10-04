@@ -19,6 +19,7 @@ local function reconcile()
 	if not encoded then return end
 	local ok, snapshot = pcall(HttpService.JSONDecode, HttpService, encoded)
 	if not ok or type(snapshot) ~= "table" then return end
+	if base and base.Epoch ~= snapshot.Epoch then table.clear(pending) end
 	base = snapshot
 	sequence = math.max(sequence, snapshot.Sequence)
 	for id in pending do if id <= snapshot.Sequence then pending[id] = nil end end
@@ -29,7 +30,7 @@ reconcile()
 function Training.GetStats()
 	local stats = base or { Power = player:GetAttribute("Power") or 0, XP = player:GetAttribute("XP") or 0, Level = player:GetAttribute("Level") or 1 }
 	local power, xp, level = stats.Power, stats.XP, stats.Level
-	for _, click in pending do power += click.Power; xp += 1 end
+	for _, click in pending do power += click.Power; xp += click.Power end
 	local required = math.floor(Config.LevelXPBase * level ^ Config.LevelXPExponent)
 	while xp >= required do
 		xp -= required
@@ -50,9 +51,10 @@ function Training.Click(definition)
 	if now < combatUntil or tokens < 1 then return end
 	tokens -= 1
 	sequence += 1
-	pending[sequence] = {Power = definition.PowerPerClick}
-	Feedback.ShowPower(definition.PowerPerClick)
+	local gain = definition.PowerPerClick * (base.PowerMultiplier or 1)
+	pending[sequence] = {Power = gain}
+	Feedback.ShowPower(gain)
 	Training.Changed:Fire()
-	remote:FireServer("Train", sequence)
+	remote:FireServer("Train", {Sequence = sequence, Epoch = base.Epoch or 0})
 end
 return Training

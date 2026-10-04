@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local StarterGui = game:GetService("StarterGui")
 local FeedbackEffects = require(script.Parent.FeedbackEffects)
 
@@ -89,8 +90,8 @@ local function refresh()
 	local cash = player:GetAttribute("Cash") or 0
 	local used = player:GetAttribute("BackpackUsed") or 0
 	local capacity = player:GetAttribute("BackpackCapacity") or 50
-	cashLabel.Text = string.format("$%d", cash)
-	bagLabel.Text = string.format("%d / %d", used, capacity)
+	cashLabel.Text = "$" .. Format.Compact(cash)
+	bagLabel.Text = Format.Compact(used) .. " / " .. Format.Compact(capacity)
 end
 
 refresh()
@@ -130,8 +131,12 @@ remote.OnClientEvent:Connect(function(action, first, second)
 	if action == "Sold" then
 		if first > 0 then FeedbackEffects.ShowSale(first, second, cashLabel.Parent)
 		else toast("BAG IS EMPTY", false) end
+	elseif action == "CoresSold" then
+		FeedbackEffects.ShowSale(first, second, cashLabel.Parent, Format.Compact(second) .. " CORES")
+	elseif action == "CoreSold" then
+		FeedbackEffects.ShowSale(first, 1, cashLabel.Parent, second)
 	elseif action == "StoragePurchased" then
-		if first then toast(string.format("BAG UPGRADED  -$%d", second), true)
+		if first then toast(string.format("BAG UPGRADED  -$%s", Format.Compact(second)), true)
 		else toast(tostring(second), false) end
 	elseif action == "UpgradePurchased" then
 		toast(tostring(second), first)

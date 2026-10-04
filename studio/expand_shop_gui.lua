@@ -60,7 +60,7 @@ if not chain then
 	chain = storage:Clone()
 	chain.Name = "ChainCard"
 	chain.NameLabel.Text = "CHAIN TARGETS"
-	chain.DetailLabel.Text = "BREAK 1  →  2 BLOCKS"
+	chain.DetailLabel.Text = "HIT 1  →  2 BLOCKS"
 	chain.BuyButton.Text = "UPGRADE  •  $75"
 	tint(chain, Color3.fromRGB(255, 167, 74), Color3.fromRGB(211, 76, 36))
 end

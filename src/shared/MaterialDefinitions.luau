@@ -19,4 +19,6 @@ return {
 		Color = Color3.fromRGB(195, 79, 255),
 		SellValue = 22,
 	},
+	["Plasma Ore"] = { Color = Color3.fromRGB(255, 139, 54), SellValue = 40 },
+	["Reactor Shard"] = { Color = Color3.fromRGB(128, 255, 98), SellValue = 75 },
 }

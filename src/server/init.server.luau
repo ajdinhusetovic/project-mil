@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Grid = require(ReplicatedStorage.Shared.MineGrid)
@@ -11,6 +12,8 @@ local CoreService = require(script.Services.CoreService)
 local CoreToolService = require(script.Services.CoreToolService)
 local StabilizerService = require(script.Services.StabilizerService)
 local TrainingService = require(script.Services.TrainingService)
+local CoreSaleService = require(script.Services.CoreSaleService)
+local OverchargeService = require(script.Services.OverchargeService)
 
 local remote = Instance.new("RemoteEvent")
 remote.Name = "MiningDemo"
@@ -18,12 +21,26 @@ remote.Parent = ReplicatedStorage
 CoreService.Initialize(remote)
 WorldService.Initialize()
 StabilizerService.Initialize(remote)
+CoreSaleService.Initialize(remote)
 
 local pendingDrops = {}
 local nextDropId = 0
 local lastAttack = {}
 local lastAction = {}
 local lastReset = {}
+
+OverchargeService.Initialize(remote, function(player)
+	CoreSaleService.Release(player)
+	TrainingService.Release(player)
+	pendingDrops[player] = {}
+	MineService.Reset(player)
+	CoreService.Reset(player)
+	remote:FireClient(player, "ResetMine")
+	remote:FireClient(player, "InventorySnapshot", {})
+	WorldService.Surface(player)
+	CoreToolService.Sync(player)
+	WorldService.GiveEquippedTool(player, player.Character, "Scrap Zapper", false)
+end)
 
 local function nearPrompt(player, prompt)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
@@ -76,7 +93,9 @@ end
 local function blastBlocks(player, id)
 	local x, depth, z = Grid.Coordinates(id)
 	local center = Grid.Position(x, depth, z)
-	local victims = MineService.Blast(player, id, PlayerDataService.GetBlastCount(player), Config.BlastRadius)
+	local chainDamage = math.max(1, math.floor(PlayerDataService.GetDamage(player) * Config.Mining.ChainDamageMultiplier))
+	local victims, damaged = MineService.Blast(player, id, PlayerDataService.GetBlastCount(player), Config.BlastRadius, chainDamage)
+	for _, hit in damaged do remote:FireClient(player, "BlockHealth", hit.Id, hit.Health) end
 	remote:FireClient(player, "Blast", center, Grid.Color(x, depth, z))
 	for _, victimId in victims do
 		local vx, vd, vz = Grid.Coordinates(victimId)
@@ -105,8 +124,12 @@ end
 
 remote.OnServerEvent:Connect(function(player, action, target)
 	local now = os.clock()
-	if action == "PlaceCore" or action == "ChargeStabilizer" or action == "ClaimCore" or action == "CancelStabilizer" then
-		if action == "ChargeStabilizer" then TrainingService.MarkCombat(player) end
+	if action == "Overcharge" then OverchargeService.Handle(player, target) return end
+	if action == "QuoteHeldCoreSale" or action == "ConfirmHeldCoreSale" or action == "QuoteAllCoreSale" or action == "ConfirmAllCoreSale" then
+		CoreSaleService.Handle(player, action, target)
+		return
+	end
+	if action == "PlaceCore" or action == "ClaimCore" then
 		StabilizerService.Handle(player, action, target)
 		return
 	end
@@ -132,7 +155,7 @@ remote.OnServerEvent:Connect(function(player, action, target)
 			return
 		end
 		local success, result = PlayerDataService.BuyUpgrade(player, target)
-		local message = success and string.format("%s UPGRADED  -$%d", string.upper(target), result) or result
+		local message = success and string.format("%s UPGRADED  -$%s", string.upper(target), Format.Compact(result)) or result
 		remote:FireClient(player, "UpgradePurchased", success, message)
 		return
 	end
@@ -193,7 +216,7 @@ remote.OnServerEvent:Connect(function(player, action, target)
 	end
 	if action ~= "Mine" then return end
 	TrainingService.MarkCombat(player)
-	if now - (lastAttack[player] or -math.huge) < Config.Tick * 0.85 then return end
+	if now - (lastAttack[player] or -math.huge) < Config.Mining.HitInterval then return end
 	lastAttack[player] = now
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
@@ -211,7 +234,9 @@ remote.OnServerEvent:Connect(function(player, action, target)
 	staticRayParams.FilterDescendantsInstances = { character }
 	if workspace:Raycast(origin.Position, targetPosition - origin.Position, staticRayParams) then return end
 	if not MineService.IsAccessible(player, target, origin.Position) then return end
-	local health = MineService.Damage(player, target, PlayerDataService.GetDamage(player))
+	local damage = PlayerDataService.GetDamage(player)
+	if damage <= 0 then return end
+	local health = MineService.Damage(player, target, damage)
 	if health and health > 0 then
 		remote:FireClient(player, "BlockHealth", target, health)
 	elseif health == 0 then
@@ -230,6 +255,8 @@ Players.PlayerRemoving:Connect(function(player)
 	MineService.Release(player)
 	CoreService.Release(player)
 	StabilizerService.Release(player)
+	CoreSaleService.Release(player)
+	OverchargeService.Release(player)
 	PlayerDataService.Release(player)
 end)
 game:BindToClose(function()

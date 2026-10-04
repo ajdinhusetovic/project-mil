@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -115,7 +116,7 @@ local function updateInventory(materialName, total)
 	local row = inventoryLabels[materialName]
 	if not row then return end
 	row.Visible = true
-	row.Text = string.format("x%d  %s", total, string.upper(materialName))
+	row.Text = string.format("x%s  %s", Format.Compact(total), string.upper(materialName))
 end
 
 local function clearInventory()
@@ -151,18 +152,14 @@ local function resolveTarget()
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = { character, effects }
 	local hit = workspace:Raycast(ray.Origin, ray.Direction * 250, params)
-	if hit and (hit.Instance.Parent == blocks or hit.Instance:GetAttribute("StabilizerTargetId")) and (hit.Instance.Position - root.Position).Magnitude <= Config.Range then
+	if hit and hit.Instance.Parent == blocks and (hit.Instance.Position - root.Position).Magnitude <= Config.Range then
 		return hit.Instance, hit.Position
 	end
 	return nil
 end
 local function sendShot(target)
 	lastShot = os.clock()
-	if target:GetAttribute("StabilizerTargetId") then
-		remote:FireServer("ChargeStabilizer", target:GetAttribute("StabilizerTargetId"))
-	else
-		remote:FireServer("Mine", target:GetAttribute("BlockId"))
-	end
+	remote:FireServer("Mine", target:GetAttribute("BlockId"))
 end
 local function beginAttack(allowTraining)
 	if held or not tool or tool.Parent ~= player.Character then return end
@@ -170,7 +167,7 @@ local function beginAttack(allowTraining)
 	local target = resolveTarget()
 	if target then
 		TrainingFeedback.MarkCombat()
-		if os.clock() - lastShot >= Config.Tick then sendShot(target) end
+		if os.clock() - lastShot >= Config.Mining.HitInterval then sendShot(target) end
 	elseif allowTraining ~= false then
 		TrainingFeedback.Click(WeaponDefinitions[tool.Name])
 	end
@@ -333,6 +330,7 @@ remote.OnClientEvent:Connect(function(action, first, second, third, fourth)
 		return
 	end
 	if action == "InventorySnapshot" then
+		clearInventory()
 		for materialName, total in first do
 			if total > 0 then updateInventory(materialName, total) end
 		end
@@ -446,14 +444,11 @@ RunService.RenderStepped:Connect(function(dt)
 	if equipped then target, hitPosition = resolveTarget() end
 	selection.Adornee = target
 	selection.FillTransparency = held and 0.55 or 0.9
-	if target and target:GetAttribute("StabilizerTargetId") then
-		healthText.Text = "CORE STABILIZER  •  CHANNEL ELECTRICITY"
-		selection.FillColor = cyan
-	elseif target then
+	if target then
 		local damage = 1 - target:GetAttribute("Health") / target:GetAttribute("MaxHealth")
 		selection.FillColor = cyan:Lerp(Color3.new(1, 1, 1), damage)
 		selection.FillTransparency = held and (0.72 - damage * 0.25 + math.sin(os.clock() * 24) * 0.09) or 0.9
-		healthText.Text = string.format("%s  •  %d / %d", target:GetAttribute("Layer"), target:GetAttribute("Health"), target:GetAttribute("MaxHealth"))
+		healthText.Text = string.format("%s  •  %s / %s", target:GetAttribute("Layer"), Format.Compact(target:GetAttribute("Health")), Format.Compact(target:GetAttribute("MaxHealth")))
 	else
 		healthText.Text = ""
 	end
@@ -466,7 +461,7 @@ RunService.RenderStepped:Connect(function(dt)
 			lastArc = now
 			lightning(muzzle.WorldPosition, hitPosition)
 		end
-		if now - lastShot >= Config.Tick then sendShot(target) end
+		if now - lastShot >= Config.Mining.HitInterval then sendShot(target) end
 	else
 		for _, arc in arcs do arc.Transparency = 1 end
 	end

@@ -1,9 +1,11 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local TrainingFeedback = require(script.Parent.TrainingFeedback)
 local Config = require(ReplicatedStorage.Shared.Config)
+local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
 local WeaponDefinitions = require(ReplicatedStorage.Shared.WeaponDefinitions)
 
 local player = Players.LocalPlayer
@@ -107,7 +109,7 @@ RunService.RenderStepped:Connect(function()
 		local depth = math.clamp(math.floor(-position.Y), 0, Config.Depth * Config.BlockSize)
 		if depth ~= lastDepth then
 			lastDepth = depth
-			depthLabel.Text = string.format("DEPTH: %d STUDS", depth)
+			depthLabel.Text = string.format("DEPTH: %s STUDS", Format.Compact(depth))
 		end
 	else
 		lastDepth = -1
@@ -132,9 +134,9 @@ local function refresh(instant)
 	local weaponName = player:GetAttribute("EquippedWeapon") or "Scrap Zapper"
 	local definition = WeaponDefinitions[weaponName] or WeaponDefinitions["Scrap Zapper"]
 	local required = math.floor(Config.LevelXPBase * level ^ Config.LevelXPExponent)
-	levelLabel.Text = string.format("LEVEL %d", level)
-	xpLabel.Text = string.format("%d / %d XP", xp, required)
-	powerLabel.Text = string.format("⚡ %d POWER     +%d / CLICK", power, definition.PowerPerClick)
+	levelLabel.Text = string.format("LEVEL %s", Format.Compact(level))
+	xpLabel.Text = string.format("%s / %s XP", Format.Compact(xp), Format.Compact(required))
+	powerLabel.Text = string.format("⚡ %s POWER     +%s / CLICK", Overcharge.Number(power), Overcharge.Number(definition.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1)))
 
 	animationToken += 1
 	local token = animationToken
@@ -172,7 +174,7 @@ local function queueRefresh()
 end
 
 TrainingFeedback.Changed.Event:Connect(queueRefresh)
-for _, attribute in { "EquippedWeapon" } do
+for _, attribute in { "EquippedWeapon", "PowerMultiplier" } do
 	player:GetAttributeChangedSignal(attribute):Connect(function()
 		queueRefresh()
 	end)

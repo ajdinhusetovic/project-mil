@@ -33,7 +33,9 @@ function MineAreaService.AlignSeams(area)
 	local borderVariant = ""
 	local hasRim = false
 	for _, child in area:GetChildren() do
-		if child:IsA("BasePart") and child.Name == "ShaftWall" then
+		if child:IsA("BasePart") and child.Name == "Bedrock" then
+			child.Position = Vector3.new(0, bottom - child.Size.Y / 2, 0)
+		elseif child:IsA("BasePart") and child.Name == "ShaftWall" then
 			borderColor = child.Color
 			borderVariant = child.MaterialVariant
 			local p = child.Position

@@ -22,6 +22,7 @@ return {
 	UnknownCoreCapacity = 3,
 	HasCollectedCore = false,
 	StabilizedCores = {},
+	DiscoveredCores = {},
 	Stabilizer = {},
 	Reactor = {},
 	Overcharges = 0,

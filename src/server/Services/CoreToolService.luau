@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Definitions = require(ReplicatedStorage.Shared.CoreDefinitions)
 local Stabilized = require(ReplicatedStorage.Shared.StabilizerDefinitions)
+local Mutations = require(ReplicatedStorage.Shared.MutationDefinitions)
 local WorldUI = require(ReplicatedStorage.Shared.WorldUIBuilder)
 local Visuals = require(ReplicatedStorage.Shared.CoreVisuals)
 local PlayerDataService = require(script.Parent.PlayerDataService)
@@ -23,7 +24,7 @@ function CoreToolService.Sync(player)
 		for _, tool in container:GetChildren() do
 			if tool:IsA("Tool") and (tool:GetAttribute("IsUnknownCore") or tool:GetAttribute("IsStabilizedCore")) then
 				local id = tool:GetAttribute("CoreId")
-				if not records[id] or found[id] then
+				if not records[id] or found[id] or (records[id].Type and (tool:GetAttribute("Mutation") or "None") ~= Stabilized.MutationKey(records[id])) then
 					tool:Destroy()
 				else
 					found[id] = true
@@ -36,8 +37,8 @@ function CoreToolService.Sync(player)
 		local definition = core.Type and Stabilized.Cores[core.Type] or Definitions[core.Grade]
 		if not definition then continue end
 		local tool = Instance.new("Tool")
-		tool.Name = core.Type and definition.Name or core.Grade .. " Unknown Core"
-		tool.ToolTip = core.Type and (definition.Rarity .. " — " .. Stabilized.IncomeText(core.Type) .. " in your reactor") or core.Grade .. " Unknown Core — take it to a stabilizer"
+		tool.Name = core.Type and Stabilized.DisplayName(core) or core.Grade .. " Unknown Core"
+		tool.ToolTip = core.Type and (definition.Rarity .. " — " .. Stabilized.IncomeText(core) .. " in your reactor") or core.Grade .. " Unknown Core — take it to a stabilizer"
 		tool.CanBeDropped = false
 		tool.RequiresHandle = true
 		tool.Enabled = false
@@ -46,7 +47,8 @@ function CoreToolService.Sync(player)
 		tool:SetAttribute("CoreId", id)
 		tool:SetAttribute("CoreGrade", core.Grade)
 		tool:SetAttribute("CoreType", core.Type)
-		tool:SetAttribute("IncomePerSecond", core.Type and definition.IncomePerSecond or nil)
+		tool:SetAttribute("Mutation", core.Type and Stabilized.MutationKey(core) or nil)
+		tool:SetAttribute("IncomePerSecond", core.Type and Stabilized.Income(core) or nil)
 		local handle = Instance.new("Part")
 		handle.Name = "Handle"
 		handle.Shape = Enum.PartType.Ball
@@ -61,12 +63,13 @@ function CoreToolService.Sync(player)
 		if core.Type then
 			local board = WorldUI.BuildTemplates().CoreBillboard:Clone()
 			board.NameLabel.Text = string.upper(definition.Name)
-			board.RarityLabel.Text = string.upper(definition.Rarity)
-			board.RarityLabel.TextColor3 = Stabilized.Rarities[definition.Rarity]
-			board.IncomeLabel.Text = Stabilized.IncomeText(core.Type)
+			board.RarityLabel.Text = Stabilized.MutationText(core)
+			board.RarityLabel.Visible = board.RarityLabel.Text ~= ""
+			board.RarityLabel.TextColor3 = Mutations.Variants[Stabilized.MutationKey(core)].Color or Stabilized.Rarities[definition.Rarity]
+			board.IncomeLabel.Text = Stabilized.IncomeText(core)
 			board.Parent = handle
 			handle.Transparency = 1
-			local model = Visuals.Build(core.Type, false)
+			local model = Visuals.Build(core.Type, false, core.Mutation)
 			for _, part in model:GetDescendants() do
 				if not part:IsA("BasePart") then continue end
 				part.Anchored = false

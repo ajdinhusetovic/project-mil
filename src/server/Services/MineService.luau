@@ -58,7 +58,7 @@ function MineService.Damage(player, id, amount)
 	return remaining
 end
 
-function MineService.Blast(player, id, count, radius)
+function MineService.Blast(player, id, count, radius, damage)
 	local x, depth, z = Grid.Coordinates(id)
 	local center = Grid.Position(x, depth, z)
 	local candidates = {}
@@ -81,12 +81,18 @@ function MineService.Blast(player, id, count, radius)
 		return a.Distance < b.Distance
 	end)
 	local victims = { id }
-	for _, candidate in candidates do
-		if #victims >= count then break end
-		table.insert(victims, candidate.Id)
+	local damaged = {}
+	local chainTargets = math.max(0, count - 1)
+	for index, candidate in candidates do
+		if index > chainTargets then break end
+		local health = MineService.Damage(player, candidate.Id, damage)
+		if health == 0 then
+			table.insert(victims, candidate.Id)
+		elseif health then
+			table.insert(damaged, { Id = candidate.Id, Health = health })
+		end
 	end
-	for _, victimId in victims do mines[player][victimId] = 0 end
-	return victims
+	return victims, damaged
 end
 
 return MineService

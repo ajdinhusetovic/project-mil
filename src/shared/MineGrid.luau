@@ -28,8 +28,17 @@ function Grid.IdAt(position)
 	return Grid.Id(x, depth, z)
 end
 
+function Grid.LayerIndex(depth)
+	depth = math.clamp(depth, 1, Config.Depth)
+	for index, layer in Config.Layers do
+		if depth <= layer.EndDepth then return index, layer end
+	end
+	return #Config.Layers, Config.Layers[#Config.Layers]
+end
+
 function Grid.Layer(depth)
-	return Config.Layers[math.ceil(depth / (Config.Depth / #Config.Layers))]
+	local _, layer = Grid.LayerIndex(depth)
+	return layer
 end
 
 function Grid.Material(x, depth, z)

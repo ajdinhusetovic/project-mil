@@ -13,6 +13,10 @@ function Service.MarkCombat(player)
 	state(player).CombatUntil = os.clock() + Config.Training.CombatCooldown
 end
 function Service.Handle(player, sequence)
+	if typeof(sequence) == "table" then
+		if sequence.Epoch ~= Data.GetProgressEpoch(player) then return end
+		sequence = sequence.Sequence
+	end
 	if typeof(sequence) ~= "number" or sequence ~= sequence or sequence % 1 ~= 0 or sequence < 1 or sequence > 1000000000 then return end
 	if sequence <= Data.GetTrainingSequence(player) then return end
 	local entry = state(player)

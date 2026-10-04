@@ -100,7 +100,7 @@ function Builder.Build(parent)
 	end
 	button("CloseButton", "X", UDim2.fromScale(0.9, 0.03), UDim2.fromScale(0.075, 0.1), Color3.fromRGB(244, 63, 77))
 	text("StatusLabel", "Hold an Unknown Core to place it", UDim2.fromScale(0.04, 0.21), UDim2.fromScale(0.92, 0.1))
-	text("TimerLabel", "Equip your weapon and zap the placed core", UDim2.fromScale(0.06, 0.38), UDim2.fromScale(0.88, 0.17))
+	text("TimerLabel", "Placed cores stabilize automatically", UDim2.fromScale(0.06, 0.38), UDim2.fromScale(0.88, 0.17))
 	text("ResultLabel", "", UDim2.fromScale(0.04, 0.69), UDim2.fromScale(0.92, 0.1))
 	button("ActionButton", "PLACE HELD CORE", UDim2.fromScale(0.23, 0.83), UDim2.fromScale(0.54, 0.12), Color3.fromRGB(55, 213, 76))
 	button("CancelButton", "RETURN CORE", UDim2.fromScale(0.04, 0.65), UDim2.fromScale(0.28, 0.1), Color3.fromRGB(212, 124, 48)).Visible = false

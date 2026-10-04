@@ -1,3 +1,5 @@
--- Paste in Studio's Command Bar in Edit mode. Existing UI edits are preserved.
-require(game.ReplicatedStorage.Shared.StabilizerUIBuilder).Build(game.StarterGui)
-print("StabilizerGui ready in StarterGui. Edit Panel, Reel, CardTemplate, text and buttons.")
+-- Current stabilizer UI is odds only; rolling happens above the machine.
+local old = game.StarterGui:FindFirstChild("StabilizerGui")
+if old then old.Enabled = false end
+require(game.ReplicatedStorage.Shared.StabilizerOddsUIBuilder).Build(game.StarterGui)
+print("StabilizerOddsGui ready. Edit NearbyOddsButton and Shade.Panel in StarterGui.")

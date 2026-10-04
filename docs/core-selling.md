@@ -1,0 +1,15 @@
+# Core selling
+
+Hold a stabilized core and talk to the existing Ore Buyer. Choose **Sell held core** to see its name, rarity, sale price and base reactor earnings per second, then confirm or keep it. Ore selling remains a separate dialogue choice. Unknown cores cannot be sold.
+
+`Shared.StabilizerDefinitions.Cores` contains editable `SellValue` entries: Spark $120, Copper $240, Static $600, Quartz $1,500, Lightning $2,700, Storm $6,000, Ion $18,000, Reactor $60,000. These provisional prices are equivalent to 60 seconds of each core's base reactor output. Installed reactor income is not implemented yet.
+
+`CoreSaleService` issues an offer valid for 45 seconds and validates buyer proximity, a living character and the held inventory record again on confirmation. Client requests only carry the offer token. Switching cores, forged or repeated confirmations and distant sales cannot award cash. `PlayerDataService.SellHeldCore` removes exactly one saved inventory record and adds cash without yielding. Tool sync removes its hotbar representation. Index discoveries, ores and Unknown Cores remain intact. Leaving clears the pending offer.
+
+The existing toolbox `DialogModule` and editable `StarterGui.dialog` are reused. `NPCSellController` provides dialogue text and choices; no new ScreenGui is needed. The held core's billboard and Roblox hotbar hide during NPC dialogue, so number-key responses cannot switch or unequip the core; their normal state returns afterward. Core sales use the existing editable sale popup template and cash HUD animation, with the core name instead of an ore count.
+
+Validation: Studio server checks passed for Unknown Core rejection, forged offers, changed held cores, distant confirmations, one-time payouts, exact inventory removal, tool synchronization and retained ores/Index discoveries. Live NPC dialogue tests passed for readable quote details, Keep cancellation, successful $6,000 Storm sale, separate ore selling afterward, core-sale popup text/cleanup, and keyboard selection preserving the equipped core while the hotbar is hidden. Production persistence and mobile dialogue layout still need playtesting.
+
+Choose **Sell all cores** without equipping a core to get a count, total price and combined reactor output before confirming. This sells every stabilized core in inventory, including rare copies. Unknown Cores and active stabilizer jobs stay intact. The server snapshots the offer and rejects confirmation if the saleable inventory changes; a new offer is required. Bulk sales remove the corresponding Tools and keep every Index discovery.
+
+Bulk validation: Studio server checks passed for duplicate core types, total payout/income, mismatched confirmation modes, same-count inventory replacement, added cores, distance checks, one-time payouts, empty inventory, Tool removal, and preservation of ores, Unknown Cores, active stabilizer jobs and Index entries. Live NPC dialogue showed the two-core quote with $6,120 total and $102/sec output; confirming paid $6,120, removed both core Tools and retained their Index discoveries.

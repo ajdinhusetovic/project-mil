@@ -27,7 +27,8 @@ function Builder.BuildTemplates()
 		board.MaxDistance = 65
 		board.Parent = folder
 		label(board, "NameLabel", "SPARK CORE", 0, 0.34)
-		label(board, "RarityLabel", "COMMON", 0.35, 0.23)
+		-- Legacy name retained so authored GUI layouts keep working; this is now the mutation row.
+		label(board, "RarityLabel", "", 0.35, 0.23).Visible = false
 		label(board, "IncomeLabel", "$2 / SEC", 0.61, 0.39, Color3.fromRGB(105, 255, 91))
 	end
 	if not folder:FindFirstChild("StabilizerStatusBillboard") then

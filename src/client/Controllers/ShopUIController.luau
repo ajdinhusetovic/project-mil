@@ -1,9 +1,11 @@
 local Players = game:GetService("Players")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local UserInputService = game:GetService("UserInputService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
+local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
 local Weapons = require(ReplicatedStorage.Shared.WeaponDefinitions)
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
@@ -41,7 +43,7 @@ local function refresh()
 	local cash = player:GetAttribute("Cash") or 0
 	local level = player:GetAttribute("Level") or 1
 	local equipped = player:GetAttribute("EquippedWeapon") or "Scrap Zapper"
-	header.CashLabel.Text = string.format("$%d", cash)
+	header.CashLabel.Text = "$" .. Format.Compact(cash)
 
 	for upgradeName, card in upgradeCards do
 		if not card then continue end
@@ -53,24 +55,24 @@ local function refresh()
 			upgradeLevel = player:GetAttribute("StorageLevel") or 0
 			definition = Config.StorageUpgrade
 			local capacity = player:GetAttribute("BackpackCapacity") or 50
-			details.Text = string.format("BAG CAPACITY  %d  →  %d", capacity, capacity + definition.CapacityPerLevel)
+			details.Text = string.format("BAG CAPACITY  %s  →  %s", Format.Compact(capacity), Format.Compact(capacity + definition.CapacityPerLevel))
 		elseif upgradeName == "Chain" then
 			upgradeLevel = player:GetAttribute("ChainLevel") or 0
 			definition = Config.ChainUpgrade
 			local count = player:GetAttribute("BlastCount") or Config.BlastBlocks
-			details.Text = string.format("BREAK %d  →  %d BLOCKS", count, count + 1)
+			details.Text = string.format("HIT %s  →  %s BLOCKS", Format.Compact(count), Format.Compact(count + 1))
 		else
 			upgradeLevel = player:GetAttribute("MagnetLevel") or 0
 			definition = Config.MagnetUpgrade
 			local range = player:GetAttribute("MagnetRange") or Config.CollectionRange
-			details.Text = string.format("PICKUP RANGE  %d  →  %d STUDS", range, range + definition.RangePerLevel)
+			details.Text = string.format("PICKUP RANGE  %s  →  %s STUDS", Format.Compact(range), Format.Compact(range + definition.RangePerLevel))
 		end
 		if upgradeLevel >= definition.MaxLevel then
 			button.Text = "MAXED"
 			button.Active = false
 		else
 			local price = math.floor(definition.BasePrice * definition.PriceMultiplier ^ upgradeLevel)
-			button.Text = string.format("UPGRADE  •  $%d", price)
+			button.Text = string.format("UPGRADE  •  $%s", Format.Compact(price))
 			button.Active = true
 		end
 	end
@@ -82,7 +84,7 @@ local function refresh()
 		local details = child(card, "DetailLabel")
 		local button = child(card, "BuyButton")
 		local status = child(card, "StatusLabel")
-		if details then details.Text = string.format("+%d POWER / CLICK  •  LEVEL %d", definition.PowerPerClick, definition.Level) end
+		if details then details.Text = string.format("+%s POWER / CLICK  •  LEVEL %s", Overcharge.Number(definition.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1)), Format.Compact(definition.Level)) end
 		local owned = player:GetAttribute("OwnsWeapon_" .. definition.Id) == true or weaponName == "Scrap Zapper"
 		if status then status.Text = equipped == weaponName and "EQUIPPED" or "OWNED" end
 		if not button then continue end
@@ -93,10 +95,10 @@ local function refresh()
 			button.Text = "EQUIP"
 			button.Active = true
 		elseif level < definition.Level then
-			button.Text = string.format("UNLOCK AT LEVEL %d", definition.Level)
+			button.Text = string.format("UNLOCK AT LEVEL %s", Format.Compact(definition.Level))
 			button.Active = false
 		else
-			button.Text = string.format("BUY  •  $%d", definition.Price)
+			button.Text = string.format("BUY  •  $%s", Format.Compact(definition.Price))
 			button.Active = true
 		end
 	end
@@ -162,7 +164,7 @@ remote.OnClientEvent:Connect(function(action)
 		refresh()
 	end
 end)
-for _, name in { "Cash", "Level", "StorageLevel", "BackpackCapacity", "ChainLevel", "BlastCount", "MagnetLevel", "MagnetRange", "EquippedWeapon" } do
+for _, name in { "Cash", "Level", "StorageLevel", "BackpackCapacity", "ChainLevel", "BlastCount", "MagnetLevel", "MagnetRange", "EquippedWeapon", "PowerMultiplier" } do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for _, weaponName in Config.WeaponOrder do

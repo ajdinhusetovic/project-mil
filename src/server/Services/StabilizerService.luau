@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local Definitions = require(ReplicatedStorage.Shared.StabilizerDefinitions)
-local Weapons = require(ReplicatedStorage.Shared.WeaponDefinitions)
+local Mutations = require(ReplicatedStorage.Shared.MutationDefinitions)
 local Data = require(script.Parent.PlayerDataService)
 local Tools = require(script.Parent.CoreToolService)
 local Service = {}
@@ -10,10 +10,25 @@ local remote
 local rng = Random.new()
 local cooldown = {}
 
+-- Also starts waiting jobs saved before automatic stabilization was introduced.
+local function start(job)
+	if not job.Core then return end
+	-- Existing timed jobs keep their original normal result; no reroll on load.
+	if job.FinishAt then job.Mutation = Mutations.Key(job.Mutation); return end
+	local definition = Definitions.Grades[job.Core.Grade]
+	if not definition then return end
+	if not Definitions.Cores[job.Result] then job.Result = Definitions.Roll(job.Core.Grade, rng) end
+	if job.Mutation == nil then job.Mutation = Mutations.Roll(rng) end
+	job.Mutation = Mutations.Key(job.Mutation)
+	job.StartedAt = os.time()
+	job.FinishAt = job.StartedAt + definition.Duration
+end
 local function publish(player)
 	local data = Data.Get(player)
 	if not data then return end
 	local job = data.Stabilizer
+	start(job)
+	player:SetAttribute("StabilizerStationId", job.StationId or "")
 	player:SetAttribute("StabilizerGrade", job.Core and job.Core.Grade or "")
 	player:SetAttribute("StabilizerFinishAt", job.FinishAt or 0)
 	player:SetAttribute("StabilizerState", not job.Core and "Empty" or not job.FinishAt and "Waiting" or job.FinishAt <= os.time() and "Ready" or "Running")
@@ -53,50 +68,35 @@ function Service.Handle(player, action, id)
 		local coreId = tool:GetAttribute("CoreId")
 		local index
 		for i, core in data.UnknownCores do if core.Id == coreId then index = i; break end end
-		if not index then return end
-		data.Stabilizer = { Core = table.remove(data.UnknownCores, index) }
+		if not index or not Definitions.Grades[data.UnknownCores[index].Grade] then return end
+		data.Stabilizer = { Core = table.remove(data.UnknownCores, index), StationId = id }
+		start(data.Stabilizer)
 		Tools.Sync(player)
 		publish(player)
 		remote:FireClient(player, "StabilizerPlaced")
-		message(player, "Core placed! Equip your weapon and zap it to start.")
-	elseif action == "ChargeStabilizer" then
-		if not job.Core or job.FinishAt then return end
-		local tool = player.Character:FindFirstChildWhichIsA("Tool")
-		if not tool or not Weapons[tool.Name] or tool.Name ~= data.EquippedWeapon then return end
-		local head = player.Character:FindFirstChild("Head") or player.Character.HumanoidRootPart
-		local params = RaycastParams.new()
-		params.FilterType = Enum.RaycastFilterType.Exclude
-		params.FilterDescendantsInstances = { player.Character, mount.Parent }
-		if workspace:Raycast(head.Position, mount.Position + Vector3.new(0, 1.5, 0) - head.Position, params) then return end
-		local definition = Definitions.Grades[job.Core.Grade]
-		if not definition then return end
-		job.Result = Definitions.Roll(job.Core.Grade, rng)
-		job.StartedAt = os.time()
-		job.FinishAt = job.StartedAt + definition.Duration
-		publish(player)
-		message(player, "STABILIZATION STARTED!")
+		message(player, "CORE PLACED — STABILIZATION STARTED!")
 	elseif action == "ClaimCore" then
 		if not job.Core or not job.FinishAt or job.FinishAt > os.time() then message(player, "This core is not ready yet.") return end
 		if not Definitions.Cores[job.Result] then return end
-		local result = { Id = HttpService:GenerateGUID(false), Type = job.Result, Grade = job.Core.Grade, FoundAt = os.time(), Depth = job.Core.Depth }
+		local result = { Id = HttpService:GenerateGUID(false), Type = job.Result, Mutation = Mutations.Key(job.Mutation), Grade = job.Core.Grade, FoundAt = os.time(), Depth = job.Core.Depth }
 		table.insert(data.StabilizedCores, result)
+		Data.DiscoverCore(player, result.Type)
 		data.Stabilizer = {}
 		Tools.Sync(player)
 		publish(player)
-		remote:FireClient(player, "CoreReveal", result)
-	elseif action == "CancelStabilizer" then
-		if not job.Core or job.FinishAt then return end
-		if #data.UnknownCores >= data.UnknownCoreCapacity then message(player, "Free an Unknown Core slot before returning this core.") return end
-		table.insert(data.UnknownCores, job.Core)
-		data.Stabilizer = {}
-		Tools.Sync(player)
-		publish(player)
+		remote:FireClient(player, "CoreReveal", result, id)
 	end
 end
 local function register(mount)
 	if not mount:IsA("BasePart") or mount.Name ~= "CoreMount" then return end
 	local model = mount:FindFirstAncestorWhichIsA("Model")
 	if not model or (model.Name ~= "Stabilizer" and not model:GetAttribute("IsStabilizer")) then return end
+	-- Odds are opened by the nearby GUI; suppress old authored odds prompts.
+	for _, item in model:GetDescendants() do
+		if item:IsA("ProximityPrompt") and (item.Name:lower():find("odds", 1, true) or item.ActionText:lower():find("odds", 1, true) or item.Name == "ReturnCorePrompt") then
+			item.Enabled = false
+		end
+	end
 	local id = HttpService:GenerateGUID(false)
 	stations[id] = mount
 	mount:SetAttribute("StabilizerId", id)

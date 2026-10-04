@@ -1,17 +1,21 @@
 local DataStoreService = game:GetService("DataStoreService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local HttpService = game:GetService("HttpService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local MaterialDefinitions = require(ReplicatedStorage.Shared.MaterialDefinitions)
 local WeaponDefinitions = require(ReplicatedStorage.Shared.WeaponDefinitions)
 local Template = require(ReplicatedStorage.Shared.PlayerDataTemplate)
+local CoreDefinitions = require(ReplicatedStorage.Shared.StabilizerDefinitions)
+local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
 
 local PlayerDataService = {}
 local profiles = {}
 local canSave = {}
 local trainingSequences = {}
+local progressEpochs = {}
 local store = DataStoreService:GetDataStore(Config.Persistence.StoreName)
 
 local function deepCopy(value)
@@ -36,6 +40,11 @@ local function shouldUseDataStore()
 end
 
 local function publish(player, data)
+	local powerMultiplier, cashMultiplier = Overcharge.Multipliers(data.Overcharges)
+	player:SetAttribute("Overcharges", data.Overcharges)
+	player:SetAttribute("PowerMultiplier", powerMultiplier)
+	player:SetAttribute("CashMultiplier", cashMultiplier)
+	player:SetAttribute("StabilizedCoreCount", #data.StabilizedCores)
 	player:SetAttribute("Power", data.Power)
 	player:SetAttribute("XP", data.XP)
 	player:SetAttribute("Level", data.Level)
@@ -65,7 +74,23 @@ function PlayerDataService.PublishProgress(player)
 	if not data then return end
 	player:SetAttribute("ProgressSnapshot", HttpService:JSONEncode({
 		Power = data.Power, XP = data.XP, Level = data.Level, Sequence = trainingSequences[player] or 0,
+		Epoch = progressEpochs[player] or 0, PowerMultiplier = PlayerDataService.GetPowerMultiplier(player),
 	}))
+end
+
+function PlayerDataService.GetProgressEpoch(player)
+	return progressEpochs[player] or 0
+end
+
+function PlayerDataService.GetPowerMultiplier(player)
+	local data = profiles[player]
+	return Overcharge.Multipliers(data and data.Overcharges or 0)
+end
+
+function PlayerDataService.GetCashPayout(player, baseValue)
+	local data = profiles[player]
+	local _, multiplier = Overcharge.Multipliers(data and data.Overcharges or 0)
+	return math.floor(baseValue * multiplier + 0.000001)
 end
 
 function PlayerDataService.GetTrainingSequence(player)
@@ -93,13 +118,29 @@ function PlayerDataService.Load(player)
 		end
 	end
 	profiles[player] = data
+	-- Backfill existing inventories; discovery remains saved after a core is removed.
+	for _, core in data.StabilizedCores do
+		if CoreDefinitions.Cores[core.Type] then data.DiscoveredCores[core.Type] = true end
+	end
+	for _, key in CoreDefinitions.Order do
+		player:SetAttribute("DiscoveredCore_" .. key, data.DiscoveredCores[key] == true)
+	end
 	trainingSequences[player] = 0
+	progressEpochs[player] = 0
 	publish(player, data)
 	return data
 end
 
 function PlayerDataService.Get(player)
 	return profiles[player]
+end
+
+function PlayerDataService.DiscoverCore(player, key)
+	local data = profiles[player]
+	if not data or not CoreDefinitions.Cores[key] then return false end
+	data.DiscoveredCores[key] = true
+	player:SetAttribute("DiscoveredCore_" .. key, true)
+	return true
 end
 
 function PlayerDataService.AddUnknownCore(player, core)
@@ -157,11 +198,91 @@ function PlayerDataService.SellAllMaterials(player)
 		end
 	end
 	if count == 0 then return 0, 0 end
+	payout = PlayerDataService.GetCashPayout(player, payout)
 	data.Materials = {}
 	data.Cash += payout
 	player:SetAttribute("Cash", data.Cash)
 	player:SetAttribute("BackpackUsed", 0)
 	return payout, count
+end
+
+-- Validate the held Tool against the saved inventory, never its client attributes alone.
+function PlayerDataService.GetHeldStabilizedCore(player)
+	local data = profiles[player]
+	if not data then return nil, "Data not ready." end
+	local tool = player.Character and player.Character:FindFirstChildWhichIsA("Tool")
+	if tool and tool:GetAttribute("IsUnknownCore") then return nil, "Stabilize this Unknown Core before selling it." end
+	if not tool or not tool:GetAttribute("IsStabilizedCore") then return nil, "Hold a stabilized core from your hotbar first." end
+	local id = tool:GetAttribute("CoreId")
+	for _, core in data.StabilizedCores do
+		if core.Id == id and CoreDefinitions.Cores[core.Type] then return core end
+	end
+	return nil, "That core is no longer in your inventory."
+end
+
+function PlayerDataService.SellHeldCore(player, expectedId, expectedMutation, expectedType)
+	local core, reason = PlayerDataService.GetHeldStabilizedCore(player)
+	if not core then return false, reason end
+	if core.Id ~= expectedId then return false, "Your held core changed. Ask for a new price." end
+	if (expectedMutation and CoreDefinitions.MutationKey(core) ~= expectedMutation) or (expectedType and core.Type ~= expectedType) then
+		return false, "Your core changed. Ask for a new price."
+	end
+	local data = profiles[player]
+	local index = table.find(data.StabilizedCores, core)
+	if not index then return false, "That core is no longer in your inventory." end
+	table.remove(data.StabilizedCores, index)
+	local payout = PlayerDataService.GetCashPayout(player, CoreDefinitions.SaleValue(core))
+	data.Cash += payout
+	player:SetAttribute("Cash", data.Cash)
+	player:SetAttribute("StabilizedCoreCount", #data.StabilizedCores)
+	-- Discovery is permanent even when the last copy is sold.
+	PlayerDataService.DiscoverCore(player, core.Type)
+	return true, payout, CoreDefinitions.DisplayName(core)
+end
+
+function PlayerDataService.GetCoreSaleSummary(player)
+	local data = profiles[player]
+	if not data then return nil, "Data not ready." end
+	local summary = {Cores = {}, Count = 0, SellValue = 0, IncomePerSecond = 0}
+	for _, core in data.StabilizedCores do
+		local definition = CoreDefinitions.Cores[core.Type]
+		if definition then
+			table.insert(summary.Cores, {Id = core.Id, Type = core.Type, Mutation = CoreDefinitions.MutationKey(core)})
+			summary.Count += 1
+			summary.SellValue += CoreDefinitions.SaleValue(core)
+			summary.IncomePerSecond += CoreDefinitions.Income(core)
+		end
+	end
+	if summary.Count == 0 then return nil, "You have no stabilized cores to sell." end
+	summary.SellValue = PlayerDataService.GetCashPayout(player, summary.SellValue)
+	return summary
+end
+
+function PlayerDataService.SellAllCores(player, expectedCores)
+	local summary, reason = PlayerDataService.GetCoreSaleSummary(player)
+	if not summary then return false, reason end
+	if #summary.Cores ~= #expectedCores then return false, "Your core inventory changed. Ask for a new price." end
+	local expected = {}
+	for _, core in expectedCores do expected[core.Id] = core end
+	for _, core in summary.Cores do
+		local record = expected[core.Id]
+		if not record or record.Type ~= core.Type or CoreDefinitions.MutationKey(record) ~= core.Mutation then
+			return false, "Your core inventory changed. Ask for a new price."
+		end
+	end
+	local data = profiles[player]
+	for index = #data.StabilizedCores, 1, -1 do
+		local core = data.StabilizedCores[index]
+		local record = expected[core.Id]
+		if record and record.Type == core.Type and CoreDefinitions.MutationKey(record) == CoreDefinitions.MutationKey(core) then
+			table.remove(data.StabilizedCores, index)
+			PlayerDataService.DiscoverCore(player, core.Type)
+		end
+	end
+	data.Cash += summary.SellValue
+	player:SetAttribute("Cash", data.Cash)
+	player:SetAttribute("StabilizedCoreCount", #data.StabilizedCores)
+	return true, summary.SellValue, summary.Count
 end
 
 function PlayerDataService.GetStoragePrice(player)
@@ -200,7 +321,7 @@ function PlayerDataService.BuyUpgrade(player, upgradeName)
 	if not field then return false, "Unknown upgrade" end
 	local price = PlayerDataService.GetUpgradePrice(player, upgradeName)
 	if not price then return false, "Upgrade is maxed" end
-	if data.Cash < price then return false, `Need ${price - data.Cash} more cash` end
+	if data.Cash < price then return false, `Need ${Format.Compact(price - data.Cash)} more cash` end
 	data.Cash -= price
 	data.Upgrades[field] += 1
 	player:SetAttribute("Cash", data.Cash)
@@ -231,8 +352,9 @@ function PlayerDataService.Train(player, sequence)
 	if not data then return false end
 	local weapon = WeaponDefinitions[data.EquippedWeapon]
 	if not weapon then return false end
-	data.Power += weapon.PowerPerClick
-	data.XP += 1
+	local gain = weapon.PowerPerClick * PlayerDataService.GetPowerMultiplier(player)
+	data.Power += gain
+	data.XP += gain
 	while data.XP >= PlayerDataService.GetXPToNextLevel(data.Level) do
 		data.XP -= PlayerDataService.GetXPToNextLevel(data.Level)
 		data.Level += 1
@@ -247,8 +369,8 @@ end
 
 function PlayerDataService.GetDamage(player)
 	local data = profiles[player]
-	if not data then return Config.Damage end
-	return math.max(Config.Damage, data.Power)
+	if not data then return 0 end
+	return math.max(0, data.Power)
 end
 
 function PlayerDataService.BuyOrEquipWeapon(player, weaponName)
@@ -257,8 +379,8 @@ function PlayerDataService.BuyOrEquipWeapon(player, weaponName)
 	local definition = WeaponDefinitions[weaponName]
 	if not definition then return false, "Unknown weapon" end
 	if not data.Weapons[weaponName] then
-		if data.Level < definition.Level then return false, `Reach Level {definition.Level} first` end
-		if data.Cash < definition.Price then return false, `Need ${definition.Price - data.Cash} more cash` end
+		if data.Level < definition.Level then return false, `Reach Level {Format.Compact(definition.Level)} first` end
+		if data.Cash < definition.Price then return false, `Need ${Format.Compact(definition.Price - data.Cash)} more cash` end
 		data.Cash -= definition.Price
 		data.Weapons[weaponName] = true
 		player:SetAttribute("Cash", data.Cash)
@@ -272,6 +394,26 @@ end
 
 function PlayerDataService.BuyOrEquipArcPistol(player)
 	return PlayerDataService.BuyOrEquipWeapon(player, "Arc Pistol")
+end
+
+-- Re-check the expected run and requirements on the server. No yielding during the reset.
+function PlayerDataService.Overcharge(player, expectedCount)
+	local data = profiles[player]
+	if not data then return false, "Data not ready" end
+	if typeof(expectedCount) ~= "number" or expectedCount ~= data.Overcharges then
+		return false, "Your Overcharge changed. Check the new requirements."
+	end
+	local needed = Overcharge.Requirements(data.Overcharges)
+	if data.Level < needed.Level or data.Power < needed.Power or data.Cash < needed.Cash then
+		return false, "Meet all three requirements first."
+	end
+	data.Overcharges += 1
+	for _, field in {"Power", "XP", "Level", "Cash", "Materials", "BackpackCapacity", "EquippedWeapon", "Weapons", "Upgrades", "UnknownCoreCapacity"} do
+		data[field] = deepCopy(Template[field])
+	end
+	progressEpochs[player] = (progressEpochs[player] or 0) + 1
+	publish(player, data)
+	return true, data.Overcharges
 end
 
 function PlayerDataService.Save(player)
@@ -292,6 +434,7 @@ function PlayerDataService.Release(player)
 	profiles[player] = nil
 	canSave[player] = nil
 	trainingSequences[player] = nil
+	progressEpochs[player] = nil
 end
 
 function PlayerDataService.SaveAll()
