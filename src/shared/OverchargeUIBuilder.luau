@@ -106,6 +106,7 @@ function Builder.Build(parent)
 	local celebration = text(gui, "TextLabel", "CelebrationLabel", "OVERCHARGED!", 0.18, 0.34, 0.64, 0.25, Color3.fromRGB(255, 205, 77))
 	celebration.Visible = false
 	Instance.new("UIScale", celebration)
+	require(script.Parent.RebirthMenuStyle).Apply(gui)
 	return gui
 end
 return Builder

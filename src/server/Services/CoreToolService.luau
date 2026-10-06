@@ -68,21 +68,21 @@ function CoreToolService.Sync(player)
 			board.RarityLabel.TextColor3 = Mutations.Variants[Stabilized.MutationKey(core)].Color or Stabilized.Rarities[definition.Rarity]
 			board.IncomeLabel.Text = Stabilized.IncomeText(core)
 			board.Parent = handle
-			handle.Transparency = 1
-			local model = Visuals.Build(core.Type, false, core.Mutation)
-			for _, part in model:GetDescendants() do
-				if not part:IsA("BasePart") then continue end
-				part.Anchored = false
-				part.Name = "CoreVisual"
-				part.Massless = true
-				part.Parent = tool
-				local weld = Instance.new("WeldConstraint")
-				weld.Part0 = handle
-				weld.Part1 = part
-				weld.Parent = part
-			end
-			model:Destroy()
 		end
+		handle.Transparency = 1
+		local model = core.Type and Visuals.Build(core.Type, false, core.Mutation) or Visuals.BuildUnknown(core.Grade)
+		for _, part in model:GetDescendants() do
+			if not part:IsA("BasePart") then continue end
+			part.Anchored = false
+			part.Name = "CoreVisual"
+			part.Massless = true
+			part.Parent = tool
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0 = handle
+			weld.Part1 = part
+			weld.Parent = part
+		end
+		model:Destroy()
 		local light = Instance.new("PointLight")
 		light.Color = definition.Color
 		light.Brightness = 0.7

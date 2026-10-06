@@ -50,6 +50,7 @@ function Reveal.Play(mount, result, parent, template)
 	rise.Value = 0
 	rise.Parent = display
 	local model, shownAt = nil, os.clock()
+	local modelScale = 1
 	local angle, phase = 0, "Cycling"
 	local rings = {}
 	local function tween(item, duration, properties, style)
@@ -78,7 +79,7 @@ function Reveal.Play(mount, result, parent, template)
 		if model then
 			model:PivotTo(CFrame.new(position) * CFrame.Angles(0, angle, phase == "Suspense" and math.sin(os.clock() * 60) * 0.05 or 0))
 			local size = phase == "Cycling" and (0.72 + math.min((os.clock() - shownAt) * 6, 0.28)) or scale.Value
-			model:ScaleTo(math.max(0.05, size))
+			model:ScaleTo(modelScale * math.max(0.05, size))
 		end
 		for _, wave in rings do
 			local center = mount.Position + Vector3.new(0, 2.1, 0)
@@ -96,6 +97,7 @@ function Reveal.Play(mount, result, parent, template)
 	local function show(key, silhouette)
 		if model then model:Destroy() end
 		model = Visuals.Build(key, silhouette, not silhouette and result.Mutation or nil)
+		modelScale = model:GetScale()
 		model.Name = "RollingCore"
 		model:SetAttribute("CoreType", key)
 		model:SetAttribute("Silhouette", silhouette)

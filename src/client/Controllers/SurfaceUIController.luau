@@ -128,7 +128,9 @@ local function toast(message, success)
 end
 
 remote.OnClientEvent:Connect(function(action, first, second)
-	if action == "Sold" then
+	if action == "ReactorCollected" then
+		FeedbackEffects.ShowSale(first, 0, cashLabel.Parent, "REACTOR", "COLLECTED")
+	elseif action == "Sold" then
 		if first > 0 then FeedbackEffects.ShowSale(first, second, cashLabel.Parent)
 		else toast("BAG IS EMPTY", false) end
 	elseif action == "CoresSold" then

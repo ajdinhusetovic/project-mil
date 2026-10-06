@@ -8,3 +8,6 @@ require(script.Controllers.CoreIndexController)
 require(script.Controllers.OverchargeController)
 require(script.Controllers.StabilizerController)
 require(script.Controllers.NPCSellController)
+
+require(script.Controllers.IslandController)
+require(game.ReplicatedStorage.Shared.MenuLayers).Bind(game.Players.LocalPlayer.PlayerGui)

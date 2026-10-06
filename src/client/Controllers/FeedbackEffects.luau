@@ -147,9 +147,9 @@ function FeedbackEffects.ShowCore(text, color)
 	end)
 end
 
-function FeedbackEffects.ShowSale(cash, count, cashTarget, coreName)
+function FeedbackEffects.ShowSale(cash, count, cashTarget, coreName, verb)
 	if cash <= 0 then return end
-	local label = coreName and string.format("SOLD %s  +$%s", string.upper(coreName), Format.Compact(cash)) or string.format("SOLD %s ORE  +$%s", Format.Compact(count), Format.Compact(cash))
+	local label = coreName and string.format("%s %s  +$%s", verb or "SOLD", string.upper(coreName), Format.Compact(cash)) or string.format("SOLD %s ORE  +$%s", Format.Compact(count), Format.Compact(cash))
 	local item, scale = makeText("SaleTemplate", label)
 	if not item then return end
 	item.Position = UDim2.fromScale(0.5, 0.48)

@@ -10,6 +10,7 @@ local WeaponDefinitions = require(ReplicatedStorage.Shared.WeaponDefinitions)
 local Template = require(ReplicatedStorage.Shared.PlayerDataTemplate)
 local CoreDefinitions = require(ReplicatedStorage.Shared.StabilizerDefinitions)
 local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
+local ReactorRules = require(ReplicatedStorage.Shared.ReactorRules)
 
 local PlayerDataService = {}
 local profiles = {}
@@ -117,7 +118,11 @@ function PlayerDataService.Load(player)
 			warn(`Player data load failed for {player.Name}; using unsaved session data: {saved}`)
 		end
 	end
+	ReactorRules.Accrue(data.Reactor, os.time(), true)
 	profiles[player] = data
+	for _, core in data.Reactor.Slots do
+		if CoreDefinitions.Cores[core.Type] then data.DiscoveredCores[core.Type] = true end
+	end
 	-- Backfill existing inventories; discovery remains saved after a core is removed.
 	for _, core in data.StabilizedCores do
 		if CoreDefinitions.Cores[core.Type] then data.DiscoveredCores[core.Type] = true end
@@ -416,10 +421,85 @@ function PlayerDataService.Overcharge(player, expectedCount)
 	return true, data.Overcharges
 end
 
+-- Inventory transfers and earnings mutations stay synchronous and server authoritative.
+function PlayerDataService.GetReactorSnapshot(player)
+	local data = profiles[player]
+	if not data then return nil end
+	ReactorRules.Accrue(data.Reactor, os.time(), false)
+	local function display(core)
+		return {Id = core.Id, Type = core.Type, Mutation = CoreDefinitions.MutationKey(core),
+			Name = CoreDefinitions.Cores[core.Type].Name, Income = CoreDefinitions.Income(core)}
+	end
+	local snapshot = {Installed = {}, Inventory = {}, Capacity = ReactorRules.Capacity,
+		Stored = PlayerDataService.GetCashPayout(player, data.Reactor.Stored),
+		Rate = ReactorRules.Rate(data.Reactor)}
+	local _, cashMultiplier = Overcharge.Multipliers(data.Overcharges)
+	snapshot.CashMultiplier = cashMultiplier
+	snapshot.CashRate = snapshot.Rate * cashMultiplier
+	for _, core in data.Reactor.Slots do
+		if CoreDefinitions.Cores[core.Type] then table.insert(snapshot.Installed, display(core)) end
+	end
+	for _, core in data.StabilizedCores do
+		if CoreDefinitions.Cores[core.Type] then table.insert(snapshot.Inventory, display(core)) end
+	end
+	table.sort(snapshot.Inventory, function(a, b)
+		if a.Income ~= b.Income then return a.Income > b.Income end
+		return a.Id < b.Id
+	end)
+	return snapshot
+end
+function PlayerDataService.ChangeReactor(player, action, id)
+	local data = profiles[player]
+	if not data then return false, "Data not ready." end
+	ReactorRules.Accrue(data.Reactor, os.time(), false)
+	local slots = data.Reactor.Slots
+	if action == "ReactorEquipBest" then
+		local candidates = {}
+		for _, core in slots do table.insert(candidates, {Core = core, Installed = true}) end
+		for _, core in data.StabilizedCores do table.insert(candidates, {Core = core, Installed = false}) end
+		table.sort(candidates, function(a, b)
+			local av, bv = CoreDefinitions.Income(a.Core), CoreDefinitions.Income(b.Core)
+			if av ~= bv then return av > bv end
+			if a.Installed ~= b.Installed then return a.Installed end
+			return a.Core.Id < b.Core.Id
+		end)
+		local installed, stored = {}, {}
+		for index, entry in candidates do
+			table.insert(index <= ReactorRules.Capacity and installed or stored, entry.Core)
+		end
+		data.Reactor.Slots, data.StabilizedCores = installed, stored
+	elseif action == "ReactorInstall" or action == "ReactorRemove" then
+		if typeof(id) ~= "string" then return false, "Select a core." end
+		if action == "ReactorInstall" and #slots >= ReactorRules.Capacity then return false, "Reactor full. Remove a core or use Equip Best." end
+		local source = action == "ReactorInstall" and data.StabilizedCores or slots
+		local destination = action == "ReactorInstall" and slots or data.StabilizedCores
+		local index
+		for i, core in source do if core.Id == id then index = i; break end end
+		if not index then return false, "That core moved. Select it again." end
+		table.insert(destination, table.remove(source, index))
+	else return false, "Unknown reactor action." end
+	player:SetAttribute("StabilizedCoreCount", #data.StabilizedCores)
+	return true
+end
+function PlayerDataService.CollectReactor(player)
+	local data = profiles[player]
+	if not data then return false, "Data not ready." end
+	ReactorRules.Accrue(data.Reactor, os.time(), false)
+	local payout = PlayerDataService.GetCashPayout(player, data.Reactor.Stored)
+	if payout <= 0 then return false, "Let your cores generate some cash first." end
+	local _, multiplier = Overcharge.Multipliers(data.Overcharges)
+	data.Reactor.Stored = math.max(0, data.Reactor.Stored - payout / multiplier)
+	data.Cash += payout
+	player:SetAttribute("Cash", data.Cash)
+	return true, payout
+end
+
 function PlayerDataService.Save(player)
 	local data = profiles[player]
 	if canSave[player] == false then return false end
-	if not data or not shouldUseDataStore() then return true end
+	if not data then return true end
+	ReactorRules.Accrue(data.Reactor, os.time(), false)
+	if not shouldUseDataStore() then return true end
 	local success, message = pcall(function()
 		store:UpdateAsync(`Player_{player.UserId}`, function()
 			return data

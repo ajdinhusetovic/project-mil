@@ -21,6 +21,15 @@ local header = window:WaitForChild("Header")
 local content = window:WaitForChild("Content")
 local upgradePage = content:WaitForChild("UpgradesPage")
 local weaponPage = content:WaitForChild("WeaponsPage")
+local CatalogLayout = require(ReplicatedStorage.Shared.ShopCatalogLayout)
+for _, page in {upgradePage, weaponPage} do
+	local catalog = page:FindFirstChild("Catalog")
+	if catalog then
+		-- Edit-mode bindings don't survive cloning StarterGui into PlayerGui.
+		catalog:SetAttribute("CatalogLayoutBound", nil)
+		CatalogLayout.Bind(catalog)
+	end
+end
 local currentShop = nil
 local pending = false
 
@@ -29,10 +38,26 @@ local upgradeCards = {
 	Chain = upgradePage:FindFirstChild("ChainCard", true),
 	Magnet = upgradePage:FindFirstChild("MagnetCard", true),
 }
+for _, card in upgradeCards do
+	local icon = card and card:FindFirstChild("UpgradeIcon")
+	local fallback = icon and icon:FindFirstChild("FallbackIcon")
+	if fallback then
+		local function updateIcon() fallback.Visible = icon.Image == "" end
+		icon:GetPropertyChangedSignal("Image"):Connect(updateIcon)
+		updateIcon()
+	end
+end
 local weaponCards = {}
 for _, weaponName in Config.WeaponOrder do
 	local definition = Weapons[weaponName]
 	weaponCards[weaponName] = weaponPage:FindFirstChild(definition.CardName, true)
+	local card = weaponCards[weaponName]
+	local icon = card and card:FindFirstChild("WeaponIcon")
+	if icon and icon:FindFirstChild("FallbackIcon") then
+		local function updateIcon() icon.FallbackIcon.Visible = icon.Image == "" end
+		icon:GetPropertyChangedSignal("Image"):Connect(updateIcon)
+		updateIcon()
+	end
 end
 
 local function child(parent, name)
@@ -50,30 +75,42 @@ local function refresh()
 		local details = child(card, "DetailLabel")
 		local button = child(card, "BuyButton")
 		if not details or not button then continue end
-		local upgradeLevel, definition
+		local upgradeLevel, definition, currentValue, nextValue
 		if upgradeName == "Storage" then
 			upgradeLevel = player:GetAttribute("StorageLevel") or 0
 			definition = Config.StorageUpgrade
 			local capacity = player:GetAttribute("BackpackCapacity") or 50
+			currentValue, nextValue = capacity, capacity + definition.CapacityPerLevel
 			details.Text = string.format("BAG CAPACITY  %s  →  %s", Format.Compact(capacity), Format.Compact(capacity + definition.CapacityPerLevel))
 		elseif upgradeName == "Chain" then
 			upgradeLevel = player:GetAttribute("ChainLevel") or 0
 			definition = Config.ChainUpgrade
 			local count = player:GetAttribute("BlastCount") or Config.BlastBlocks
+			currentValue, nextValue = count, count + 1
 			details.Text = string.format("HIT %s  →  %s BLOCKS", Format.Compact(count), Format.Compact(count + 1))
 		else
 			upgradeLevel = player:GetAttribute("MagnetLevel") or 0
 			definition = Config.MagnetUpgrade
 			local range = player:GetAttribute("MagnetRange") or Config.CollectionRange
+			currentValue, nextValue = range, range + definition.RangePerLevel
 			details.Text = string.format("PICKUP RANGE  %s  →  %s STUDS", Format.Compact(range), Format.Compact(range + definition.RangePerLevel))
 		end
-		if upgradeLevel >= definition.MaxLevel then
+		local maxed = upgradeLevel >= definition.MaxLevel
+		if card:FindFirstChild("CurrentValue") then
+			card.CurrentValue.Text = Format.Compact(currentValue)
+			card.NextValue.Text = Format.Compact(maxed and currentValue or nextValue)
+		end
+		if maxed then
 			button.Text = "MAXED"
 			button.Active = false
 		else
 			local price = math.floor(definition.BasePrice * definition.PriceMultiplier ^ upgradeLevel)
-			button.Text = string.format("UPGRADE  •  $%s", Format.Compact(price))
+			button.Text = gui:GetAttribute("ReferenceUpgradeStyle") and "$" .. Format.Compact(price) or string.format("UPGRADE  •  $%s", Format.Compact(price))
 			button.Active = true
+		end
+		if button:FindFirstChild("PriceLabel") then
+			button.PriceLabel.Text = button.Text
+			button.Text = ""
 		end
 	end
 
@@ -84,7 +121,11 @@ local function refresh()
 		local details = child(card, "DetailLabel")
 		local button = child(card, "BuyButton")
 		local status = child(card, "StatusLabel")
-		if details then details.Text = string.format("+%s POWER / CLICK  •  LEVEL %s", Overcharge.Number(definition.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1)), Format.Compact(definition.Level)) end
+		if details then
+			local power = Overcharge.Number(definition.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1))
+			details.Text = gui:GetAttribute("ReferenceWeaponStyle") and "+"..power.." POWER / CLICK"
+				or string.format("+%s POWER / CLICK  •  LEVEL %s",power,Format.Compact(definition.Level))
+		end
 		local owned = player:GetAttribute("OwnsWeapon_" .. definition.Id) == true or weaponName == "Scrap Zapper"
 		if status then status.Text = equipped == weaponName and "EQUIPPED" or "OWNED" end
 		if not button then continue end
@@ -95,11 +136,20 @@ local function refresh()
 			button.Text = "EQUIP"
 			button.Active = true
 		elseif level < definition.Level then
-			button.Text = string.format("UNLOCK AT LEVEL %s", Format.Compact(definition.Level))
+			button.Text = gui:GetAttribute("ReferenceWeaponStyle") and "LOCKED" or string.format("UNLOCK AT LEVEL %s", Format.Compact(definition.Level))
 			button.Active = false
 		else
-			button.Text = string.format("BUY  •  $%s", Format.Compact(definition.Price))
+			button.Text = gui:GetAttribute("ReferenceWeaponStyle") and "$"..Format.Compact(definition.Price) or string.format("BUY  •  $%s", Format.Compact(definition.Price))
 			button.Active = true
+		end
+		if button:FindFirstChild("PriceLabel") then
+			button.PriceLabel.Text = button.Text
+			button.Text = ""
+			local gradient = button:FindFirstChildOfClass("UIGradient")
+			if gradient then
+				gradient.Color = button.Active and ColorSequence.new(Color3.fromRGB(85,255,19),Color3.fromRGB(15,145,1))
+					or ColorSequence.new(Color3.fromRGB(135,139,143),Color3.fromRGB(66,70,76))
+			end
 		end
 	end
 end
@@ -116,8 +166,24 @@ local function open(shopType)
 	shade.Visible = true
 	upgradePage.Visible = shopType == "Upgrades"
 	weaponPage.Visible = shopType == "Weapons"
+	local catalog = (shopType == "Upgrades" and upgradePage or weaponPage):FindFirstChild("Catalog")
+	if catalog then catalog.CanvasPosition = Vector2.zero end
 	header.TitleLabel.Text = shopType == "Upgrades" and "UPGRADES" or "WEAPON SHOP"
-	header.BackgroundColor3 = shopType == "Upgrades" and Color3.fromRGB(169, 66, 255) or Color3.fromRGB(255, 158, 34)
+	if gui:GetAttribute("ReferenceUpgradeStyle") then
+		header.CashLabel.Visible = shopType == "Weapons"
+		header.UpgradeBadge.Visible = shopType == "Upgrades"
+		if header:FindFirstChild("WeaponBadge") then header.WeaponBadge.Visible = shopType == "Weapons" end
+		if gui:GetAttribute("ReferenceWeaponStyle") then
+			header.TitleLabel.Size=UDim2.fromScale(shopType=="Weapons" and .54 or .68,.8)
+		end
+		local gradient = header:FindFirstChildOfClass("UIGradient")
+		if gradient then
+			gradient.Color = shopType == "Upgrades" and ColorSequence.new(Color3.fromRGB(224,255,51),Color3.fromRGB(109,219,26))
+				or ColorSequence.new(Color3.fromRGB(255,204,72),Color3.fromRGB(239,120,25))
+		end
+	else
+		header.BackgroundColor3 = shopType == "Upgrades" and Color3.fromRGB(169, 66, 255) or Color3.fromRGB(255, 158, 34)
+	end
 	refresh()
 end
 

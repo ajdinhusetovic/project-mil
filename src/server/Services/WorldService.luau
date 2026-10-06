@@ -174,6 +174,7 @@ function WorldService.GetWeaponPrompt()
 end
 
 function WorldService.Surface(player)
+	player:SetAttribute("CurrentDestination", "World")
 	local character = player.Character
 	if not character then return end
 	character:PivotTo(CFrame.lookAt(spawnPart.Position + Vector3.new(0, 4, 0), Vector3.new(0, 3, 0)))

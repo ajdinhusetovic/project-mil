@@ -1,5 +1,4 @@
--- Temporary parts shared by hotbar Tools and reveal ViewportFrames.
--- Your friend can supply a Model in ReplicatedStorage.CoreModels named after the core key.
+-- Imported CoreModels are shared by Tools, discoveries, stabilization and previews.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Definitions = require(script.Parent.StabilizerDefinitions)
 local Mutations = require(script.Parent.MutationDefinitions)
@@ -69,7 +68,7 @@ function Visuals.Build(key, silhouette, mutation)
 		end
 	else
 		model = Instance.new("Model")
-		local definition = Definitions.Cores[key]
+		local definition = Definitions.Cores[key] or {Shape = "Ball", Color = Color3.fromRGB(174, 98, 255)}
 		local center = Instance.new("Part")
 		center.Shape = definition.Shape == "Ball" and Enum.PartType.Ball or definition.Shape == "Cylinder" and Enum.PartType.Cylinder or Enum.PartType.Block
 		center.Size = Vector3.one * 2
@@ -86,6 +85,13 @@ function Visuals.Build(key, silhouette, mutation)
 		end
 	end
 	model.Name = key
+	-- Imported PrimaryParts may have an offset pivot; center the display itself.
+	model.PrimaryPart = nil
+	if template and template:IsA("Model") then
+		local size = model:GetExtentsSize()
+		local largest = math.max(size.X, size.Y, size.Z)
+		if largest > 0 then model:ScaleTo(model:GetScale() * 3 / largest) end
+	end
 	for _, item in model:GetDescendants() do
 		if item:IsA("BasePart") then
 			item.Anchored = true
@@ -104,13 +110,25 @@ function Visuals.Build(key, silhouette, mutation)
 		elseif item:IsA("SpecialMesh") and silhouette then item.TextureId = "" end
 	end
 	if not silhouette then applyMutation(model, mutation) end
-	local pivot = model:GetBoundingBox()
-	model:PivotTo(model:GetPivot() - pivot.Position)
+	local bounds = model:GetBoundingBox()
+	model.WorldPivot = CFrame.new(bounds.Position)
+	model:PivotTo(CFrame.new())
 	return model
 end
-function Visuals.Show(viewport, key, silhouette)
+function Visuals.BuildUnknown(grade)
+	local model = Visuals.Build("Unknown", false)
+	local templates = ReplicatedStorage:FindFirstChild("CoreModels")
+	if not (templates and templates:FindFirstChild("Unknown")) then
+		local definition = require(script.Parent.CoreDefinitions)[grade]
+		for _, part in model:GetDescendants() do
+			if part:IsA("BasePart") and definition then part.Color = definition.Color end
+		end
+	end
+	return model
+end
+function Visuals.Show(viewport, key, silhouette, mutation)
 	viewport:ClearAllChildren()
-	local model = Visuals.Build(key, silhouette)
+	local model = Visuals.Build(key, silhouette, mutation)
 	model.Parent = viewport
 	model:PivotTo(CFrame.Angles(0, math.rad(-25), 0))
 	local _, size = model:GetBoundingBox()

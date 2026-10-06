@@ -4,6 +4,7 @@ local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local Config = require(ReplicatedStorage.Shared.Config)
 local Definitions = require(ReplicatedStorage.Shared.CoreDefinitions)
+local Visuals = require(ReplicatedStorage.Shared.CoreVisuals)
 local Feedback = require(script.Parent.FeedbackEffects)
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 local playerGui = player:WaitForChild("PlayerGui")
@@ -28,7 +29,7 @@ end
 local function create(id, position, grade)
 	remove(id)
 	local color = Definitions[grade].Color
-	-- A single placeholder part; custom core models can replace it later.
+	-- Invisible prompt/effect anchor; imported meshes supply the visible core.
 	local part = Instance.new("Part")
 	part.Name = grade .. " Unknown Core"
 	part:SetAttribute("CoreId", id)
@@ -41,7 +42,11 @@ local function create(id, position, grade)
 	part.Material = Enum.Material.Neon
 	part.Color = color
 	part.Position = position
+	part.Transparency = 1
 	part.Parent = folder
+	local visual = Visuals.BuildUnknown(grade)
+	visual.Parent = part
+	visual:PivotTo(part.CFrame)
 	local light = Instance.new("PointLight")
 	light.Color = color
 	light.Range = 10
@@ -70,7 +75,7 @@ local function create(id, position, grade)
 	prompt.RequiresLineOfSight = true
 	prompt.KeyboardKeyCode = Enum.KeyCode.E
 	prompt.Parent = part
-	local drop = {Part = part, Beam = beam, Position = position, Prompt = prompt, PendingUntil = 0}
+	local drop = {Part = part, Visual = visual, Beam = beam, Position = position, Prompt = prompt, PendingUntil = 0}
 	drops[id] = drop
 	prompt.Triggered:Connect(function()
 		if os.clock() < drop.PendingUntil then return end
@@ -105,6 +110,7 @@ RunService.RenderStepped:Connect(function()
 	local now = os.clock()
 	for _, drop in drops do
 		drop.Part.CFrame = CFrame.new(drop.Position + Vector3.new(0, math.sin(now * 3) * 0.25, 0))
+		drop.Visual:PivotTo(drop.Part.CFrame * CFrame.Angles(0, now * 0.5, 0))
 	end
 end)
 if player:GetAttribute("Level") then

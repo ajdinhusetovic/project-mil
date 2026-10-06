@@ -14,12 +14,16 @@ local StabilizerService = require(script.Services.StabilizerService)
 local TrainingService = require(script.Services.TrainingService)
 local CoreSaleService = require(script.Services.CoreSaleService)
 local OverchargeService = require(script.Services.OverchargeService)
+local PlotService = require(script.Services.PlotService)
+local ReactorService = require(script.Services.ReactorService)
 
 local remote = Instance.new("RemoteEvent")
 remote.Name = "MiningDemo"
 remote.Parent = ReplicatedStorage
 CoreService.Initialize(remote)
 WorldService.Initialize()
+PlotService.Initialize()
+ReactorService.Initialize(remote)
 StabilizerService.Initialize(remote)
 CoreSaleService.Initialize(remote)
 
@@ -57,6 +61,7 @@ end
 
 local function setup(player)
 	PlayerDataService.Load(player)
+	ReactorService.Create(player, PlotService.Create(player))
 	StabilizerService.Publish(player)
 	MineService.Create(player)
 	CoreService.Create(player)
@@ -124,6 +129,15 @@ end
 
 remote.OnServerEvent:Connect(function(player, action, target)
 	local now = os.clock()
+	if action == "Teleport" then
+		local success, reason = PlotService.Teleport(player, target)
+		remote:FireClient(player, "TeleportResult", success, reason)
+		return
+	end
+	if action == "ReactorEquipBest" or action == "ReactorInstall" or action == "ReactorRemove" or action == "ReactorCollect" or action == "ReactorClose" then
+		ReactorService.Handle(player, action, target)
+		return
+	end
 	if action == "Overcharge" then OverchargeService.Handle(player, target) return end
 	if action == "QuoteHeldCoreSale" or action == "ConfirmHeldCoreSale" or action == "QuoteAllCoreSale" or action == "ConfirmAllCoreSale" then
 		CoreSaleService.Handle(player, action, target)
@@ -257,8 +271,15 @@ Players.PlayerRemoving:Connect(function(player)
 	StabilizerService.Release(player)
 	CoreSaleService.Release(player)
 	OverchargeService.Release(player)
+	ReactorService.Release(player)
+	PlotService.Release(player)
 	PlayerDataService.Release(player)
 end)
 game:BindToClose(function()
 	PlayerDataService.SaveAll()
+end)
+
+-- Periodic saves also checkpoint reactor earnings for the existing save pipeline.
+task.spawn(function()
+	while true do task.wait(60); PlayerDataService.SaveAll() end
 end)

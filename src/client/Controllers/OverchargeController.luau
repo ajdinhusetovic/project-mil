@@ -11,6 +11,14 @@ local playerGui = player:WaitForChild("PlayerGui")
 local gui = playerGui:FindFirstChild("OverchargeGui") or Builder.Build(playerGui)
 local shade, panel = gui.Shade, gui.Shade.Panel
 local armed, pending, armedCount = false, false, nil
+local styled=gui:GetAttribute("ReferenceRebirthStyle")
+for _,descendant in panel:GetDescendants() do
+	if descendant:IsA("ImageLabel") and descendant:FindFirstChild("FallbackIcon") then
+		local function updateIcon() descendant.FallbackIcon.Visible=descendant.Image=="" end
+		descendant:GetPropertyChangedSignal("Image"):Connect(updateIcon)
+		updateIcon()
+	end
+end
 local green = Color3.fromRGB(128, 255, 121)
 local red = Color3.fromRGB(255, 152, 134)
 local function refresh()
@@ -22,6 +30,12 @@ local function refresh()
 	panel.CountLabel.Text = string.format("%s OVERCHARGES • PERMANENT BONUSES", Format.Compact(count))
 	panel.PowerReward.Text = "POWER " .. Definitions.Number(power) .. "x → " .. Definitions.Number(nextPower) .. "x"
 	panel.CashReward.Text = "CASH " .. Definitions.Number(cash) .. "x → " .. Definitions.Number(nextCash) .. "x"
+	if styled then
+		panel.PowerCurrent.ValueLabel.Text=Definitions.Number(power).."x Power"
+		panel.PowerNext.ValueLabel.Text=Definitions.Number(nextPower).."x Power"
+		panel.CashCurrent.ValueLabel.Text=Definitions.Number(cash).."x Money"
+		panel.CashNext.ValueLabel.Text=Definitions.Number(nextCash).."x Money"
+	end
 	for _, key in {"Level", "Power", "Cash"} do
 		local current = player:GetAttribute(key) or (key == "Level" and 1 or 0)
 		local met = current >= required[key]
@@ -30,6 +44,13 @@ local function refresh()
 		local label = panel[key .. "Requirement"]
 		label.Text = string.upper(key) .. "  " .. prefix .. Definitions.Number(current) .. " / " .. prefix .. Definitions.Number(required[key]) .. (met and "  ✓" or "")
 		label.TextColor3 = met and green or red
+		if styled then
+			label.Text=key..": "..prefix..Definitions.Number(current).." / "..prefix..Definitions.Number(required[key])
+			label.TextColor3=Color3.new(1,1,1)
+			local gradient=panel[key.."RequirementBar"]:FindFirstChildOfClass("UIGradient")
+			gradient.Color=met and ColorSequence.new(Color3.fromRGB(43,210,22),Color3.fromRGB(32,112,11))
+				or ColorSequence.new(Color3.fromRGB(217,73,75),Color3.fromRGB(123,30,43))
+		end
 	end
 	if not ready or armedCount ~= count then armed = false end
 	panel.ConfirmButton.Text = pending and "OVERCHARGING..." or (armed and "CONFIRM RESET" or (ready and "OVERCHARGE" or "REQUIREMENTS NOT MET"))
@@ -37,6 +58,14 @@ local function refresh()
 	panel.ConfirmButton.Active = ready and not pending
 	panel.ConfirmButton.AutoButtonColor = ready and not pending
 	panel.StatusLabel.Text = armed and "This resets your current run. Press again to confirm." or "Cash bonus applies to ore and core sales."
+	if styled then
+		panel.ConfirmButton.ButtonLabel.Text=pending and "Rebirthing..." or armed and "Confirm Rebirth" or "Rebirth"
+		panel.ConfirmButton.Text=""
+		local gradient=panel.ConfirmButton:FindFirstChildOfClass("UIGradient")
+		gradient.Color=ready and ColorSequence.new(Color3.fromRGB(55,245,17),Color3.fromRGB(13,131,4))
+			or ColorSequence.new(Color3.fromRGB(135,139,143),Color3.fromRGB(66,70,76))
+		panel.StatusLabel.Text=armed and "This resets your run. Press again to confirm." or ready and "Ready to rebirth!" or "Meet all three requirements to rebirth"
+	end
 	return ready, count
 end
 local pop
@@ -83,7 +112,7 @@ remote.OnClientEvent:Connect(function(action, success, result)
 	shade.Visible = false
 	local power, cash = Definitions.Multipliers(result)
 	local label = gui.CelebrationLabel
-	label.Text = "OVERCHARGED!\n" .. Definitions.Number(power) .. "x POWER • " .. Definitions.Number(cash) .. "x CASH"
+	label.Text = (styled and "REBIRTH!\n" or "OVERCHARGED!\n") .. Definitions.Number(power) .. "x POWER • " .. Definitions.Number(cash) .. "x CASH"
 	label.Visible = true
 	label.TextTransparency, label.TextStrokeTransparency = 0, 0
 	label.UIScale.Scale = 0.6

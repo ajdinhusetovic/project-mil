@@ -5,6 +5,7 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local Definitions = require(ReplicatedStorage.Shared.StabilizerDefinitions)
 local Unknown = require(ReplicatedStorage.Shared.CoreDefinitions)
+local Visuals = require(ReplicatedStorage.Shared.CoreVisuals)
 local Builder = require(ReplicatedStorage.Shared.StabilizerOddsUIBuilder)
 local WorldUI = require(ReplicatedStorage.Shared.WorldUIBuilder)
 local Reveal = require(script.Parent.StabilizerWorldReveal)
@@ -143,6 +144,9 @@ RunService.RenderStepped:Connect(function(dt)
 			part.Material = Enum.Material.Neon
 			part.CanQuery = false
 			part.Parent = folder
+			local visual = Visuals.BuildUnknown(grade)
+			visual.Name = "UnknownVisual"
+			visual.Parent = part
 			local board = templates.StabilizerStatusBillboard:Clone()
 			board.Name = "Status"
 			board.Parent = part
@@ -152,9 +156,17 @@ RunService.RenderStepped:Connect(function(dt)
 		local localKind = mount == jobMount and kind or "Empty"
 		local rolling = mount == rollingMount
 		part.Status.Enabled = not shade.Visible and not rolling and not (localKind == "Empty" and heldKnown)
-		part.Transparency = (localKind == "Empty" or rolling) and 1 or 0
+		part.Transparency = 1
+		local visual = part.UnknownVisual
+		for _, mesh in visual:GetDescendants() do
+			if mesh:IsA("BasePart") then
+				if mesh:GetAttribute("AuthoredTransparency") == nil then mesh:SetAttribute("AuthoredTransparency", mesh.Transparency) end
+				mesh.Transparency = (localKind == "Empty" or rolling) and 1 or mesh:GetAttribute("AuthoredTransparency")
+			end
+		end
 		part.CanQuery = false
 		part.Position = mount.Position + Vector3.new(0, 1.5 + math.sin(os.clock() * 3) * 0.12, 0)
+		visual:PivotTo(CFrame.new(part.Position) * CFrame.Angles(0, os.clock() * 0.5, 0))
 		part.Color = Unknown[grade] and Unknown[grade].Color or Color3.fromRGB(174, 98, 255)
 		part.Status.TextLabel.Text = "CORE STABILIZER\n" .. (localKind == "Empty" and "Hold a core and press E" or localKind == "Ready" and "READY! Press E to reveal" or string.format("STABILIZING  %d:%02d", math.floor(remaining / 60), remaining % 60))
 		local prompt = mount:FindFirstChild("StabilizerPrompt")
