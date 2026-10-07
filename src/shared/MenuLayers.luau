@@ -1,7 +1,9 @@
 local MenuLayers = {}
+local bindings = setmetatable({}, {__mode = "k"})
 
 -- Keep launch buttons below every open window, including windows in other ScreenGuis.
 function MenuLayers.Bind(parent)
+	if bindings[parent] then bindings[parent](); return bindings[parent] end
 	local watched = {}
 	local function refresh()
 		local open = false
@@ -10,9 +12,10 @@ function MenuLayers.Bind(parent)
 			if gui.Enabled and shade and shade.Visible then open = true end
 			gui.DisplayOrder = gui.Enabled and shade and shade.Visible and 100 or 10
 		end
-		for gui in watched do
+		for _,gui in parent:GetChildren() do
+			if not gui:IsA("ScreenGui") then continue end
 			for _, name in {"IndexButton", "OverchargeButton", "TeleportButton"} do
-				local button = gui:FindFirstChild(name)
+				local button = gui:FindFirstChild(name, true)
 				if button then button.Visible = not open end
 			end
 		end
@@ -29,12 +32,18 @@ function MenuLayers.Bind(parent)
 		end)
 		refresh()
 	end
-	parent.ChildAdded:Connect(function(gui)
+	bindings[parent] = refresh
+	local function attach(gui)
+		if not gui:IsA("ScreenGui") then return end
 		watch(gui)
-		gui.ChildAdded:Connect(function() watch(gui) end)
+		gui.ChildAdded:Connect(function() watch(gui); refresh() end)
+	end
+	parent.ChildAdded:Connect(function(gui)
+		attach(gui)
 	end)
-	for _, gui in parent:GetChildren() do watch(gui) end
+	for _, gui in parent:GetChildren() do attach(gui) end
 	refresh()
+	return refresh
 end
 
 return MenuLayers

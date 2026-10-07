@@ -16,6 +16,14 @@ local prompt = npc:WaitForChild("ProximityPrompt")
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 local DialogModule = require(dialogModuleScript)
 local dialog = DialogModule.new("Ore Buyer", npc, prompt)
+-- A typewriter updates Text on every character; scaling would resize each prefix.
+local dialogueLabel = dialog.npcGui.dialog
+if not dialogueLabel:GetAttribute("FixedDialogueText") then
+	dialogueLabel.TextSize = 28
+	dialogueLabel:SetAttribute("FixedDialogueText", true)
+end
+dialogueLabel.TextScaled = false
+dialogueLabel.TextWrapped = true
 local quote
 local pending = false
 

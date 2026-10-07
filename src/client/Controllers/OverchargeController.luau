@@ -9,6 +9,7 @@ local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 local playerGui = player:WaitForChild("PlayerGui")
 local gui = playerGui:FindFirstChild("OverchargeGui") or Builder.Build(playerGui)
+require(ReplicatedStorage.Shared.RebirthMenuStyle).Button(gui)
 local shade, panel = gui.Shade, gui.Shade.Panel
 local armed, pending, armedCount = false, false, nil
 local styled=gui:GetAttribute("ReferenceRebirthStyle")

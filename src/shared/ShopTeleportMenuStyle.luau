@@ -63,7 +63,29 @@ function Style.Weapons(gui)
 	end
 	catalog.CanvasPosition=Vector2.zero
 end
+function Style.TeleportButton(gui)
+	local button = gui:FindFirstChild("TeleportButton")
+	if not button then return end
+	if not button:IsA("ImageButton") then
+		local replacement = Instance.new("ImageButton")
+		for _, property in {"Name", "Position", "Size", "AnchorPoint", "Rotation", "LayoutOrder",
+			"ZIndex", "Visible", "Active", "Interactable", "Selectable", "AutoButtonColor", "Modal",
+			"SizeConstraint", "AutomaticSize", "BorderSizePixel", "ClipsDescendants"} do
+			replacement[property] = button[property]
+		end
+		for key, value in button:GetAttributes() do replacement:SetAttribute(key, value) end
+		for _, child in button:GetChildren() do child.Parent = replacement end
+		button.Parent = nil
+		replacement.Parent = gui
+		button = replacement
+		button.ScaleType = Enum.ScaleType.Fit
+	end
+	button.BackgroundColor3 = Color3.new(0, 0, 0)
+	button.BackgroundTransparency = 0.4
+	return button
+end
 function Style.Teleport(gui)
+	Style.TeleportButton(gui)
 	local panel=gui.Shade.Panel
 	panel.Size=UDim2.fromScale(.9,.78)
 	surface(panel,Color3.fromRGB(6,20,31),Color3.fromRGB(6,20,31),6)

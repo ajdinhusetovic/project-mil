@@ -35,33 +35,16 @@ function Builder.Build(parent)
 		item.Parent = parentItem
 		return item
 	end
-	local open = text(gui, "TextButton", "OverchargeButton", "", 0.025, 0.58, 0.08, 0.13)
-	open.BackgroundTransparency = 0
-	decorate(open, Color3.fromRGB(245, 120, 39))
+	local open = Instance.new("ImageButton")
+	open.Name = "OverchargeButton"
+	open.Position = UDim2.fromScale(0.025, 0.58)
+	open.Size = UDim2.fromScale(0.08, 0.13)
+	open.ScaleType = Enum.ScaleType.Fit
+	open.Parent = gui
+	decorate(open, Color3.fromRGB(179, 84, 255))
 	Instance.new("UIAspectRatioConstraint", open).AspectRatio = 1
-	local icon = Instance.new("Frame")
-	icon.Name = "BoltIcon"
-	icon.Position = UDim2.fromScale(0.18, 0.06)
-	icon.Size = UDim2.fromScale(0.64, 0.68)
-	icon.BackgroundTransparency = 1
-	icon.Parent = open
-	for layer = 1, 2 do
-		for index, segment in {{0.57, 0.29, 0.18, 0.47, 34}, {0.5, 0.48, 0.44, 0.16, 0}, {0.43, 0.67, 0.18, 0.47, 34}} do
-			local piece = Instance.new("Frame")
-			piece.Name = (layer == 1 and "Outline" or "Fill") .. index
-			piece.AnchorPoint = Vector2.new(0.5, 0.5)
-			piece.Position = UDim2.fromScale(segment[1], segment[2])
-			local extra = layer == 1 and 0.055 or 0
-			piece.Size = UDim2.fromScale(segment[3] + extra, segment[4] + extra)
-			piece.Rotation = segment[5]
-			piece.BackgroundColor3 = layer == 1 and Color3.new(0, 0, 0) or Color3.fromRGB(255, 230, 110)
-			piece.BorderSizePixel = 0
-			piece.ZIndex = layer
-			piece.Parent = icon
-		end
-	end
 	Instance.new("UISizeConstraint", open).MinSize = Vector2.new(48, 48)
-	text(open, "TextLabel", "TitleLabel", "OVERCHARGE", -0.08, 0.78, 1.16, 0.23)
+	text(open, "TextLabel", "TitleLabel", "REBIRTH", -0.08, 0.78, 1.16, 0.23)
 	local shade = Instance.new("Frame")
 	shade.Name = "Shade"
 	shade.Size = UDim2.fromScale(1, 1)

@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Grid = require(ReplicatedStorage.Shared.MineGrid)
+local Visuals = require(ReplicatedStorage.Shared.BlockVisuals)
 local Impact = require(script.Parent.MiningImpactEffects)
 
 local MineRenderer = {}
@@ -24,7 +25,8 @@ local function reveal(x, depth, z)
 	block.Anchored = true
 	block.Size = Vector3.one * (Config.BlockSize - 0.06)
 	block.Position = Grid.Position(x, depth, z)
-	block.Color = Grid.Color(x, depth, z)
+	local material = Grid.Material(x, depth, z)
+	block.Color = material.Color
 	block.Material = Enum.Material.SmoothPlastic
 	block.TopSurface = Enum.SurfaceType.Smooth
 	block.BottomSurface = Enum.SurfaceType.Smooth
@@ -32,6 +34,8 @@ local function reveal(x, depth, z)
 	block:SetAttribute("Health", healthById[id] or layer.Health)
 	block:SetAttribute("MaxHealth", layer.Health)
 	block:SetAttribute("Layer", layer.Name)
+	block:SetAttribute("MaterialName", material.Name)
+	Visuals.Attach(block, material.Name)
 	byId[id] = block
 	block.Parent = folder
 end
@@ -57,8 +61,9 @@ function MineRenderer.SetHealth(id, health)
 	healthById[id] = health
 	local block = byId[id]
 	if block then
+		local previous = block:GetAttribute("Health")
 		block:SetAttribute("Health", health)
-		Impact.Hit(block, health)
+		Impact.Hit(block, health, previous - health)
 	end
 end
 
@@ -69,6 +74,7 @@ function MineRenderer.Break(id)
 	local block = byId[id]
 	byId[id] = nil
 	if block then
+		Impact.Finish(block)
 		Impact.Clear(block)
 		block:Destroy()
 	end

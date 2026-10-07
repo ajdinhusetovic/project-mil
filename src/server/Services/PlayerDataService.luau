@@ -11,6 +11,7 @@ local Template = require(ReplicatedStorage.Shared.PlayerDataTemplate)
 local CoreDefinitions = require(ReplicatedStorage.Shared.StabilizerDefinitions)
 local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
 local ReactorRules = require(ReplicatedStorage.Shared.ReactorRules)
+local IndexRewards = require(ReplicatedStorage.Shared.IndexRewards)
 
 local PlayerDataService = {}
 local profiles = {}
@@ -42,9 +43,12 @@ end
 
 local function publish(player, data)
 	local powerMultiplier, cashMultiplier = Overcharge.Multipliers(data.Overcharges)
+	cashMultiplier *= 1 + IndexRewards.Bonus(IndexRewards.Count(data.DiscoveredCores))
 	player:SetAttribute("Overcharges", data.Overcharges)
 	player:SetAttribute("PowerMultiplier", powerMultiplier)
 	player:SetAttribute("CashMultiplier", cashMultiplier)
+	player:SetAttribute("IndexDiscoveredCount",IndexRewards.Count(data.DiscoveredCores))
+	player:SetAttribute("IndexCashBonus",IndexRewards.Bonus(IndexRewards.Count(data.DiscoveredCores)))
 	player:SetAttribute("StabilizedCoreCount", #data.StabilizedCores)
 	player:SetAttribute("Power", data.Power)
 	player:SetAttribute("XP", data.XP)
@@ -88,9 +92,14 @@ function PlayerDataService.GetPowerMultiplier(player)
 	return Overcharge.Multipliers(data and data.Overcharges or 0)
 end
 
-function PlayerDataService.GetCashPayout(player, baseValue)
+function PlayerDataService.GetCashMultiplier(player)
 	local data = profiles[player]
 	local _, multiplier = Overcharge.Multipliers(data and data.Overcharges or 0)
+	return multiplier * (1 + IndexRewards.Bonus(IndexRewards.Count(data and data.DiscoveredCores or {})))
+end
+
+function PlayerDataService.GetCashPayout(player, baseValue)
+	local multiplier=PlayerDataService.GetCashMultiplier(player)
 	return math.floor(baseValue * multiplier + 0.000001)
 end
 
@@ -145,6 +154,10 @@ function PlayerDataService.DiscoverCore(player, key)
 	if not data or not CoreDefinitions.Cores[key] then return false end
 	data.DiscoveredCores[key] = true
 	player:SetAttribute("DiscoveredCore_" .. key, true)
+	local count=IndexRewards.Count(data.DiscoveredCores)
+	player:SetAttribute("IndexDiscoveredCount",count)
+	player:SetAttribute("IndexCashBonus",IndexRewards.Bonus(count))
+	player:SetAttribute("CashMultiplier",PlayerDataService.GetCashMultiplier(player))
 	return true
 end
 
@@ -433,7 +446,7 @@ function PlayerDataService.GetReactorSnapshot(player)
 	local snapshot = {Installed = {}, Inventory = {}, Capacity = ReactorRules.Capacity,
 		Stored = PlayerDataService.GetCashPayout(player, data.Reactor.Stored),
 		Rate = ReactorRules.Rate(data.Reactor)}
-	local _, cashMultiplier = Overcharge.Multipliers(data.Overcharges)
+	local cashMultiplier = PlayerDataService.GetCashMultiplier(player)
 	snapshot.CashMultiplier = cashMultiplier
 	snapshot.CashRate = snapshot.Rate * cashMultiplier
 	for _, core in data.Reactor.Slots do
@@ -487,7 +500,7 @@ function PlayerDataService.CollectReactor(player)
 	ReactorRules.Accrue(data.Reactor, os.time(), false)
 	local payout = PlayerDataService.GetCashPayout(player, data.Reactor.Stored)
 	if payout <= 0 then return false, "Let your cores generate some cash first." end
-	local _, multiplier = Overcharge.Multipliers(data.Overcharges)
+	local multiplier = PlayerDataService.GetCashMultiplier(player)
 	data.Reactor.Stored = math.max(0, data.Reactor.Stored - payout / multiplier)
 	data.Cash += payout
 	player:SetAttribute("Cash", data.Cash)

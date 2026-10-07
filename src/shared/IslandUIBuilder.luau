@@ -90,7 +90,13 @@ function Builder.Build(parent)
 		local gui,panel=window(parent,"TeleportGui","TELEPORT",Color3.fromRGB(53,174,255))
 		teleport=gui
 		panel.Size=UDim2.fromScale(0.78,0.7)
-		local open=button(gui,"TeleportButton","GO",0.865,0.17,0.1,0.1,Color3.fromRGB(53,174,255))
+		local open=Instance.new("ImageButton")
+		open.Name="TeleportButton"
+		open.Position,open.Size=UDim2.fromScale(0.865,0.17),UDim2.fromScale(0.1,0.1)
+		open.ScaleType=Enum.ScaleType.Fit
+		open.Parent=gui
+		style(open,Color3.new(0,0,0))
+		open.BackgroundTransparency=0.4
 		Instance.new("UIAspectRatioConstraint",open).AspectRatio=1
 		Instance.new("UISizeConstraint",open).MinSize=Vector2.new(48,48)
 		text(open,"TextLabel","TitleLabel","TELEPORT",-0.12,0.78,1.24,0.24)

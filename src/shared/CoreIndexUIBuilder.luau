@@ -130,6 +130,7 @@ function Builder.Build(parent)
 		label(card, "IncomeLabel", "UNDISCOVERED", UDim2.fromScale(0.04, 0.86), UDim2.fromScale(0.92, 0.1))
 	end
 	label(panel, "HintLabel", "STABILIZE UNKNOWN CORES TO DISCOVER THEM!", UDim2.fromScale(0.04, 0.93), UDim2.fromScale(0.92, 0.045))
+	require(script.Parent.IndexMenuStyle).Apply(gui)
 	return gui
 end
 return Builder

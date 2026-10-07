@@ -10,6 +10,7 @@ local Visuals=require(ReplicatedStorage.Shared.CoreVisuals)
 local player=Players.LocalPlayer
 local remote=ReplicatedStorage:WaitForChild("MiningDemo")
 local teleport,reactor=Builder.Build(player:WaitForChild("PlayerGui"))
+require(ReplicatedStorage.Shared.ShopTeleportMenuStyle).TeleportButton(teleport)
 local tp,rp=teleport.Shade.Panel,reactor.Shade.Panel
 local snapshot
 local teleportPending=false

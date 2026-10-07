@@ -37,6 +37,13 @@ end
 
 template("PowerTemplate", "+1 POWER", 0.4, Color3.fromRGB(255, 208, 49), 38)
 template("OreTemplate", "x5  COPPER ORE", 0.52, Color3.fromRGB(98, 241, 255), 34)
-template("SaleTemplate", "SOLD 5 ORE  +$25", 0.65, Color3.fromRGB(94, 255, 108), 39)
+template("SaleTemplate", "+25$", 0.65, Color3.fromRGB(94, 255, 108), 39)
+local sale = gui.SaleTemplate
+sale.TextStrokeTransparency = 1
+local stroke = Instance.new("UIStroke")
+stroke.Thickness, stroke.Color = 3, Color3.new(0,0,0)
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+stroke.StrokeSizingMode = Enum.StrokeSizingMode.FixedSize
+stroke.Parent = sale
 
 print("Created StarterGui.FeedbackHUD with editable Power, Ore, and Sale text templates.")

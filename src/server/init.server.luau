@@ -104,7 +104,7 @@ local function blastBlocks(player, id)
 	remote:FireClient(player, "Blast", center, Grid.Color(x, depth, z))
 	for _, victimId in victims do
 		local vx, vd, vz = Grid.Coordinates(victimId)
-		remote:FireClient(player, "Break", Grid.Position(vx, vd, vz), Grid.Color(vx, vd, vz), victimId)
+		remote:FireClient(player, "Break", Grid.Position(vx, vd, vz), Grid.Material(vx, vd, vz).Color, victimId)
 		createMaterialDrop(player, victimId)
 		CoreService.TryDiscover(player, victimId)
 	end

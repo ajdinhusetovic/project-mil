@@ -11,6 +11,7 @@ local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 local MineRenderer = require(script.Parent.MineRenderer)
 local FeedbackEffects = require(script.Parent.FeedbackEffects)
 local Impact = require(script.Parent.MiningImpactEffects)
+local BlockVisuals = require(ReplicatedStorage.Shared.BlockVisuals)
 local TrainingFeedback = require(script.Parent.TrainingFeedback)
 local touchInput = require(script.Parent.TouchMiningInput).new()
 local MobileBuilder = require(ReplicatedStorage.Shared.MobileMiningUIBuilder)
@@ -280,7 +281,7 @@ for _ = 1, 96 do
 	p.CanQuery = false
 	p.Size = Vector3.one * 0.45
 	p.Transparency = 1
-	p.Material = Enum.Material.Neon
+	p.Material = Enum.Material.Slate
 	p.Parent = effects
 	table.insert(pool, p)
 end
@@ -317,6 +318,7 @@ end
 local function recycleMaterialDrop(index)
 	local drop = materialDrops[index]
 	drop.Part.Transparency = 1
+	if drop.Visual then drop.Visual:Destroy() end
 	table.insert(materialPool, drop.Part)
 	table.remove(materialDrops, index)
 end
@@ -377,10 +379,17 @@ remote.OnClientEvent:Connect(function(action, first, second, third, fourth)
 		chunk.Color = third
 		chunk.Transparency = 0
 		chunk.Position = second
+		local visual = BlockVisuals.Build(fourth, 1.1)
+		if visual then
+			visual:PivotTo(chunk.CFrame)
+			visual.Parent = effects
+			chunk.Transparency = 1
+		end
 		local direction = Vector3.new(rng:NextNumber(-1, 1), rng:NextNumber(0.65, 1), rng:NextNumber(-1, 1)).Unit
 		table.insert(materialDrops, {
 			Id = first,
 			Part = chunk,
+			Visual = visual,
 			Position = second,
 			Velocity = direction * rng:NextNumber(10, 17),
 			Age = 0,
@@ -422,7 +431,8 @@ remote.OnClientEvent:Connect(function(action, first, second, third, fourth)
 	for _ = 1, 12 do
 		local p = table.remove(pool)
 		if not p then break end
-		p.Color = color:Lerp(cyan, 0.3)
+		p.Color = color:Lerp(Color3.fromRGB(76, 84, 93), rng:NextNumber(0, 0.35))
+		p.Size = Vector3.one * rng:NextNumber(0.25, 0.7)
 		p.Transparency = 0
 		p.Position = position + jitter(1.6)
 		table.insert(fragments, { Part = p, Position = p.Position, Velocity = jitter(15) + Vector3.new(0, 14, 0), Age = 0 })
@@ -442,13 +452,13 @@ RunService.RenderStepped:Connect(function(dt)
 	crosshair.Visible = centerAim and equipped and not (touchInput.Active and not touchInput.CenterAim) or false
 	local target, hitPosition
 	if equipped then target, hitPosition = resolveTarget() end
-	selection.Adornee = target
+	selection.Adornee = target and (target:FindFirstChild("BlockVisual") or target)
 	selection.FillTransparency = held and 0.55 or 0.9
 	if target then
 		local damage = 1 - target:GetAttribute("Health") / target:GetAttribute("MaxHealth")
 		selection.FillColor = cyan:Lerp(Color3.new(1, 1, 1), damage)
 		selection.FillTransparency = held and (0.72 - damage * 0.25 + math.sin(os.clock() * 24) * 0.09) or 0.9
-		healthText.Text = string.format("%s  •  %s / %s", target:GetAttribute("Layer"), Format.Compact(target:GetAttribute("Health")), Format.Compact(target:GetAttribute("MaxHealth")))
+		healthText.Text = string.format("%s  •  %s / %s", target:GetAttribute("MaterialName") or target:GetAttribute("Layer"), Format.Compact(target:GetAttribute("Health")), Format.Compact(target:GetAttribute("MaxHealth")))
 	else
 		healthText.Text = ""
 	end
@@ -510,7 +520,8 @@ RunService.RenderStepped:Connect(function(dt)
 				drop.Position = drop.RestPosition + Vector3.new(0, math.sin(drop.Age * 4) * 0.22, 0)
 			end
 		end
-		drop.Part.CFrame = CFrame.new(drop.Position) * CFrame.Angles(drop.Age * 3, drop.Age * 5, drop.Age * 2)
+		drop.Part.CFrame = CFrame.new(drop.Position) * CFrame.Angles(math.sin(drop.Age * 3) * 0.2, drop.Age * 3, 0)
+		if drop.Visual then drop.Visual:PivotTo(drop.Part.CFrame) end
 	end
 end)
 

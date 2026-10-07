@@ -9,6 +9,30 @@ local function box(parent,name,x,y,w,h,top,bottom)
 	studs(frame,12,3)
 	return frame
 end
+-- Keep the existing name and authored layout so menu bindings remain compatible.
+function Style.Button(gui)
+	local button = gui:FindFirstChild("OverchargeButton")
+	if not button then return end
+	if not button:IsA("ImageButton") then
+		local replacement = Instance.new("ImageButton")
+		for _, property in {"Name", "Position", "Size", "AnchorPoint", "Rotation", "LayoutOrder",
+			"ZIndex", "Visible", "Active", "Interactable", "Selectable", "AutoButtonColor", "Modal", "SizeConstraint", "AutomaticSize", "BackgroundColor3",
+			"BackgroundTransparency", "BorderSizePixel", "ClipsDescendants"} do
+			replacement[property] = button[property]
+		end
+		for key, value in button:GetAttributes() do replacement:SetAttribute(key, value) end
+		for _, child in button:GetChildren() do child.Parent = replacement end
+		button.Parent = nil
+		replacement.Parent = gui
+		button = replacement
+		button.ScaleType = Enum.ScaleType.Fit
+	end
+	local bolt = button:FindFirstChild("BoltIcon")
+	if bolt then bolt.Visible = false end
+	local title = button:FindFirstChild("TitleLabel")
+	if title then title.Text = "REBIRTH" end
+	return button
+end
 function Style.Apply(gui)
 	gui:SetAttribute("ReferenceRebirthStyle",true)
 	local panel=gui.Shade.Panel
@@ -63,7 +87,7 @@ function Style.Apply(gui)
 	surface(confirm,Color3.fromRGB(55,245,17),Color3.fromRGB(13,131,4),4)
 	studs(confirm,20,3)
 	label(confirm,"ButtonLabel","Rebirth",.04,.05,.92,.9).ZIndex=12
-	gui.OverchargeButton.TitleLabel.Text="REBIRTH"
+	Style.Button(gui)
 	return gui
 end
 return Style

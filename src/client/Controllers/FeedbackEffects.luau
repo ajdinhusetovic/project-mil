@@ -49,7 +49,19 @@ local function makeText(templateName, value, color)
 	item.Text = value
 	if color then item.TextColor3 = color end
 	item.TextTransparency = 0
-	item.TextStrokeTransparency = 0
+	item.TextStrokeTransparency = templateName == "SaleTemplate" and 1 or 0
+	if templateName == "SaleTemplate" then
+		local stroke = item:FindFirstChildOfClass("UIStroke")
+		if not stroke then
+			stroke = Instance.new("UIStroke")
+			stroke.Thickness = 3
+			stroke.StrokeSizingMode = Enum.StrokeSizingMode.FixedSize
+			stroke.Color = Color3.new(0, 0, 0)
+			stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+			stroke.Parent = item
+		end
+		stroke.Transparency = 0
+	end
 	item.Visible = true
 	item.Parent = gui
 	local scale = Instance.new("UIScale")
@@ -149,7 +161,7 @@ end
 
 function FeedbackEffects.ShowSale(cash, count, cashTarget, coreName, verb)
 	if cash <= 0 then return end
-	local label = coreName and string.format("%s %s  +$%s", verb or "SOLD", string.upper(coreName), Format.Compact(cash)) or string.format("SOLD %s ORE  +$%s", Format.Compact(count), Format.Compact(cash))
+	local label = "+" .. Format.Compact(cash) .. "$"
 	local item, scale = makeText("SaleTemplate", label)
 	if not item then return end
 	item.Position = UDim2.fromScale(0.5, 0.48)
@@ -157,7 +169,16 @@ function FeedbackEffects.ShowSale(cash, count, cashTarget, coreName, verb)
 	TweenService:Create(scale, TweenInfo.new(0.24, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	task.delay(0.46, function()
 		if not item.Parent then return end
+		if not cashTarget or not cashTarget.Parent then
+			fadeText(item, 0.4)
+			local stroke=item:FindFirstChildOfClass("UIStroke")
+			if stroke then TweenService:Create(stroke,TweenInfo.new(.4),{Transparency=1}):Play() end
+			task.delay(.42,function() item:Destroy() end)
+			return
+		end
 		local center = cashTarget.AbsolutePosition + cashTarget.AbsoluteSize / 2
+		local stroke = item:FindFirstChildOfClass("UIStroke")
+		if stroke then TweenService:Create(stroke,TweenInfo.new(.72,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Transparency=1}):Play() end
 		local tween = TweenService:Create(item, TweenInfo.new(0.72, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
 			Position = UDim2.fromOffset(center.X, center.Y),
 			TextTransparency = 1,

@@ -1,6 +1,7 @@
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
+local Format = require(game:GetService("ReplicatedStorage").Shared.NumberFormat)
 
 local Impact = {}
 local cyan = Color3.fromRGB(115, 240, 255)
@@ -37,6 +38,8 @@ local function clear(block)
 	local entry = damaged[block]
 	if not entry then return end
 	if entry.Tween then entry.Tween:Cancel() end
+	if entry.RecoilTween then entry.RecoilTween:Cancel() end
+	if entry.Visual and entry.Visual.Parent then entry.Visual:ScaleTo(entry.BaseScale) end
 	entry.Folder:Destroy()
 	damaged[block] = nil
 	local index = table.find(order, block)
@@ -79,22 +82,106 @@ local function makeCracks(block)
 		end
 	end
 	local glow = Instance.new("Highlight")
-	glow.Adornee = block
+	glow.Adornee = block:FindFirstChild("BlockVisual") or block
 	glow.FillColor = cyan
 	glow.OutlineColor = cyan
 	glow.DepthMode = Enum.HighlightDepthMode.Occluded
 	glow.OutlineTransparency = 1
 	glow.Parent = container
-	local entry = {Folder = container, Lines = lines, Glow = glow}
+	local visual = block:FindFirstChild("BlockVisual")
+	local recoil = Instance.new("NumberValue")
+	recoil.Value = 1
+	recoil.Parent = container
+	local entry = {Folder = container, Lines = lines, Glow = glow, Recoil = recoil,
+		Visual = visual, BaseScale = visual and visual:GetScale()}
+	if visual then
+		recoil.Changed:Connect(function(value)
+			if visual.Parent then visual:ScaleTo(entry.BaseScale * value) end
+		end)
+	end
 	damaged[block] = entry
 	table.insert(order, block)
 	if #order > 24 then clear(order[1]) end
 	return entry
 end
 
-function Impact.Hit(block, health)
+-- Bounded world-space damage text and spark anchors, including chain hits.
+local numbers, emitters = {}, {}
+for _ = 1, 24 do
+	local anchor = Instance.new("Part")
+	anchor.Name = "DamageNumber"
+	anchor.Anchored, anchor.CanCollide, anchor.CanTouch, anchor.CanQuery = true, false, false, false
+	anchor.Transparency, anchor.Size = 1, Vector3.one * 0.1
+	anchor.Parent = folder
+	local board = Instance.new("BillboardGui")
+	board.Size = UDim2.fromScale(3.5, 1.1)
+	board.AlwaysOnTop, board.Enabled, board.MaxDistance = false, false, 65
+	board.Parent = anchor
+	local text = Instance.new("TextLabel")
+	text.Size, text.BackgroundTransparency = UDim2.fromScale(1, 1), 1
+	text.Font, text.TextScaled, text.TextStrokeTransparency = Enum.Font.FredokaOne, true, 0
+	text.Parent = board
+	table.insert(numbers, {Anchor = anchor, Board = board, Text = text})
+end
+for _ = 1, 12 do
+	local anchor = Instance.new("Part")
+	anchor.Name = "HitSparks"
+	anchor.Anchored, anchor.CanCollide, anchor.CanTouch, anchor.CanQuery = true, false, false, false
+	anchor.Transparency, anchor.Size = 1, Vector3.one * 0.1
+	anchor.Parent = folder
+	local emitter = Instance.new("ParticleEmitter")
+	emitter.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+	emitter.Rate, emitter.LightEmission = 0, 1
+	emitter.Lifetime, emitter.Speed = NumberRange.new(.12, .28), NumberRange.new(4, 9)
+	emitter.SpreadAngle, emitter.Drag = Vector2.new(180,180), 7
+	emitter.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.22),NumberSequenceKeypoint.new(1,0)})
+	emitter.Parent = anchor
+	table.insert(emitters, {Anchor = anchor, Emitter = emitter})
+end
+local function impactPosition(block)
+	local camera = workspace.CurrentCamera
+	local direction = camera and camera.CFrame.Position - block.Position or Vector3.yAxis
+	if direction.Magnitude < .01 then direction = Vector3.yAxis end
+	direction = direction.Unit
+	local edge = math.max(math.abs(direction.X), math.abs(direction.Y), math.abs(direction.Z))
+	return block.Position + direction * (block.Size.X * .5 / edge + .12)
+end
+local function damageNumber(block, amount, finishing)
+	if not amount or amount <= 0 then return end
+	local camera = workspace.CurrentCamera
+	if not camera or (camera.CFrame.Position - block.Position).Magnitude > 65 then return end
+	local item = table.remove(numbers)
+	if not item then return end
+	item.Anchor.Position = impactPosition(block) + Vector3.new(rng:NextNumber(-.5,.5), .3, 0)
+	item.Text.Text = "−" .. Format.Compact(amount)
+	item.Text.TextColor3 = finishing and Color3.fromRGB(255,230,118) or Color3.fromRGB(220,252,255)
+	item.Text.TextTransparency, item.Text.TextStrokeTransparency = 0, 0
+	item.Board.Enabled = true
+	TweenService:Create(item.Anchor, TweenInfo.new(.48, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{Position = item.Anchor.Position + Vector3.new(0, 1.8, 0)}):Play()
+	local fade = TweenService:Create(item.Text, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, .18),
+		{TextTransparency = 1, TextStrokeTransparency = 1})
+	fade.Completed:Once(function() item.Board.Enabled = false; table.insert(numbers, item) end)
+	fade:Play()
+end
+function Impact.Finish(block)
+	damageNumber(block, block:GetAttribute("Health"), true)
+end
+function Impact.Hit(block, health, amount)
 	local entry = damaged[block] or makeCracks(block)
 	local damage = math.clamp(1 - health / block:GetAttribute("MaxHealth"), 0, 1)
+	damageNumber(block, amount, false)
+	if entry.RecoilTween then entry.RecoilTween:Cancel() end
+	entry.Recoil.Value = .965
+	entry.RecoilTween = TweenService:Create(entry.Recoil, TweenInfo.new(.16, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Value = 1})
+	entry.RecoilTween:Play()
+	local spark = table.remove(emitters)
+	if spark then
+		spark.Anchor.Position = impactPosition(block)
+		spark.Emitter.Color = ColorSequence.new(block.Color:Lerp(cyan,.5), Color3.new(1,1,1))
+		spark.Emitter:Emit(5)
+		task.delay(.35,function() table.insert(emitters,spark) end)
+	end
 	for _, crack in entry.Lines do
 		crack.Line.Visible = crack.Stage <= math.ceil(damage * #points)
 		crack.Line.BackgroundTransparency = 0.35 * (1 - damage)
