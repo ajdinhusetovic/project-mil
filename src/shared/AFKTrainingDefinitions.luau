@@ -1,6 +1,6 @@
 -- Rebirth requirements and rewards can be tuned here without changing the stations.
 local Definitions = {
-	Interval = 1,
+	Interval = 0.5,
 	Stations = {
 		{ Id = "Starter", Rebirths = 0, Multiplier = 1, Color = Color3.fromRGB(83, 218, 255) },
 		{ Id = "Charged", Rebirths = 2, Multiplier = 1.5, Color = Color3.fromRGB(184, 104, 255) },

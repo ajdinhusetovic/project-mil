@@ -45,7 +45,9 @@ Overcharge: paste `studio/build_overcharge_gui.lua` in Edit mode. Edit `StarterG
 `build_afk_training.lua` creates `Workspace.AFKTrainingStations` in Edit mode.
 Move a whole station Model to move its invisible `Zone` trigger along with it.
 Signs are editable under `ChargeBlock.StationSign` (scale-based BillboardGui).
-`Title` is authored; `Requirement` and `Rate` update per player at runtime.
+`Title` is authored; `Requirement` updates per player at runtime.
+Rewards pulse every 0.5 seconds. The old Power + XP rate label is removed,
+including from existing stations when the builder runs.
 Tune unlocks/multipliers in `src/shared/AFKTrainingDefinitions.luau`.
 Tune the level curve and block-break rewards in `src/shared/Config.luau`.
 Players gain both power and XP; manual clicks cannot stack with unlocked AFK stations.

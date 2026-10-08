@@ -31,10 +31,11 @@ local ok, err = pcall(function()
 	enter("Starter")
 	assert(not AFK.Step(player, now), "Entry must wait for the first pulse")
 	assert(player:GetAttribute("AFKStation") == "Starter")
-	assert(not AFK.Step(player, now + 0.5))
-	local success, gain = AFK.Step(player, now + 1)
+	assert(Definitions.Interval == 0.5)
+	assert(not AFK.Step(player, now + 0.25))
+	local success, gain = AFK.Step(player, now + 0.5)
 	assert(success and gain == 1 and profile.Power == 1 and profile.XP == 1)
-	for _ = 1, 20 do assert(not AFK.Step(player, now + 1)) end
+	for _ = 1, 20 do assert(not AFK.Step(player, now + 0.5)) end
 	assert(profile.Power == 1, "Repeated checks must not duplicate rewards")
 	local sequence = Data.GetTrainingSequence(player) + 1
 	Training.Handle(player, { Epoch = Data.GetProgressEpoch(player), Sequence = sequence })

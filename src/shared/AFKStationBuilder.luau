@@ -3,7 +3,15 @@ local Builder = {}
 
 function Builder.Build(parent)
 	local existing = parent:FindFirstChild("AFKTrainingStations")
-	if existing then return existing end
+	if existing then
+		for _, model in existing:GetChildren() do
+			local block = model:FindFirstChild("ChargeBlock")
+			local sign = block and block:FindFirstChild("StationSign")
+			local rate = sign and sign:FindFirstChild("Rate")
+			if rate then rate:Destroy() end
+		end
+		return existing
+	end
 	local folder = Instance.new("Folder")
 	folder.Name = "AFKTrainingStations"
 	local function part(model, name, size, position, color, material, collide)
@@ -56,7 +64,6 @@ function Builder.Build(parent)
 		sign.Parent = block
 		label(sign, "Title", 0, 0.35, tostring(definition.Multiplier) .. "× AFK TRAINING", definition.Color)
 		label(sign, "Requirement", 0.37, 0.27, definition.Rebirths == 0 and "UNLOCKED" or tostring(definition.Rebirths) .. " REBIRTHS", Color3.new(1, 1, 1))
-		label(sign, "Rate", 0.69, 0.28, "POWER + XP EVERY SECOND", Color3.fromRGB(255, 226, 94))
 		model.Parent = folder
 	end
 	folder.Parent = parent

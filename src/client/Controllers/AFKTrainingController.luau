@@ -4,8 +4,6 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Definitions = require(ReplicatedStorage.Shared.AFKTrainingDefinitions)
-local Weapons = require(ReplicatedStorage.Shared.WeaponDefinitions)
-local Format = require(ReplicatedStorage.Shared.NumberFormat)
 local Feedback = require(script.Parent.FeedbackEffects)
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
@@ -22,22 +20,16 @@ end
 
 local function refresh()
 	local rebirths = player:GetAttribute("Overcharges") or 0
-	local weapon = Weapons[player:GetAttribute("EquippedWeapon")] or Weapons["Scrap Zapper"]
 	for model, entry in entries do
 		if model.Parent then
 			local definition = entry.Definition
 			local sign = entry.Block:FindFirstChild("StationSign")
 			local unlocked = rebirths >= definition.Rebirths
 			local requirement = sign and sign:FindFirstChild("Requirement")
-			local rate = sign and sign:FindFirstChild("Rate")
 			if requirement then
 				requirement.Text = unlocked and (player:GetAttribute("AFKStation") == definition.Id and "⚡ TRAINING ⚡" or "UNLOCKED • STAND HERE")
 					or tostring(definition.Rebirths) .. " REBIRTHS TO UNLOCK"
 				requirement.TextColor3 = unlocked and Color3.fromRGB(116, 255, 87) or Color3.fromRGB(255, 107, 107)
-			end
-			if rate then
-				local gain = weapon.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1) * definition.Multiplier / Definitions.Interval
-				rate.Text = "+" .. Format.Compact(gain) .. " POWER + XP / SEC"
 			end
 		end
 	end
@@ -46,7 +38,7 @@ end
 for _, model in folder:GetChildren() do register(model) end
 folder.ChildAdded:Connect(function(model) register(model); refresh() end)
 folder.ChildRemoved:Connect(function(model) entries[model] = nil end)
-for _, attribute in { "Overcharges", "EquippedWeapon", "PowerMultiplier", "AFKStation" } do
+for _, attribute in { "Overcharges", "AFKStation" } do
 	player:GetAttributeChangedSignal(attribute):Connect(refresh)
 end
 refresh()
