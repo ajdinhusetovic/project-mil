@@ -33,7 +33,7 @@ for _, block in Renderer.Folder():GetChildren() do
 	assert(block.Transparency==1 and block:FindFirstChild("BlockVisual"),"import replaces placeholder")
 	assert(block.CanCollide and block.CanQuery,"stable collision and aiming")
 	local bounds,size=block.BlockVisual:GetBoundingBox()
-	assert((bounds.Position-block.Position).Magnitude<.01 and math.max(size.X,size.Y,size.Z)<=Config.BlockSize,"inside cell")
+	assert((bounds.Position-block.Position).Magnitude<.01 and math.max(size.X,size.Y,size.Z)<=Config.BlockSize+.01,"inside cell")
 	seen[block:GetAttribute("MaterialName")]=true
 end
 assert(seen["Stone Ore"] and seen["Copper Ore"],"surface variety")
@@ -60,3 +60,49 @@ assert(#Renderer.Folder():GetChildren()<350,"exposure budget")
 Renderer.Generate()
 assert(#Renderer.Folder():GetChildren()==144,"reset with imported meshes")
 print("PASS: 5 imported blocks, cell/pickup scale, untouched originals, exact material rewards, ray/collision, recoil, deeper ores, exposure and reset")
+
+for _, key in {"ChargedQuartz", "Quartz", "Ion"} do
+ local original=game.ReplicatedStorage.BlockModels[key]
+ local originalPart=original:FindFirstChildWhichIsA("MeshPart",true)
+ local bounds=original:GetBoundingBox()
+ local localBody=originalPart.CFrame:PointToObjectSpace(bounds:PointToWorldSpace(original:GetAttribute("MiningBodyOffset")))
+ local model=Visuals.Build(sourceNames[key],Config.BlockSize,true)
+ local part=model:FindFirstChildWhichIsA("MeshPart",true)
+ local bodyCenter=part.CFrame:PointToWorldSpace(localBody*(part.Size/originalPart.Size))
+ assert(bodyCenter.Magnitude<.01,"Rock body centered: "..key)
+ local fitted=model:GetAttribute("FittedBodySize")
+ assert((fitted-Vector3.one*Config.BlockSize).Magnitude<.01,"Full-size rock body: "..key)
+ assert(math.max(model:GetExtentsSize().X,model:GetExtentsSize().Z)>Config.BlockSize,"Crystals may protrude rather than shrink the rock")
+ model:Destroy()
+end
+local removed={}
+for depth=1,29 do
+ local id=Grid.Id(6,depth,6)
+ removed[id]=true
+ Renderer.Break(id)
+end
+local visible={}
+for _,cell in Renderer.Folder():GetChildren() do visible[cell:GetAttribute("BlockId")]=true end
+local filled=0
+for x=1,Config.Width do
+ for z=1,Config.Width do
+  local column=workspace.PersonalMineInterior[tostring((x-1)*Config.Width+z)]
+  local parts=column:GetChildren()
+  filled+=#parts
+  for depth=1,Config.Depth do
+   local id=Grid.Id(x,depth,z)
+   local inside=false
+   local position=Grid.Position(x,depth,z)
+   for _,part in parts do
+    assert(part.CanQuery and part.CanCollide and not part.CanTouch,"Interior blocks camera/physics but is not a collectible")
+    local point=part.CFrame:PointToObjectSpace(position)
+    if math.abs(point.X)<part.Size.X/2 and math.abs(point.Y)<part.Size.Y/2 and math.abs(point.Z)<part.Size.Z/2 then inside=true end
+   end
+   if removed[id] or visible[id] then assert(not inside,"Interior must leave exposed/tunneled cells open")
+   else assert(inside,"Every buried cell must be opaque") end
+  end
+ end
+end
+assert(filled<220,"Interior uses compact runs rather than thousands of cells")
+Renderer.Generate()
+print("PASS: crystal rock bodies full-size and centered; buried interior solid; tunnel open; compact geometry; reset")

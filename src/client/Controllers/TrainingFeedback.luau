@@ -3,6 +3,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Rules = require(ReplicatedStorage.Shared.TrainingRules)
+local AFK = require(ReplicatedStorage.Shared.AFKTrainingDefinitions)
+local Progression = require(ReplicatedStorage.Shared.Progression)
 local Feedback = require(script.Parent.FeedbackEffects)
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
@@ -31,11 +33,11 @@ function Training.GetStats()
 	local stats = base or { Power = player:GetAttribute("Power") or 0, XP = player:GetAttribute("XP") or 0, Level = player:GetAttribute("Level") or 1 }
 	local power, xp, level = stats.Power, stats.XP, stats.Level
 	for _, click in pending do power += click.Power; xp += click.Power end
-	local required = math.floor(Config.LevelXPBase * level ^ Config.LevelXPExponent)
+	local required = Progression.XPRequired(level)
 	while xp >= required do
 		xp -= required
 		level += 1
-		required = math.floor(Config.LevelXPBase * level ^ Config.LevelXPExponent)
+		required = Progression.XPRequired(level)
 	end
 	return power, xp, level
 end
@@ -45,6 +47,7 @@ end
 function Training.Click(definition)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if not base or not root or Rules.InMine(root.Position) then return end
+	if AFK.At(root.Position, player:GetAttribute("Overcharges") or 0) then return end
 	local now = os.clock()
 	tokens = math.min(Config.Training.Burst, tokens + (now - updated) * Config.Training.ClicksPerSecond)
 	updated = now

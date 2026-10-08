@@ -39,3 +39,21 @@ Run `expand_mine_layers.lua` in Edit mode after Rojo sync to deepen the existing
 Run `build_core_index.lua` in Edit mode to create the editable `StarterGui.CoreIndexGui`, including the image button, progress bar and core cards.
 
 Overcharge: paste `studio/build_overcharge_gui.lua` in Edit mode. Edit `StarterGui.OverchargeGui` for the button, rewards, requirements, reset confirmation and celebration text. Balance requirements and permanent multipliers in `Shared.OverchargeDefinitions`.
+
+### AFK charging stations
+
+`build_afk_training.lua` creates `Workspace.AFKTrainingStations` in Edit mode.
+Move a whole station Model to move its invisible `Zone` trigger along with it.
+Signs are editable under `ChargeBlock.StationSign` (scale-based BillboardGui).
+`Title` is authored; `Requirement` and `Rate` update per player at runtime.
+Tune unlocks/multipliers in `src/shared/AFKTrainingDefinitions.luau`.
+Tune the level curve and block-break rewards in `src/shared/Config.luau`.
+Players gain both power and XP; manual clicks cannot stack with unlocked AFK stations.
+
+### Imported ore sizing
+
+`calibrate_block_bodies.lua` measures the connected rock body in the three current
+crystal meshes and saves `MiningBodySize`/`MiningBodyOffset` on their Models.
+Run it in Edit mode after replacing those assets. Block rendering fits this body
+into the cell; pickups still fit the entire mesh. Crystals may extend past the rock.
+Buried cells use compact opaque columns so the mine stays solid behind exposed ore.

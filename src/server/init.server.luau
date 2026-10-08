@@ -5,6 +5,7 @@ local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local Config = require(ReplicatedStorage.Shared.Config)
 local Grid = require(ReplicatedStorage.Shared.MineGrid)
 local WeaponDefinitions = require(ReplicatedStorage.Shared.WeaponDefinitions)
+local Progression = require(ReplicatedStorage.Shared.Progression)
 local PlayerDataService = require(script.Services.PlayerDataService)
 local WorldService = require(script.Services.WorldService)
 local MineService = require(script.Services.MineService)
@@ -12,6 +13,7 @@ local CoreService = require(script.Services.CoreService)
 local CoreToolService = require(script.Services.CoreToolService)
 local StabilizerService = require(script.Services.StabilizerService)
 local TrainingService = require(script.Services.TrainingService)
+local AFKTrainingService = require(script.Services.AFKTrainingService)
 local CoreSaleService = require(script.Services.CoreSaleService)
 local OverchargeService = require(script.Services.OverchargeService)
 local PlotService = require(script.Services.PlotService)
@@ -22,6 +24,7 @@ remote.Name = "MiningDemo"
 remote.Parent = ReplicatedStorage
 CoreService.Initialize(remote)
 WorldService.Initialize()
+AFKTrainingService.Initialize(remote)
 PlotService.Initialize()
 ReactorService.Initialize(remote)
 StabilizerService.Initialize(remote)
@@ -36,6 +39,7 @@ local lastReset = {}
 OverchargeService.Initialize(remote, function(player)
 	CoreSaleService.Release(player)
 	TrainingService.Release(player)
+	AFKTrainingService.Release(player)
 	pendingDrops[player] = {}
 	MineService.Reset(player)
 	CoreService.Reset(player)
@@ -102,13 +106,19 @@ local function blastBlocks(player, id)
 	local victims, damaged = MineService.Blast(player, id, PlayerDataService.GetBlastCount(player), Config.BlastRadius, chainDamage)
 	for _, hit in damaged do remote:FireClient(player, "BlockHealth", hit.Id, hit.Health) end
 	remote:FireClient(player, "Blast", center, Grid.Color(x, depth, z))
+	local trainingMultiplier = 0
 	for _, victimId in victims do
 		local vx, vd, vz = Grid.Coordinates(victimId)
+		trainingMultiplier += Progression.MiningMultiplier(vd)
 		remote:FireClient(player, "Break", Grid.Position(vx, vd, vz), Grid.Material(vx, vd, vz).Color, victimId)
 		createMaterialDrop(player, victimId)
 		CoreService.TryDiscover(player, victimId)
 	end
 	PlayerDataService.AddBlocksMined(player, #victims)
+	if trainingMultiplier > 0 then
+		local success, gain = PlayerDataService.AwardTraining(player, trainingMultiplier)
+		if success then remote:FireClient(player, "MiningTraining", gain) end
+	end
 end
 
 local function collect(player, dropId)
@@ -263,6 +273,7 @@ for _, player in Players:GetPlayers() do setup(player) end
 Players.PlayerRemoving:Connect(function(player)
 	lastAttack[player] = nil
 	TrainingService.Release(player)
+	AFKTrainingService.Release(player)
 	lastAction[player] = nil
 	lastReset[player] = nil
 	pendingDrops[player] = nil

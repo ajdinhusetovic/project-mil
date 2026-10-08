@@ -13,10 +13,12 @@ return {
 	Mining = {
 		HitInterval = 0.4,
 		ChainDamageMultiplier = 0.75,
+		BreakTrainingMultiplier = 3, -- Weapon-scaled power AND XP for a confirmed block break.
 	},
 	Training = { ClicksPerSecond = 25, Burst = 4, CombatCooldown = 0.45 },
-	LevelXPBase = 15,
-	LevelXPExponent = 0.8,
+	LevelXPBase = 25,
+	LevelXPStep = 15,
+	LevelXPCurve = 2,
 	BlastBlocks = 1,
 	BlastRadius = 8.5,
 	CollectionRange = 18,
@@ -41,7 +43,7 @@ return {
 	MaterialOrder = { "Stone Ore", "Copper Ore", "Charged Quartz", "Quartz Ore", "Ion Crystal", "Plasma Ore", "Reactor Shard" },
 	Layers = {
 		{
-			EndDepth = 6, CoreChance = 0.015, ChargedChance = 0,
+			EndDepth = 6, TrainingMultiplier = 1, CoreChance = 0.015, ChargedChance = 0,
 			Name = "STONE CIRCUIT", Color = Color3.fromRGB(110, 135, 151), Health = 150,
 			Materials = {
 				{ Name = "Stone Ore", Color = Color3.fromRGB(154, 170, 181), Chance = 70 },
@@ -49,7 +51,7 @@ return {
 			},
 		},
 		{
-			EndDepth = 16, CoreChance = 0.025, ChargedChance = 0.35,
+			EndDepth = 16, TrainingMultiplier = 2, CoreChance = 0.025, ChargedChance = 0.35,
 			Name = "CHARGED CAVERN", Color = Color3.fromRGB(49, 166, 176), Health = 750,
 			Materials = {
 				{ Name = "Copper Ore", Color = Color3.fromRGB(224, 119, 74), Chance = 55 },
@@ -57,7 +59,7 @@ return {
 			},
 		},
 		{
-			EndDepth = 28, CoreChance = 0.035, ChargedChance = 0.6,
+			EndDepth = 28, TrainingMultiplier = 4, CoreChance = 0.035, ChargedChance = 0.6,
 			Name = "CRYSTAL GRID", Color = Color3.fromRGB(147, 97, 199), Health = 3500,
 			Materials = {
 				{ Name = "Quartz Ore", Color = Color3.fromRGB(220, 198, 255), Chance = 60 },
@@ -65,7 +67,7 @@ return {
 			},
 		},
 		{
-			EndDepth = 42, CoreChance = 0.045, ChargedChance = 0.8,
+			EndDepth = 42, TrainingMultiplier = 8, CoreChance = 0.045, ChargedChance = 0.8,
 			Name = "PLASMA VEINS", Color = Color3.fromRGB(229, 102, 48), Health = 15000,
 			Materials = {
 				{ Name = "Ion Crystal", Color = Color3.fromRGB(195, 79, 255), Chance = 35 },
@@ -73,7 +75,7 @@ return {
 			},
 		},
 		{
-			EndDepth = 60, CoreChance = 0.055, ChargedChance = 0.95,
+			EndDepth = 60, TrainingMultiplier = 16, CoreChance = 0.055, ChargedChance = 0.95,
 			Name = "REACTOR DEPTHS", Color = Color3.fromRGB(46, 145, 89), Health = 60000,
 			Materials = {
 				{ Name = "Plasma Ore", Color = Color3.fromRGB(255, 139, 54), Chance = 40 },

@@ -7,13 +7,15 @@ local names = {
 	["Charged Quartz"] = "ChargedQuartz",
 }
 local cache = {}
-function Visuals.Build(material, size)
+function Visuals.Build(material, size, fitRockBody)
 	local key = names[material]
 	local folder = ReplicatedStorage:FindFirstChild("BlockModels")
 	local template = key and folder and folder:FindFirstChild(key)
 	if not template or not template:IsA("Model") then return nil end
 	local cached = cache[key]
-	if not cached or cached.Template ~= template then
+	local bodySize = template:GetAttribute("MiningBodySize")
+	local bodyOffset = template:GetAttribute("MiningBodyOffset")
+	if not cached or cached.Template ~= template or cached.BodySize ~= bodySize or cached.BodyOffset ~= bodyOffset then
 		local model = template:Clone()
 		model.PrimaryPart = nil
 		for _, item in model:GetDescendants() do
@@ -32,17 +34,26 @@ function Visuals.Build(material, size)
 		model.WorldPivot = CFrame.new(bounds.Position)
 		model:PivotTo(CFrame.identity)
 		model:ScaleTo(model:GetScale() / largest)
-		cached = {Template = template, Model = model}
+		cached = {Template = template, Model = model, Largest = largest, BodySize = bodySize, BodyOffset = bodyOffset}
 		if cache[key] then cache[key].Model:Destroy() end
 		cache[key] = cached
 	end
 	local model = cached.Model:Clone()
 	model.Name = "BlockVisual"
-	model:ScaleTo(model:GetScale() * size)
+	if fitRockBody and typeof(bodySize) == "Vector3" and typeof(bodyOffset) == "Vector3" then
+		local bodyLargest = math.max(bodySize.X, bodySize.Y, bodySize.Z)
+		-- Crystals can protrude from the cell. The rock body stays centered and fills it.
+		model.WorldPivot = CFrame.new(bodyOffset / cached.Largest)
+		model:PivotTo(CFrame.identity)
+		model:ScaleTo(model:GetScale() * size * cached.Largest / bodyLargest)
+		model:SetAttribute("FittedBodySize", bodySize * size / bodyLargest)
+	else
+		model:ScaleTo(model:GetScale() * size)
+	end
 	return model
 end
 function Visuals.Attach(block, material)
-	local model = Visuals.Build(material, block.Size.X)
+	local model = Visuals.Build(material, block.Size.X, true)
 	if model then
 		model:PivotTo(block.CFrame)
 		model.Parent = block

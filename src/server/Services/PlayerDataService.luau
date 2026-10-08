@@ -10,6 +10,7 @@ local WeaponDefinitions = require(ReplicatedStorage.Shared.WeaponDefinitions)
 local Template = require(ReplicatedStorage.Shared.PlayerDataTemplate)
 local CoreDefinitions = require(ReplicatedStorage.Shared.StabilizerDefinitions)
 local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
+local Progression = require(ReplicatedStorage.Shared.Progression)
 local ReactorRules = require(ReplicatedStorage.Shared.ReactorRules)
 local IndexRewards = require(ReplicatedStorage.Shared.IndexRewards)
 
@@ -194,14 +195,6 @@ function PlayerDataService.AddBlocksMined(player, amount)
 	if not data then return end
 	data.BlocksMined += amount
 	player:SetAttribute("Mined", data.BlocksMined)
-	data.XP += amount * 3
-	while data.XP >= PlayerDataService.GetXPToNextLevel(data.Level) do
-		data.XP -= PlayerDataService.GetXPToNextLevel(data.Level)
-		data.Level += 1
-	end
-	player:SetAttribute("XP", data.XP)
-	player:SetAttribute("Level", data.Level)
-	PlayerDataService.PublishProgress(player)
 end
 
 function PlayerDataService.SellAllMaterials(player)
@@ -362,15 +355,15 @@ function PlayerDataService.BuyStorage(player)
 end
 
 function PlayerDataService.GetXPToNextLevel(level)
-	return math.floor(Config.LevelXPBase * level ^ Config.LevelXPExponent)
+	return Progression.XPRequired(level)
 end
 
-function PlayerDataService.Train(player, sequence)
+function PlayerDataService.AwardTraining(player, multiplier, sequence)
 	local data = profiles[player]
 	if not data then return false end
 	local weapon = WeaponDefinitions[data.EquippedWeapon]
 	if not weapon then return false end
-	local gain = weapon.PowerPerClick * PlayerDataService.GetPowerMultiplier(player)
+	local gain = weapon.PowerPerClick * PlayerDataService.GetPowerMultiplier(player) * multiplier
 	data.Power += gain
 	data.XP += gain
 	while data.XP >= PlayerDataService.GetXPToNextLevel(data.Level) do
@@ -382,7 +375,11 @@ function PlayerDataService.Train(player, sequence)
 	player:SetAttribute("Level", data.Level)
 	if sequence then trainingSequences[player] = sequence end
 	PlayerDataService.PublishProgress(player)
-	return true
+	return true, gain
+end
+
+function PlayerDataService.Train(player, sequence)
+	return PlayerDataService.AwardTraining(player, 1, sequence)
 end
 
 function PlayerDataService.GetDamage(player)

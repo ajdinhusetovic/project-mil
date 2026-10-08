@@ -43,90 +43,15 @@ end
 local healthText = label("Target", "", UDim2.fromOffset(280, 28), UDim2.new(0.5, -140, 0.72, 0), gui)
 
 local playerGui = player:WaitForChild("PlayerGui")
-local materialsGui = playerGui:FindFirstChild("MaterialsHUD") or playerGui:WaitForChild("MaterialsHUD", 3)
-if not materialsGui then
-	local authored = game:GetService("StarterGui"):FindFirstChild("MaterialsHUD")
-	if authored then
-		materialsGui = authored:Clone()
-		materialsGui.Parent = playerGui
-	end
-end
-if not materialsGui then
-	materialsGui = Instance.new("ScreenGui")
-	materialsGui.Name = "MaterialsHUD"
-	materialsGui.ResetOnSpawn = false
-	materialsGui.Parent = playerGui
-	local fallback = Instance.new("Frame")
-	fallback.Name = "MaterialInventory"
-	fallback.Size = UDim2.fromOffset(230, 42)
-	fallback.AnchorPoint = Vector2.new(0, 1)
-	fallback.Position = UDim2.new(0, 18, 1, -220)
-	fallback.BackgroundColor3 = Color3.fromRGB(19, 28, 41)
-	fallback.BackgroundTransparency = 0.12
-	fallback.AutomaticSize = Enum.AutomaticSize.Y
-	fallback.Parent = materialsGui
-	Instance.new("UICorner", fallback).CornerRadius = UDim.new(0, 10)
-	local padding = Instance.new("UIPadding")
-	padding.PaddingTop = UDim.new(0, 5)
-	padding.PaddingBottom = UDim.new(0, 5)
-	padding.PaddingLeft = UDim.new(0, 10)
-	padding.PaddingRight = UDim.new(0, 10)
-	padding.Parent = fallback
-	local layout = Instance.new("UIListLayout")
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
-	layout.Parent = fallback
-	local title = label("Title", "MATERIALS", UDim2.new(1, 0, 0, 32), UDim2.new(), fallback)
-	title.TextColor3 = cyan
-	title.TextXAlignment = Enum.TextXAlignment.Left
-end
-local inventoryPanel = materialsGui:WaitForChild("MaterialInventory")
-local inventoryScale = inventoryPanel:FindFirstChild("ResponsiveScale")
-if inventoryScale and inventoryScale:IsA("UIScale") then
-	local function updateInventoryScale()
-		local camera = workspace.CurrentCamera
-		if not camera then return end
-		local viewport = camera.ViewportSize
-		inventoryScale.Scale = math.clamp(math.min(viewport.X / 720, viewport.Y / 650), 0.6, 1)
-	end
-	local function watchCamera()
-		local camera = workspace.CurrentCamera
-		if camera then camera:GetPropertyChangedSignal("ViewportSize"):Connect(updateInventoryScale) end
-		updateInventoryScale()
-	end
-	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(watchCamera)
-	watchCamera()
-end
-local inventoryLabels = {}
+-- Remove an old authored inventory list; ore pickup feedback remains separate.
+local legacyMaterials = playerGui:FindFirstChild("MaterialsHUD")
+if legacyMaterials then legacyMaterials:Destroy() end
 local materialColors = {}
 for _, layer in Config.Layers do
 	for _, material in layer.Materials do
 		materialColors[material.Name] = material.Color
 	end
 end
-for _, materialName in Config.MaterialOrder do
-	local row = inventoryPanel:FindFirstChild(materialName)
-	if not row or not row:IsA("TextLabel") then
-		row = label(materialName, "", UDim2.new(1, 0, 0, 25), UDim2.new(), inventoryPanel)
-	end
-	row.TextXAlignment = Enum.TextXAlignment.Left
-	row.LayoutOrder = table.find(Config.MaterialOrder, materialName) or 1
-	row.Visible = false
-	inventoryLabels[materialName] = row
-end
-local function updateInventory(materialName, total)
-	local row = inventoryLabels[materialName]
-	if not row then return end
-	row.Visible = true
-	row.Text = string.format("x%s  %s", Format.Compact(total), string.upper(materialName))
-end
-
-local function clearInventory()
-	for _, row in inventoryLabels do
-		row.Visible = false
-		row.Text = ""
-	end
-end
-
 local mobileGui = playerGui:FindFirstChild("MobileMiningHUD") or MobileBuilder.Build(playerGui)
 local legacyButton = mobileGui:FindFirstChild("AttackButton")
 if legacyButton then legacyButton:Destroy() end
@@ -327,17 +252,6 @@ flash.Name = "MiningHitFlash"
 flash.Parent = game:GetService("Lighting")
 local flashTween
 remote.OnClientEvent:Connect(function(action, first, second, third, fourth)
-	if action == "Sold" and first > 0 then
-		clearInventory()
-		return
-	end
-	if action == "InventorySnapshot" then
-		clearInventory()
-		for materialName, total in first do
-			if total > 0 then updateInventory(materialName, total) end
-		end
-		return
-	end
 	if action == "ResetMine" then
 		for index = #materialDrops, 1, -1 do recycleMaterialDrop(index) end
 		task.spawn(MineRenderer.Generate)
@@ -354,7 +268,6 @@ remote.OnClientEvent:Connect(function(action, first, second, third, fourth)
 		return
 	end
 	if action == "Inventory" then
-		updateInventory(first, second)
 		FeedbackEffects.ShowOre(first, third or 1, materialColors[first])
 		for index = #materialDrops, 1, -1 do
 			if materialDrops[index].Id == fourth then
@@ -526,12 +439,5 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 
 task.spawn(MineRenderer.Generate)
-if player:GetAttribute("Level") then
-	remote:FireServer("GetInventory")
-else
-	player:GetAttributeChangedSignal("Level"):Once(function()
-		remote:FireServer("GetInventory")
-	end)
-end
 
 return true

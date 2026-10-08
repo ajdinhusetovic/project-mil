@@ -7,6 +7,8 @@ local TrainingFeedback = require(script.Parent.TrainingFeedback)
 local Config = require(ReplicatedStorage.Shared.Config)
 local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
 local WeaponDefinitions = require(ReplicatedStorage.Shared.WeaponDefinitions)
+local Progression = require(ReplicatedStorage.Shared.Progression)
+local AFKDefinitions = require(ReplicatedStorage.Shared.AFKTrainingDefinitions)
 
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
@@ -133,10 +135,15 @@ local function refresh(instant)
 	local power, xp, level = TrainingFeedback.GetStats()
 	local weaponName = player:GetAttribute("EquippedWeapon") or "Scrap Zapper"
 	local definition = WeaponDefinitions[weaponName] or WeaponDefinitions["Scrap Zapper"]
-	local required = math.floor(Config.LevelXPBase * level ^ Config.LevelXPExponent)
+	local required = Progression.XPRequired(level)
 	levelLabel.Text = string.format("LEVEL %s", Format.Compact(level))
 	xpLabel.Text = string.format("%s / %s XP", Format.Compact(xp), Format.Compact(required))
 	powerLabel.Text = string.format("⚡ %s POWER     +%s / CLICK", Overcharge.Number(power), Overcharge.Number(definition.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1)))
+	local afkMultiplier = player:GetAttribute("AFKMultiplier")
+	if player:GetAttribute("AFKStation") and afkMultiplier then
+		local interval = AFKDefinitions.Interval
+		powerLabel.Text = string.format("⚡ %s POWER     AFK +%s / SEC", Overcharge.Number(power), Overcharge.Number(definition.PowerPerClick * (player:GetAttribute("PowerMultiplier") or 1) * afkMultiplier / interval))
+	end
 
 	animationToken += 1
 	local token = animationToken
@@ -174,7 +181,7 @@ local function queueRefresh()
 end
 
 TrainingFeedback.Changed.Event:Connect(queueRefresh)
-for _, attribute in { "EquippedWeapon", "PowerMultiplier" } do
+for _, attribute in { "EquippedWeapon", "PowerMultiplier", "AFKStation", "AFKMultiplier" } do
 	player:GetAttributeChangedSignal(attribute):Connect(function()
 		queueRefresh()
 	end)

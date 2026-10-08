@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Rules = require(ReplicatedStorage.Shared.TrainingRules)
 local Weapons = require(ReplicatedStorage.Shared.WeaponDefinitions)
+local AFK = require(ReplicatedStorage.Shared.AFKTrainingDefinitions)
 local Data = require(script.Parent.PlayerDataService)
 local Service = {}
 local states = {}
@@ -11,6 +12,9 @@ local function state(player)
 end
 function Service.MarkCombat(player)
 	state(player).CombatUntil = os.clock() + Config.Training.CombatCooldown
+end
+function Service.CanTrain(player, now)
+	return now >= state(player).CombatUntil
 end
 function Service.Handle(player, sequence)
 	if typeof(sequence) == "table" then
@@ -31,6 +35,7 @@ function Service.Handle(player, sequence)
 	local allowed = root and humanoid and humanoid.Health > 0 and profile and tool
 		and Weapons[tool.Name] and tool.Name == profile.EquippedWeapon
 		and not Rules.InMine(root.Position) and now >= entry.CombatUntil and entry.Tokens >= 1
+		and not AFK.At(root.Position, profile.Overcharges)
 	if allowed then
 		entry.Tokens -= 1
 		Data.Train(player, sequence)
