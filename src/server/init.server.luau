@@ -109,7 +109,7 @@ local function blastBlocks(player, id)
 	local trainingMultiplier = 0
 	for _, victimId in victims do
 		local vx, vd, vz = Grid.Coordinates(victimId)
-		trainingMultiplier += Progression.MiningMultiplier(vd)
+		trainingMultiplier += Progression.MiningMultiplier(vd) * (victimId == id and 1 or Config.Mining.ChainTrainingMultiplier)
 		remote:FireClient(player, "Break", Grid.Position(vx, vd, vz), Grid.Material(vx, vd, vz).Color, victimId)
 		createMaterialDrop(player, victimId)
 		CoreService.TryDiscover(player, victimId)

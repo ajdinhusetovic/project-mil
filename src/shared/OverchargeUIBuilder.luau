@@ -81,7 +81,7 @@ function Builder.Build(parent)
 		text(panel, "TextLabel", key .. "Requirement", key, 0.06, 0.4 + (index - 1) * 0.055, 0.88, 0.047)
 	end
 	text(panel, "TextLabel", "ResetLabel", "RESETS: Power, Level, XP, cash, weapons, upgrades, ores and mine", 0.05, 0.58, 0.9, 0.072, Color3.fromRGB(255, 159, 141))
-	text(panel, "TextLabel", "KeepLabel", "KEEPS: all stored cores, stabilizations, reactor and Index", 0.05, 0.665, 0.9, 0.064, Color3.fromRGB(128, 255, 163))
+	text(panel, "TextLabel", "KeepLabel", "KEEPS: stored cores, stabilizations, Index and permanent multipliers", 0.05, 0.665, 0.9, 0.064, Color3.fromRGB(128, 255, 163))
 	text(panel, "TextLabel", "StatusLabel", "Meet all requirements to Overcharge", 0.05, 0.75, 0.9, 0.045)
 	local confirm = text(panel, "TextButton", "ConfirmButton", "OVERCHARGE", 0.08, 0.815, 0.84, 0.13)
 	confirm.BackgroundTransparency = 0

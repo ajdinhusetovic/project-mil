@@ -94,7 +94,7 @@ remote.OnClientEvent:Connect(function(action, first, id)
 				rollingMount = job.Mount
 				shade.Visible = false
 				if not job.Mount or not job.Mount:IsDescendantOf(workspace) then
-					Feedback.ShowCore(Definitions.Cores[job.Result.Type].Name .. " • " .. Definitions.IncomeText(job.Result.Type) .. " • Added to hotbar")
+					Feedback.ShowCore(Definitions.Cores[job.Result.Type].Name .. " • " .. Definitions.SaleText(job.Result) .. " • Added to hotbar")
 				end
 				local ok, err = pcall(Reveal.Play, job.Mount, job.Result, folder, templates.CoreBillboard)
 				if not ok then warn("Stabilizer reveal: " .. tostring(err)) end

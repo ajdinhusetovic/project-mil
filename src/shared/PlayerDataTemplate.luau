@@ -1,5 +1,5 @@
 return {
-	SchemaVersion = 1,
+	SchemaVersion = 2,
 	Power = 0,
 	XP = 0,
 	Level = 1,

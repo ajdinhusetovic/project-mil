@@ -2,6 +2,7 @@
 -- Edit the three hidden TextLabels in StarterGui.FeedbackHUD to restyle popups.
 local starterGui = game:GetService("StarterGui")
 if starterGui:FindFirstChild("FeedbackHUD") then
+	require(game.ReplicatedStorage.Shared.PowerFeedbackStyle).Apply(starterGui.FeedbackHUD.PowerTemplate)
 	warn("FeedbackHUD already exists. Edit its templates in StarterGui; nothing was overwritten.")
 	return
 end
@@ -36,6 +37,7 @@ local function template(name, sample, width, color, maxSize)
 end
 
 template("PowerTemplate", "+1 POWER", 0.4, Color3.fromRGB(255, 208, 49), 38)
+require(game.ReplicatedStorage.Shared.PowerFeedbackStyle).Apply(gui.PowerTemplate)
 template("OreTemplate", "x5  COPPER ORE", 0.52, Color3.fromRGB(98, 241, 255), 34)
 template("SaleTemplate", "+25$", 0.65, Color3.fromRGB(94, 255, 108), 39)
 local sale = gui.SaleTemplate

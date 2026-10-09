@@ -9,7 +9,7 @@ local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 local playerGui = player:WaitForChild("PlayerGui")
 local gui = playerGui:FindFirstChild("OverchargeGui") or Builder.Build(playerGui)
-require(ReplicatedStorage.Shared.RebirthMenuStyle).Button(gui)
+require(ReplicatedStorage.Shared.RebirthMenuStyle).Apply(gui)
 local shade, panel = gui.Shade, gui.Shade.Panel
 local armed, pending, armedCount = false, false, nil
 local styled=gui:GetAttribute("ReferenceRebirthStyle")
@@ -37,21 +37,14 @@ local function refresh()
 		panel.CashCurrent.ValueLabel.Text=Definitions.Number(cash).."x Money"
 		panel.CashNext.ValueLabel.Text=Definitions.Number(nextCash).."x Money"
 	end
-	for _, key in {"Level", "Power", "Cash"} do
-		local current = player:GetAttribute(key) or (key == "Level" and 1 or 0)
-		local met = current >= required[key]
-		ready = ready and met
-		local prefix = key == "Cash" and "$" or ""
-		local label = panel[key .. "Requirement"]
-		label.Text = string.upper(key) .. "  " .. prefix .. Definitions.Number(current) .. " / " .. prefix .. Definitions.Number(required[key]) .. (met and "  ✓" or "")
-		label.TextColor3 = met and green or red
-		if styled then
-			label.Text=key..": "..prefix..Definitions.Number(current).." / "..prefix..Definitions.Number(required[key])
-			label.TextColor3=Color3.new(1,1,1)
-			local gradient=panel[key.."RequirementBar"]:FindFirstChildOfClass("UIGradient")
-			gradient.Color=met and ColorSequence.new(Color3.fromRGB(43,210,22),Color3.fromRGB(32,112,11))
-				or ColorSequence.new(Color3.fromRGB(217,73,75),Color3.fromRGB(123,30,43))
-		end
+	local current = player:GetAttribute("Level") or 1
+	local met = current >= required.Level
+	ready = ready and met
+	panel.LevelRequirement.Text = "Level: " .. Definitions.Number(current) .. " / " .. Definitions.Number(required.Level)
+	panel.LevelRequirement.TextColor3 = styled and Color3.new(1,1,1) or (met and green or red)
+	panel.PowerRequirement.Visible, panel.CashRequirement.Visible = false, false
+	if styled then
+		panel.LevelRequirementBar.ProgressFill.Size = UDim2.fromScale(math.clamp((current - 1) / (required.Level - 1), 0, 1), 1)
 	end
 	if not ready or armedCount ~= count then armed = false end
 	panel.ConfirmButton.Text = pending and "OVERCHARGING..." or (armed and "CONFIRM RESET" or (ready and "OVERCHARGE" or "REQUIREMENTS NOT MET"))
@@ -65,7 +58,7 @@ local function refresh()
 		local gradient=panel.ConfirmButton:FindFirstChildOfClass("UIGradient")
 		gradient.Color=ready and ColorSequence.new(Color3.fromRGB(55,245,17),Color3.fromRGB(13,131,4))
 			or ColorSequence.new(Color3.fromRGB(135,139,143),Color3.fromRGB(66,70,76))
-		panel.StatusLabel.Text=armed and "This resets your run. Press again to confirm." or ready and "Ready to rebirth!" or "Meet all three requirements to rebirth"
+		panel.StatusLabel.Text=armed and "This resets your run. Press again to confirm." or ready and "Ready to rebirth!" or "Reach Level "..Definitions.Number(required.Level).." to rebirth"
 	end
 	return ready, count
 end
@@ -76,7 +69,7 @@ local function close()
 	shade.Visible = false
 	armed = false
 end
-gui.OverchargeButton.Activated:Connect(function()
+require(ReplicatedStorage.Shared.HUDMenuLayout).Find(playerGui,"OverchargeButton").Activated:Connect(function()
 	if pending then return end
 	armed = false
 	shade.Visible = not shade.Visible

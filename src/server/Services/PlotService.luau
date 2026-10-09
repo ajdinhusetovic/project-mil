@@ -23,7 +23,7 @@ function Service.Create(player)
 	model.Parent = folder
 	local reactor = model:FindFirstChild("Reactor", true)
 	local interact = reactor and (reactor:IsA("BasePart") and reactor or reactor:FindFirstChild("Interact", true) or reactor.PrimaryPart)
-	if not interact or not interact:IsA("BasePart") then warn("PlotTemplate needs Reactor part, or Reactor Model with Interact part") end
+	if reactor then reactor:Destroy(); interact = nil end
 	plots[player] = {Model = model, Index = index, Reactor = interact, Spawn = model:FindFirstChild("PlotSpawn", true)}
 	return plots[player]
 end

@@ -131,7 +131,9 @@ function Visuals.Show(viewport, key, silhouette, mutation)
 	local model = Visuals.Build(key, silhouette, mutation)
 	model.Parent = viewport
 	model:PivotTo(CFrame.Angles(0, math.rad(-25), 0))
-	local _, size = model:GetBoundingBox()
+	local center, size = model:GetBoundingBox()
+	-- Imported core models may have an offset pivot; center the actual geometry.
+	model:PivotTo(CFrame.new(-center.Position) * model:GetPivot())
 	local camera = Instance.new("Camera")
 	camera.FieldOfView = 35
 	local distance = math.max(size.X, size.Y, size.Z) * 2.4

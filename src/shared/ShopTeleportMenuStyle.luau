@@ -47,7 +47,13 @@ function Style.Weapons(gui)
 	for order,key in require(script.Parent.Config).WeaponOrder do
 		local definition=weapons[key]
 		local card=items:FindFirstChild(definition.CardName)
-		if not card then continue end
+		if not card then
+			local template = items:FindFirstChild("PlasmaCard") or items:FindFirstChild("StarterCard")
+			if not template then error("Weapon catalog needs an authored template card") end
+			card = template:Clone()
+			card.Name = definition.CardName
+			card.Parent = items
+		end
 		card.Size,card.LayoutOrder=UDim2.fromScale(1,.36),order
 		surface(card,definition.Color,definition.Color:Lerp(Color3.fromRGB(25,20,45),.55),5)
 		studs(card,20,4)
@@ -105,7 +111,7 @@ function Style.Teleport(gui)
 	label(close,"CloseGlyph","X",.08,.03,.84,.94).ZIndex=12
 	local destinations={
 		{panel.WorldButton,"THIS WORLD","Mine • Shops • Sell • Stabilize","🌍",Color3.fromRGB(91,229,53),Color3.fromRGB(26,130,23)},
-		{panel.PlotButton,"YOUR PLOT","Your island • Your reactor","🏝",Color3.fromRGB(192,91,255),Color3.fromRGB(105,37,165)},
+		{panel.PlotButton,"YOUR PLOT","Your personal island","🏝",Color3.fromRGB(192,91,255),Color3.fromRGB(105,37,165)},
 	}
 	for order,data in destinations do
 		local card=data[1]

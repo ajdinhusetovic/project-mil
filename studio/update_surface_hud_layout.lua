@@ -52,4 +52,5 @@ local scale = counters:FindFirstChild("ResponsiveScale") or Instance.new("UIScal
 scale.Name = "ResponsiveScale"
 scale.Parent = counters
 
-print("Updated SurfaceLoopHUD cash and bag icon layout.")
+require(game.ReplicatedStorage.Shared.SurfacePowerHUD).Ensure(hud)
+print("Updated SurfaceLoopHUD power, cash and bag icon layout.")

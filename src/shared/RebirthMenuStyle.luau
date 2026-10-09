@@ -73,14 +73,27 @@ function Style.Apply(gui)
 		label(panel,key.."Arrow","▶",.465,y,.07,.11,Color3.fromRGB(178,239,255))
 	end
 	label(panel,"ResetLabel","Power, level, cash, weapons & upgrades reset",.04,.49,.92,.055,Color3.fromRGB(255,111,126))
-	label(panel,"KeepLabel","Keep your cores, reactor, stabilizations & Index",.04,.55,.92,.04,Color3.fromRGB(162,255,157))
+	label(panel,"KeepLabel","Keep cores, stabilizations, Index & rebirth multipliers",.04,.55,.92,.04,Color3.fromRGB(162,255,157))
 	for i,key in {"Level","Power","Cash"} do
 		local x=.055+(i-1)*.305
 		box(panel,key.."RequirementBar",x,.62,.28,.085,Color3.fromRGB(43,210,22),Color3.fromRGB(32,112,11))
 		local requirement=label(panel,key.."Requirement",key..": 0 / 0",x+.005,.632,.27,.061)
 		requirement.ZIndex=12
 	end
-	label(panel,"StatusLabel","Meet all requirements to rebirth",.05,.73,.9,.047)
+	for _,key in {"Power","Cash"} do
+		panel[key.."Requirement"].Visible=false
+		panel[key.."RequirementBar"].Visible=false
+	end
+	local bar=panel.LevelRequirementBar
+	bar.Position,bar.Size=UDim2.fromScale(.055,.62),UDim2.fromScale(.89,.085)
+	surface(bar,Color3.fromRGB(95,101,104),Color3.fromRGB(53,59,61),4)
+	local fill=get(bar,"Frame","ProgressFill")
+	fill.Position,fill.Size=UDim2.fromScale(0,0),UDim2.fromScale(0,1)
+	fill.BorderSizePixel=0
+	fill.BackgroundColor3=Color3.fromRGB(66,224,27)
+	fill.ZIndex=10
+	panel.LevelRequirement.Position,panel.LevelRequirement.Size=UDim2.fromScale(.06,.632),UDim2.fromScale(.88,.061)
+	label(panel,"StatusLabel","Reach Level 15 to rebirth",.05,.73,.9,.047)
 	local confirm=panel.ConfirmButton
 	confirm.Position,confirm.Size=UDim2.fromScale(.10,.81),UDim2.fromScale(.80,.13)
 	confirm.Text=""

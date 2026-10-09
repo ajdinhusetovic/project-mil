@@ -25,12 +25,21 @@ return {
 	},
 	["Nuclear Conductor"] = {
 		Id = "NuclearConductor", CardName = "NuclearCard",
-		PowerPerClick = 100, Price = 8000, Level = 17,
+		PowerPerClick = 100, Price = 10000, Level = 17,
 		Color = Color3.fromRGB(132, 255, 81),
 	},
 	["Plasma Cannon"] = {
 		Id = "PlasmaCannon", CardName = "PlasmaCard",
-		PowerPerClick = 250, Price = 25000, Level = 25,
+		PowerPerClick = 300, Price = 60000, Level = 25,
 		Color = Color3.fromRGB(210, 103, 255),
 	},
+	["Fusion Launcher"] = {Id = "FusionLauncher", CardName = "FusionCard", PowerPerClick = 1000, Price = 300000, Level = 40, Color = Color3.fromRGB(255, 172, 60)},
+	["Photon Accelerator"] = {Id = "PhotonAccelerator", CardName = "PhotonCard", PowerPerClick = 3500, Price = 1200000, Level = 60, Color = Color3.fromRGB(255, 242, 100)},
+	["Gravity Breaker"] = {Id = "GravityBreaker", CardName = "GravityCard", PowerPerClick = 12000, Price = 6000000, Level = 90, Color = Color3.fromRGB(159, 120, 255)},
+	["Antimatter Driver"] = {Id = "AntimatterDriver", CardName = "AntimatterCard", PowerPerClick = 40000, Price = 20000000, Level = 140, Color = Color3.fromRGB(255, 85, 178)},
+	["Quantum Disruptor"] = {Id = "QuantumDisruptor", CardName = "QuantumCard", PowerPerClick = 150000, Price = 60000000, Level = 210, Color = Color3.fromRGB(85, 255, 198)},
+	["Singularity Cannon"] = {Id = "SingularityCannon", CardName = "SingularityCard", PowerPerClick = 600000, Price = 150000000, Level = 320, Color = Color3.fromRGB(115, 110, 255)},
+	["Nova Annihilator"] = {Id = "NovaAnnihilator", CardName = "NovaCard", PowerPerClick = 2500000, Price = 400000000, Level = 480, Color = Color3.fromRGB(255, 130, 85)},
+	["Void Conductor"] = {Id = "VoidConductor", CardName = "VoidCard", PowerPerClick = 10000000, Price = 1200000000, Level = 700, Color = Color3.fromRGB(194, 85, 255)},
+	["Omega Core"] = {Id = "OmegaCore", CardName = "OmegaCard", PowerPerClick = 40000000, Price = 3500000000, Level = 1000, Color = Color3.fromRGB(255, 75, 110)},
 }

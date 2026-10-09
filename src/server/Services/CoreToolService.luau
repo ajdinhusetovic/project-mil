@@ -38,7 +38,7 @@ function CoreToolService.Sync(player)
 		if not definition then continue end
 		local tool = Instance.new("Tool")
 		tool.Name = core.Type and Stabilized.DisplayName(core) or core.Grade .. " Unknown Core"
-		tool.ToolTip = core.Type and (definition.Rarity .. " — " .. Stabilized.IncomeText(core) .. " in your reactor") or core.Grade .. " Unknown Core — take it to a stabilizer"
+		tool.ToolTip = core.Type and (definition.Rarity .. " — " .. Stabilized.SaleText(core) .. " — sell at the Ore Buyer") or core.Grade .. " Unknown Core — take it to a stabilizer"
 		tool.CanBeDropped = false
 		tool.RequiresHandle = true
 		tool.Enabled = false
@@ -48,7 +48,7 @@ function CoreToolService.Sync(player)
 		tool:SetAttribute("CoreGrade", core.Grade)
 		tool:SetAttribute("CoreType", core.Type)
 		tool:SetAttribute("Mutation", core.Type and Stabilized.MutationKey(core) or nil)
-		tool:SetAttribute("IncomePerSecond", core.Type and Stabilized.Income(core) or nil)
+		tool:SetAttribute("CoreSellValue", core.Type and Stabilized.SaleValue(core) or nil)
 		local handle = Instance.new("Part")
 		handle.Name = "Handle"
 		handle.Shape = Enum.PartType.Ball
@@ -66,7 +66,7 @@ function CoreToolService.Sync(player)
 			board.RarityLabel.Text = Stabilized.MutationText(core)
 			board.RarityLabel.Visible = board.RarityLabel.Text ~= ""
 			board.RarityLabel.TextColor3 = Mutations.Variants[Stabilized.MutationKey(core)].Color or Stabilized.Rarities[definition.Rarity]
-			board.IncomeLabel.Text = Stabilized.IncomeText(core)
+			board.IncomeLabel.Text = Stabilized.SaleText(core)
 			board.Parent = handle
 		end
 		handle.Transparency = 1

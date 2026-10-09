@@ -35,6 +35,8 @@ if not gui then
 	end
 end
 
+require(game.ReplicatedStorage.Shared.PowerFeedbackStyle).Apply(gui.PowerTemplate)
+
 local FeedbackEffects = {}
 local rng = Random.new()
 local orePopups = {}
@@ -46,10 +48,15 @@ local function makeText(templateName, value, color)
 	if not template or not template:IsA("TextLabel") then return nil end
 	local item = template:Clone()
 	item.Name = templateName .. "Effect"
-	item.Text = value
+	if templateName == "PowerTemplate" then
+		item.Text = ""
+		item.AmountLabel.Text = value
+	else
+		item.Text = value
+	end
 	if color then item.TextColor3 = color end
 	item.TextTransparency = 0
-	item.TextStrokeTransparency = templateName == "SaleTemplate" and 1 or 0
+	item.TextStrokeTransparency = (templateName == "SaleTemplate" or templateName == "PowerTemplate") and 1 or 0
 	if templateName == "SaleTemplate" then
 		local stroke = item:FindFirstChildOfClass("UIStroke")
 		if not stroke then
@@ -75,6 +82,15 @@ end
 local function fadeText(item, duration)
 	local info = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 	TweenService:Create(item, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	for _, child in item:GetDescendants() do
+		if child:IsA("ImageLabel") then
+			TweenService:Create(child, info, { ImageTransparency = 1 }):Play()
+		elseif child:IsA("TextLabel") then
+			TweenService:Create(child, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		elseif child:IsA("UIStroke") then
+			TweenService:Create(child, info, { Transparency = 1 }):Play()
+		end
+	end
 end
 
 function FeedbackEffects.Pulse(target)
@@ -97,17 +113,18 @@ end
 
 function FeedbackEffects.ShowPower(amount)
 	if amount <= 0 then return end
-	local item = makeText("PowerTemplate", "+" .. Format.Compact(amount) .. " POWER")
+	local item = makeText("PowerTemplate", "+" .. Format.Compact(amount))
 	if not item then return end
 	local x = rng:NextNumber(0.25, 0.75)
 	local y = rng:NextNumber(0.32, 0.68)
 	item.Position = UDim2.fromScale(x, y)
-	item.Rotation = rng:NextInteger(-9, 9)
+	item.Rotation = rng:NextInteger(-6, 6)
+	TweenService:Create(item, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Position = UDim2.fromScale(x + rng:NextNumber(-0.025, 0.025), y - 0.12),
+		Rotation = 0,
+	}):Play()
 	task.delay(0.32, function()
 		if not item.Parent then return end
-		TweenService:Create(item, TweenInfo.new(0.68, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Position = UDim2.fromScale(x + rng:NextNumber(-0.06, 0.06), y - 0.14),
-		}):Play()
 		fadeText(item, 0.68)
 		task.delay(0.7, function() item:Destroy() end)
 	end)

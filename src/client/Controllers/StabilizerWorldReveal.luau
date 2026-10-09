@@ -140,7 +140,7 @@ function Reveal.Play(mount, result, parent, template)
 		board.RarityLabel.Text = Definitions.MutationText(result)
 		board.RarityLabel.Visible = board.RarityLabel.Text ~= ""
 		board.RarityLabel.TextColor3 = color
-		board.IncomeLabel.Text = Definitions.IncomeText(result)
+		board.IncomeLabel.Text = Definitions.SaleText(result)
 		board.IncomeLabel.Visible = true
 		local pop = tween(scale, 0.45, {Value = 1.3}, Enum.EasingStyle.Back)
 		tween(rise, 0.55, {Value = 0.2}, Enum.EasingStyle.Back)

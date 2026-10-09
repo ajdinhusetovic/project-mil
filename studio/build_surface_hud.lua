@@ -2,7 +2,8 @@
 -- It creates editable UI under StarterGui and preserves an existing copy.
 local starterGui = game:GetService("StarterGui")
 if starterGui:FindFirstChild("SurfaceLoopHUD") then
-	warn("SurfaceLoopHUD already exists. Edit it in StarterGui; nothing was overwritten.")
+	require(game.ReplicatedStorage.Shared.SurfacePowerHUD).Ensure(starterGui.SurfaceLoopHUD)
+	print("SurfaceLoopHUD preserved; added its missing Power row.")
 	return
 end
 
@@ -142,4 +143,5 @@ toast.Parent = hud
 corner(toast, 10)
 stroke(toast, Color3.fromRGB(0, 0, 0), 4)
 
+require(game.ReplicatedStorage.Shared.SurfacePowerHUD).Ensure(hud)
 print("Created StarterGui.SurfaceLoopHUD. Edit its Frames and labels in Explorer.")

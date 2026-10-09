@@ -3,6 +3,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local StarterGui = game:GetService("StarterGui")
 local FeedbackEffects = require(script.Parent.FeedbackEffects)
+local TrainingFeedback = require(script.Parent.TrainingFeedback)
+local PowerHUD = require(ReplicatedStorage.Shared.SurfacePowerHUD)
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -25,13 +27,13 @@ if not gui then
 	gui.Parent = playerGui
 	local panel = Instance.new("Frame")
 	panel.Name = "Counters"
-	panel.Size = UDim2.fromOffset(260, 82)
+	panel.Size = UDim2.fromOffset(260, 118)
 	panel.Position = UDim2.fromOffset(18, 325)
 	panel.BackgroundColor3 = Color3.fromRGB(18, 27, 40)
 	panel.BackgroundTransparency = 0.08
 	panel.Parent = gui
 	Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 12)
-	for index, name in { "CashLabel", "BagLabel" } do
+	for index, name in { "PowerLabel", "CashLabel", "BagLabel" } do
 		local label = Instance.new("TextLabel")
 		label.Name = name
 		label.Size = UDim2.new(1, -16, 0, 34)
@@ -58,6 +60,7 @@ if not gui then
 end
 
 local panel = gui:WaitForChild("Counters")
+local powerLabel = PowerHUD.Ensure(gui)
 local function findLabel(name)
 	local label = panel:FindFirstChild(name, true)
 	assert(label and label:IsA("TextLabel"), `SurfaceLoopHUD is missing Counters/{name}`)
@@ -87,14 +90,17 @@ if responsiveScale and responsiveScale:IsA("UIScale") then
 end
 
 local function refresh()
+	local power = TrainingFeedback.GetStats()
 	local cash = player:GetAttribute("Cash") or 0
 	local used = player:GetAttribute("BackpackUsed") or 0
 	local capacity = player:GetAttribute("BackpackCapacity") or 50
 	cashLabel.Text = "$" .. Format.Compact(cash)
+	powerLabel.Text = Format.Compact(power)
 	bagLabel.Text = Format.Compact(used) .. " / " .. Format.Compact(capacity)
 end
 
 refresh()
+TrainingFeedback.Changed.Event:Connect(refresh)
 local previousCash = player:GetAttribute("Cash") or 0
 local previousUsed = player:GetAttribute("BackpackUsed") or 0
 player:GetAttributeChangedSignal("Cash"):Connect(function()

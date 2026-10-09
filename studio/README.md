@@ -24,6 +24,12 @@ The matching client controller will bind to those names but will not rebuild or 
 
 The builder preserves an existing `SurfaceLoopHUD`, so running it again will not erase your Studio edits. The client creates a simple fallback at runtime if you have not pasted the builder yet; it does not write that fallback into `StarterGui`.
 
+Power also appears above the money counter, with a lightning icon and the same
+row styling. It follows the same predicted and server-confirmed stats as the top
+Power display. Existing HUDs receive the missing row during Play after Rojo sync.
+Run [add_surface_power_hud.lua](add_surface_power_hud.lua) in Edit mode to save an
+editable `Counters.PowerBar` in StarterGui.
+
 Unknown Cores now appear as server-created Tools in the Roblox hotbar. [build_core_hud.lua](build_core_hud.lua) disables the old CoreHUD if it exists; it no longer builds a HUD.
 
 Paste [build_stabilizer_gui.lua](build_stabilizer_gui.lua) in Edit mode to create editable `StarterGui.StabilizerGui`. `Shade.Panel` contains the station controls, exact odds, `Reel.Track`, and hidden `CardTemplate` with its `CoreViewport` and `RarityLabel`. The client clones the card template for the silhouette spin and colors the winning core at the end. An existing GUI is preserved.
@@ -52,6 +58,19 @@ Tune unlocks/multipliers in `src/shared/AFKTrainingDefinitions.luau`.
 Tune the level curve and block-break rewards in `src/shared/Config.luau`.
 Players gain both power and XP; manual clicks cannot stack with unlocked AFK stations.
 
+### Responsive menu buttons
+
+Run `build_mobile_menu_hud.lua` in the Edit Command Bar after Rojo sync. Editable
+Shop, Rebirth, Index and Teleport buttons live in
+`StarterGui.HUDMenuGui.SafeArea.Buttons`. A two-column grid uses safe screen bounds
+and adapts to landscape phone screens. Runtime changes grid spacing and placement;
+card colors, icons and labels stay authored. Currency counters keep their authored
+positions. The HUD Shop button is a placeholder for future gamepasses/products.
+Upgrades and Weapons open separately from their respective storefront prompts.
+Design responsive UI for landscape play only; do not add portrait-specific layouts.
+Rebirth progress averages the three capped requirement ratios, starts at 0%, and
+only displays 100% when Level, Power and Cash all qualify.
+
 ### Imported ore sizing
 
 `calibrate_block_bodies.lua` measures the connected rock body in the three current
@@ -59,3 +78,10 @@ crystal meshes and saves `MiningBodySize`/`MiningBodyOffset` on their Models.
 Run it in Edit mode after replacing those assets. Block rendering fits this body
 into the cell; pickups still fit the entire mesh. Crystals may extend past the rock.
 Buried cells use compact opaque columns so the mine stays solid behind exposed ore.
+# Custom hotbar
+
+Run `studio/build_hotbar_gui.lua` in the Edit-mode Command Bar after Rojo syncs.
+The editable GUI is `StarterGui.HotbarGui`; change `Bar`, `SlotTemplate`, and the
+navigation buttons there. Runtime clones the template for real Backpack/Character
+Tools, supports 1–9, click/tap, swipe, wheel and arrow navigation, and hides the bar
+for menus and buyer dialogue. Weapons and cores stay server-owned Tools.

@@ -34,7 +34,7 @@ function Service.Handle(player, action, token)
 			quotes[player] = quote
 			remote:FireClient(player, "CoreSaleQuote", {
 				Token = quote.Token, Mode = "All", Count = summary.Count,
-				SellValue = summary.SellValue, IncomePerSecond = summary.IncomePerSecond,
+				SellValue = summary.SellValue,
 			})
 			return
 		end
@@ -44,7 +44,7 @@ function Service.Handle(player, action, token)
 		quotes[player] = quote
 		remote:FireClient(player, "CoreSaleQuote", {
 			Token = quote.Token, Name = Definitions.DisplayName(core), Rarity = Definitions.RarityText(core),
-			SellValue = Data.GetCashPayout(player, Definitions.SaleValue(core)), IncomeText = Definitions.IncomeText(core),
+			SellValue = Data.GetCashPayout(player, Definitions.SaleValue(core)),
 		})
 	elseif action == "ConfirmHeldCoreSale" or action == "ConfirmAllCoreSale" then
 		local quote = quotes[player]

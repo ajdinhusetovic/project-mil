@@ -7,14 +7,14 @@ local Definitions = {
 		Legendary = Color3.fromRGB(255, 201, 49), Mythic = Color3.fromRGB(255, 78, 139),
 	},
 	Cores = {
-		Spark = { IncomePerSecond = 2, SellValue = 120, Name = "Spark Core", Rarity = "Common", Color = Color3.fromRGB(255, 222, 88), Shape = "Ball" },
-		Copper = { IncomePerSecond = 4, SellValue = 240, Name = "Copper Core", Rarity = "Common", Color = Color3.fromRGB(229, 125, 65), Shape = "Block" },
-		Static = { IncomePerSecond = 10, SellValue = 600, Name = "Static Core", Rarity = "Uncommon", Color = Color3.fromRGB(108, 255, 145), Shape = "Cylinder" },
-		Quartz = { IncomePerSecond = 25, SellValue = 1500, Name = "Quartz Core", Rarity = "Rare", Color = Color3.fromRGB(133, 218, 255), Shape = "Diamond" },
-		Lightning = { IncomePerSecond = 45, SellValue = 2700, Name = "Lightning Core", Rarity = "Rare", Color = Color3.fromRGB(255, 250, 136), Shape = "Diamond" },
-		Storm = { IncomePerSecond = 100, SellValue = 6000, Name = "Storm Core", Rarity = "Epic", Color = Color3.fromRGB(184, 96, 255), Shape = "Ball" },
-		Ion = { IncomePerSecond = 300, SellValue = 18000, Name = "Ion Core", Rarity = "Legendary", Color = Color3.fromRGB(255, 185, 61), Shape = "Cylinder" },
-		Reactor = { IncomePerSecond = 1000, SellValue = 60000, Name = "Reactor Core", Rarity = "Mythic", Color = Color3.fromRGB(255, 64, 134), Shape = "Block" },
+		Spark = { SellValue = 150, Name = "Spark Core", Rarity = "Common", Color = Color3.fromRGB(255, 222, 88), Shape = "Ball" },
+		Copper = { SellValue = 300, Name = "Copper Core", Rarity = "Common", Color = Color3.fromRGB(229, 125, 65), Shape = "Block" },
+		Static = { SellValue = 800, Name = "Static Core", Rarity = "Uncommon", Color = Color3.fromRGB(108, 255, 145), Shape = "Cylinder" },
+		Quartz = { SellValue = 2000, Name = "Quartz Core", Rarity = "Rare", Color = Color3.fromRGB(133, 218, 255), Shape = "Diamond" },
+		Lightning = { SellValue = 5000, Name = "Lightning Core", Rarity = "Rare", Color = Color3.fromRGB(255, 250, 136), Shape = "Diamond" },
+		Storm = { SellValue = 15000, Name = "Storm Core", Rarity = "Epic", Color = Color3.fromRGB(184, 96, 255), Shape = "Ball" },
+		Ion = { SellValue = 50000, Name = "Ion Core", Rarity = "Legendary", Color = Color3.fromRGB(255, 185, 61), Shape = "Cylinder" },
+		Reactor = { SellValue = 150000, Name = "Reactor Core", Rarity = "Mythic", Color = Color3.fromRGB(255, 64, 134), Shape = "Block" },
 	},
 	Grades = {
 		Cracked = { Duration = 30, Weights = {450, 260, 150, 80, 35, 15, 8, 2} },
@@ -34,16 +34,23 @@ function Definitions.DisplayName(core, mutation)
 	local base = Definitions.Cores[key].Name
 	return variant == "None" and base or Mutations.Variants[variant].Name .. " " .. base
 end
-function Definitions.Income(core, mutation)
-	local key, variant = unpackCore(core, mutation)
-	return Definitions.Cores[key].IncomePerSecond * Mutations.Variants[variant].Multiplier
+-- Saved Depth is world distance, not the block row. Unknown/legacy depth uses surface value.
+function Definitions.DepthMultiplier(core)
+	local depth = type(core) == "table" and core.Depth or 0
+	if type(depth) ~= "number" or depth ~= depth then depth = 0 end
+	local row = math.max(1, math.ceil(depth / require(script.Parent.Config).BlockSize))
+	local multipliers = {1, 2, 5, 12, 30, 100, 300, 600, 1000}
+	for index, layer in require(script.Parent.Config).Layers do
+		if row <= layer.EndDepth then return multipliers[index] or multipliers[#multipliers] end
+	end
+	return multipliers[#multipliers]
 end
 function Definitions.SaleValue(core, mutation)
 	local key, variant = unpackCore(core, mutation)
-	return Definitions.Cores[key].SellValue * Mutations.Variants[variant].Multiplier
+	return Definitions.Cores[key].SellValue * Mutations.Variants[variant].Multiplier * Definitions.DepthMultiplier(core)
 end
-function Definitions.IncomeText(core, mutation)
-	return "$" .. require(script.Parent.NumberFormat).Compact(Definitions.Income(core, mutation)) .. " / SEC"
+function Definitions.SaleText(core, mutation)
+	return "$" .. require(script.Parent.NumberFormat).Compact(Definitions.SaleValue(core, mutation)) .. " SELL VALUE"
 end
 function Definitions.MutationText(core)
 	local variant = Definitions.MutationKey(core)

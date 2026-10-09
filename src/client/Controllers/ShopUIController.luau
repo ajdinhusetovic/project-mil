@@ -21,6 +21,7 @@ local header = window:WaitForChild("Header")
 local content = window:WaitForChild("Content")
 local upgradePage = content:WaitForChild("UpgradesPage")
 local weaponPage = content:WaitForChild("WeaponsPage")
+require(ReplicatedStorage.Shared.ShopTeleportMenuStyle).Weapons(gui)
 local CatalogLayout = require(ReplicatedStorage.Shared.ShopCatalogLayout)
 for _, page in {upgradePage, weaponPage} do
 	local catalog = page:FindFirstChild("Catalog")

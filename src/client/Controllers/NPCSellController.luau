@@ -66,7 +66,7 @@ dialog.responded:Connect(function(responseNum, dialogNum)
 			dialog:hideGui("Buying your core...", true)
 			remote:FireServer(accepted.Mode == "All" and "ConfirmAllCoreSale" or "ConfirmHeldCoreSale", accepted.Token)
 		else
-			dialog:hideGui("Keep it for your reactor. See you soon!")
+			dialog:hideGui("Keep it for later. See you soon!")
 		end
 	end
 end)
@@ -77,9 +77,9 @@ remote.OnClientEvent:Connect(function(action, first, second)
 		quote = first
 		local text
 		if first.Mode == "All" then
-			text = string.format("Sell ALL %s stabilized cores for $%s?\nReactor output: $%s / SEC\nThis includes your rare cores.", Format.Compact(first.Count), Format.Compact(first.SellValue), Format.Compact(first.IncomePerSecond))
+			text = string.format("Sell ALL %s stabilized cores for $%s?\nThis includes your rare cores.", Format.Compact(first.Count), Format.Compact(first.SellValue))
 		else
-			text = string.format("%s (%s)\nSell: $%s | Reactor: %s\nSell this core?", first.Name, first.Rarity, Format.Compact(first.SellValue), first.IncomeText)
+			text = string.format("%s (%s)\nSell: $%s\nSell this core?", first.Name, first.Rarity, Format.Compact(first.SellValue))
 		end
 		dialog.dialogs[2] = {text = text, responses = {string.format("Sell for $%s", Format.Compact(first.SellValue)), "Keep it"}}
 		dialog:triggerDialog(player, 2)

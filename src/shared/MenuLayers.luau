@@ -5,6 +5,7 @@ local bindings = setmetatable({}, {__mode = "k"})
 function MenuLayers.Bind(parent)
 	if bindings[parent] then bindings[parent](); return bindings[parent] end
 	local watched = {}
+	local player = game:GetService("Players").LocalPlayer
 	local function refresh()
 		local open = false
 		for gui in watched do
@@ -14,7 +15,8 @@ function MenuLayers.Bind(parent)
 		end
 		for _,gui in parent:GetChildren() do
 			if not gui:IsA("ScreenGui") then continue end
-			for _, name in {"IndexButton", "OverchargeButton", "TeleportButton"} do
+			if gui.Name == "HotbarGui" then gui.Enabled = not open and not (player and player:GetAttribute("NpcDialogueOpen")) end
+			for _, name in {"IndexButton", "OverchargeButton", "TeleportButton", "ShopButton"} do
 				local button = gui:FindFirstChild(name, true)
 				if button then button.Visible = not open end
 			end
@@ -33,6 +35,7 @@ function MenuLayers.Bind(parent)
 		refresh()
 	end
 	bindings[parent] = refresh
+	if player then player:GetAttributeChangedSignal("NpcDialogueOpen"):Connect(refresh) end
 	local function attach(gui)
 		if not gui:IsA("ScreenGui") then return end
 		watch(gui)
