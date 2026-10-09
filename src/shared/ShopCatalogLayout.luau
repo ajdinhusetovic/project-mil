@@ -7,6 +7,7 @@ function Layout.Bind(catalog)
 	catalog.ScrollingDirection = Enum.ScrollingDirection.Y
 	local items = catalog:FindFirstChild("Items")
 	if not items then
+		assert(not game:GetService("RunService"):IsRunning(), "Author catalog Items in StarterGui through the Edit Command Bar")
 		items = Instance.new("Frame")
 		items.Name = "Items"
 		items.BackgroundTransparency = 1

@@ -4,8 +4,7 @@ local TweenService = game:GetService("TweenService")
 local Input = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
-local teleport = require(ReplicatedStorage.Shared.IslandUIBuilder).Build(player:WaitForChild("PlayerGui"))
-require(ReplicatedStorage.Shared.ShopTeleportMenuStyle).TeleportButton(teleport)
+local teleport = player:WaitForChild("PlayerGui"):WaitForChild("TeleportGui")
 local panel = teleport.Shade.Panel
 local pending = false
 for _, button in {panel.WorldButton, panel.PlotButton} do

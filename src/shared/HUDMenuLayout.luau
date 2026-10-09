@@ -2,6 +2,7 @@ local Layout = {}
 local Theme = require(script.Parent.UpgradeMenuStyle)
 local Definitions = require(script.Parent.OverchargeDefinitions)
 local bound = setmetatable({}, {__mode="k"})
+local managedHUDs = setmetatable({}, {__mode="k"})
 local entries = {
 	{"ShopButton", "Shop", Color3.fromRGB(255,208,76), Color3.fromRGB(239,130,31)},
 	{"OverchargeButton", "Rebirth", Color3.fromRGB(154,245,112), Color3.fromRGB(52,160,64)},
@@ -9,6 +10,10 @@ local entries = {
 	{"TeleportButton", "Teleport", Color3.fromRGB(91,222,255), Color3.fromRGB(39,119,223)},
 }
 function Layout.Find(parent, name)
+	local hud = managedHUDs[parent] or parent:FindFirstChild("HUDMenuGui")
+	local group = hud and hud:FindFirstChild("SafeArea") and hud.SafeArea:FindFirstChild("Buttons")
+	local managed = group and group:FindFirstChild(name)
+	if managed then return managed end
 	for _, gui in parent:GetChildren() do
 		if gui:IsA("ScreenGui") then
 			local button = gui:FindFirstChild(name, true)
@@ -17,8 +22,10 @@ function Layout.Find(parent, name)
 	end
 end
 function Layout.Build(parent)
+ assert(not game:GetService("RunService"):IsRunning(), "Create HUDMenuGui through Studio Command Bar in Edit mode")
 	Layout.CleanupLegacy(parent)
-	local gui = parent:FindFirstChild("HUDMenuGui") or Instance.new("ScreenGui")
+	local gui = managedHUDs[parent] or parent:FindFirstChild("HUDMenuGui") or Instance.new("ScreenGui")
+	managedHUDs[parent] = gui
 	gui.Name, gui.ResetOnSpawn, gui.DisplayOrder = "HUDMenuGui", false, 10
 	gui.IgnoreGuiInset, gui.ScreenInsets = false, Enum.ScreenInsets.CoreUISafeInsets
 	gui.Parent = parent
@@ -88,7 +95,29 @@ function Layout.Build(parent)
 		local fill=Theme.Get(track,"Frame","Fill")
 		fill.Size,fill.BackgroundColor3,fill.BorderSizePixel=UDim2.fromScale(0,1),Color3.fromRGB(255,233,96),0
 	end
+	Layout.HideLegacyButtons(parent, group)
 	return gui
+end
+-- Menu builders and StarterGui replication can introduce old launch buttons
+-- after the managed HUD exists. Keep exactly one launcher for each menu.
+function Layout.HideLegacyButtons(parent, group)
+	for _, gui in parent:GetChildren() do
+		if gui:IsA("ScreenGui") and gui.Name == "HUDMenuGui" and gui ~= managedHUDs[parent] then
+			-- Retain the HUD instance whose buttons the controllers are bound to.
+			gui.Enabled = false
+		end
+	end
+	for _, item in parent:GetDescendants() do
+		if not item:IsA("GuiButton") then continue end
+		for _, entry in entries do
+			if item.Name == entry[1] and item ~= group:FindFirstChild(entry[1]) then
+				item:SetAttribute("ManagedHUDButton", nil)
+				item.Visible = false
+				item.Active = false
+				item.Interactable = false
+			end
+		end
+	end
 end
 function Layout.Progress(stats, count)
 	local required = Definitions.Requirements(count).Level
@@ -113,15 +142,34 @@ function Layout.Arrange(gui)
 	end
 end
 function Layout.Bind(parent)
-	local gui=Layout.Build(parent)
+	local gui=parent:WaitForChild("HUDMenuGui")
+	managedHUDs[parent] = gui
+	gui:WaitForChild("SafeArea"):WaitForChild("Buttons")
+	Layout.HideLegacyButtons(parent, gui.SafeArea.Buttons)
 	if bound[gui] then Layout.Arrange(gui); return gui end
 	bound[gui]=true
+	local queued = false
+	local function clean()
+		queued = false
+		Layout.HideLegacyButtons(parent, gui.SafeArea.Buttons)
+	end
+	parent.DescendantAdded:Connect(function(item)
+		if not item:IsA("GuiButton") and not item:IsA("ScreenGui") then return end
+		if queued then return end
+		queued = true
+		task.defer(clean)
+	end)
 	gui.SafeArea:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(Layout.Arrange,gui) end)
 	Layout.Arrange(gui)
 	return gui
 end
 -- Remove the earlier shop tabs and restore authored HUD positions once.
 function Layout.CleanupLegacy(parent)
+	for _, gui in parent:GetChildren() do
+		if gui:IsA("ScreenGui") and table.find({"HUDMenuGui", "CoreIndexGui", "CoreIndexButtonsGui", "OverchargeGui", "TeleportGui"}, gui.Name) then
+			gui.ResetOnSpawn = false
+		end
+	end
 	local shop=parent:FindFirstChild("ShopGui")
 	local content=shop and shop.Shade.Window.Content
 	local tabs=content and content:FindFirstChild("ShopTabs")

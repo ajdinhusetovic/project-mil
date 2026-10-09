@@ -1,41 +1,9 @@
 local Format = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared").NumberFormat)
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService")
 
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
-local gui = playerGui:FindFirstChild("FeedbackHUD") or playerGui:WaitForChild("FeedbackHUD", 2)
-if not gui then
-	local authored = StarterGui:FindFirstChild("FeedbackHUD")
-	if authored then
-		gui = authored:Clone()
-		gui.Parent = playerGui
-	end
-end
-if not gui then
-	gui = Instance.new("ScreenGui")
-	gui.Name = "FeedbackHUD"
-	gui.ResetOnSpawn = false
-	gui.IgnoreGuiInset = true
-	gui.DisplayOrder = 20
-	gui.Parent = playerGui
-	for _, name in { "PowerTemplate", "OreTemplate", "SaleTemplate" } do
-		local item = Instance.new("TextLabel")
-		item.Name = name
-		item.AnchorPoint = Vector2.new(0.5, 0.5)
-		item.Size = UDim2.fromOffset(320, 55)
-		item.BackgroundTransparency = 1
-		item.Font = Enum.Font.FredokaOne
-		item.TextSize = 31
-		item.TextColor3 = Color3.fromRGB(255, 220, 69)
-		item.TextStrokeColor3 = Color3.new(0, 0, 0)
-		item.TextStrokeTransparency = 0
-		item.Visible = false
-		item.Parent = gui
-	end
-end
-
-require(game.ReplicatedStorage.Shared.PowerFeedbackStyle).Apply(gui.PowerTemplate)
+local gui = playerGui:WaitForChild("FeedbackHUD")
 
 local FeedbackEffects = {}
 local rng = Random.new()

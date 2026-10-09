@@ -4,6 +4,7 @@ local get, label, surface = Theme.Get, Theme.Label, Theme.Surface
 local Cores = require(script.Parent.StabilizerDefinitions)
 local bound = setmetatable({}, {__mode="k"})
 function Style.Fit(gui)
+ assert(not game:GetService("RunService"):IsRunning(), "Author Index UI through the Edit Command Bar")
  local launchers = gui.Parent:FindFirstChild("CoreIndexButtonsGui")
  if not launchers then
   launchers = Instance.new("ScreenGui")
@@ -18,6 +19,13 @@ function Style.Fit(gui)
  gui.Shade.Position=UDim2.fromScale(0,0)
  gui.Shade.SizeConstraint=Enum.SizeConstraint.RelativeXY
  gui.Shade.Size=UDim2.fromScale(1,1)
+ if not gui.Shade.Panel:FindFirstChildOfClass("UIScale") then
+  local scale=Instance.new("UIScale",gui.Shade.Panel)
+  scale.Name="IndexResponsiveScale"
+ end
+ Style.Bind(gui)
+end
+function Style.Bind(gui)
  Style.Resize(gui)
  if not bound[gui] then
   bound[gui]=true
@@ -36,7 +44,7 @@ function Style.Resize(gui)
  for _,child in panel:GetChildren() do
   if child:IsA("UIAspectRatioConstraint") or child:IsA("UISizeConstraint") then child.Parent=nil end
  end
- local scale=panel:FindFirstChildOfClass("UIScale") or Instance.new("UIScale",panel)
+ local scale=assert(panel:FindFirstChildOfClass("UIScale"), "Author IndexResponsiveScale in StarterGui")
  scale.Name="IndexResponsiveScale"
  scale.Scale=math.min(1,available.X*.9/800,available.Y*.86/473)
  local cards=panel.Cards

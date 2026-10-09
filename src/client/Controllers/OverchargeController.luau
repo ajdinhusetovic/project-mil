@@ -4,12 +4,10 @@ local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Definitions = require(ReplicatedStorage.Shared.OverchargeDefinitions)
-local Builder = require(ReplicatedStorage.Shared.OverchargeUIBuilder)
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 local playerGui = player:WaitForChild("PlayerGui")
-local gui = playerGui:FindFirstChild("OverchargeGui") or Builder.Build(playerGui)
-require(ReplicatedStorage.Shared.RebirthMenuStyle).Apply(gui)
+local gui = playerGui:WaitForChild("OverchargeGui")
 local shade, panel = gui.Shade, gui.Shade.Panel
 local armed, pending, armedCount = false, false, nil
 local styled=gui:GetAttribute("ReferenceRebirthStyle")

@@ -18,7 +18,7 @@ function MenuLayers.Bind(parent)
 			if gui.Name == "HotbarGui" then gui.Enabled = not open and not (player and player:GetAttribute("NpcDialogueOpen")) end
 			for _, name in {"IndexButton", "OverchargeButton", "TeleportButton", "ShopButton"} do
 				local button = gui:FindFirstChild(name, true)
-				if button then button.Visible = not open end
+				if button then button.Visible = button:GetAttribute("ManagedHUDButton") == true and not open end
 			end
 		end
 	end

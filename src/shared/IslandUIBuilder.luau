@@ -85,6 +85,7 @@ local function scroll(panel,name,y,h)
 	return area
 end
 function Builder.Build(parent)
+ assert(not game:GetService("RunService"):IsRunning(), "Create UI through Studio Command Bar in Edit mode")
 	local teleport=parent:FindFirstChild("TeleportGui")
 	if not teleport then
 		local gui,panel=window(parent,"TeleportGui","TELEPORT",Color3.fromRGB(53,174,255))

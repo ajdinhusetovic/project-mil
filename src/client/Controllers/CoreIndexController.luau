@@ -5,12 +5,9 @@ local Cores=require(ReplicatedStorage.Shared.StabilizerDefinitions)
 local Rewards=require(ReplicatedStorage.Shared.IndexRewards)
 local Format=require(ReplicatedStorage.Shared.NumberFormat)
 local Visuals=require(ReplicatedStorage.Shared.CoreVisuals)
-local Builder=require(ReplicatedStorage.Shared.CoreIndexUIBuilder)
 local player=Players.LocalPlayer
-local gui=player.PlayerGui:FindFirstChild("CoreIndexGui") or Builder.Build(player.PlayerGui)
--- Migrate older authored Index GUIs once; styled instances remain editable.
-if not gui:GetAttribute("DarkGridIndexStyle") then require(ReplicatedStorage.Shared.IndexMenuStyle).Apply(gui) end
-require(ReplicatedStorage.Shared.IndexMenuStyle).Fit(gui)
+local gui=player:WaitForChild("PlayerGui"):WaitForChild("CoreIndexGui")
+require(ReplicatedStorage.Shared.IndexMenuStyle).Bind(gui)
 local indexButton=require(ReplicatedStorage.Shared.HUDMenuLayout).Find(player.PlayerGui,"IndexButton")
 local shade,panel=gui.Shade,gui.Shade.Panel
 local updateMenuButtons=require(ReplicatedStorage.Shared.MenuLayers).Bind(player.PlayerGui)

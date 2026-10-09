@@ -1,6 +1,7 @@
 local Definitions = require(script.Parent.StabilizerDefinitions)
 local Builder = {}
 function Builder.Build(parent)
+ assert(not game:GetService("RunService"):IsRunning(), "Create UI through Studio Command Bar in Edit mode")
 	local existing = parent:FindFirstChild("CoreIndexGui")
 	if existing then return existing end
 	local gui = Instance.new("ScreenGui")

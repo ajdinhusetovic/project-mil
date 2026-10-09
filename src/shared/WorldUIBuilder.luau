@@ -16,6 +16,7 @@ local function label(parent, name, value, y, height, color)
 	return item
 end
 function Builder.BuildTemplates()
+	assert(not game:GetService("RunService"):IsRunning(), "Author UITemplates through Studio's Edit Command Bar")
 	local folder = ReplicatedStorage:FindFirstChild("UITemplates")
 	if not folder then folder = Instance.new("Folder"); folder.Name = "UITemplates"; folder.Parent = ReplicatedStorage end
 	if not folder:FindFirstChild("CoreBillboard") then

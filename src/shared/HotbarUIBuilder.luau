@@ -1,4 +1,4 @@
--- Author in StarterGui through studio/build_hotbar_gui.lua; runtime is a fallback.
+-- Edit-mode authoring only: studio/build_hotbar_gui.lua.
 local Builder = {}
 local function label(parent, name, text, position, size)
 	local item = Instance.new("TextLabel")
@@ -12,6 +12,7 @@ local function label(parent, name, text, position, size)
 	return item
 end
 function Builder.Build(parent)
+ assert(not game:GetService("RunService"):IsRunning(), "Create UI through Studio Command Bar in Edit mode")
 	local existing = parent:FindFirstChild("HotbarGui")
 	if existing then Builder.Navigation(existing); return existing end
 	local gui = Instance.new("ScreenGui")

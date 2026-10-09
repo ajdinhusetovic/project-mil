@@ -2,7 +2,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Definitions = require(ReplicatedStorage.Shared.CoreDefinitions)
 local Stabilized = require(ReplicatedStorage.Shared.StabilizerDefinitions)
 local Mutations = require(ReplicatedStorage.Shared.MutationDefinitions)
-local WorldUI = require(ReplicatedStorage.Shared.WorldUIBuilder)
 local Visuals = require(ReplicatedStorage.Shared.CoreVisuals)
 local PlayerDataService = require(script.Parent.PlayerDataService)
 
@@ -61,7 +60,7 @@ function CoreToolService.Sync(player)
 		handle.Massless = true
 		handle.Parent = tool
 		if core.Type then
-			local board = WorldUI.BuildTemplates().CoreBillboard:Clone()
+			local board = ReplicatedStorage:WaitForChild("UITemplates"):WaitForChild("CoreBillboard"):Clone()
 			board.NameLabel.Text = string.upper(definition.Name)
 			board.RarityLabel.Text = Stabilized.MutationText(core)
 			board.RarityLabel.Visible = board.RarityLabel.Text ~= ""

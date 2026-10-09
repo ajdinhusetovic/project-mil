@@ -9,11 +9,7 @@ local Overcharge = require(ReplicatedStorage.Shared.OverchargeDefinitions)
 local Weapons = require(ReplicatedStorage.Shared.WeaponDefinitions)
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
-local gui = player:WaitForChild("PlayerGui"):WaitForChild("ShopGui", 3)
-if not gui then
-	warn("ShopGui is missing. Paste studio/build_shop_gui.lua into the Studio Command Bar in Edit mode, then press Play again.")
-	return false
-end
+local gui = player:WaitForChild("PlayerGui"):WaitForChild("ShopGui")
 
 local shade = gui:WaitForChild("Shade")
 local window = shade:WaitForChild("Window")
@@ -21,7 +17,6 @@ local header = window:WaitForChild("Header")
 local content = window:WaitForChild("Content")
 local upgradePage = content:WaitForChild("UpgradesPage")
 local weaponPage = content:WaitForChild("WeaponsPage")
-require(ReplicatedStorage.Shared.ShopTeleportMenuStyle).Weapons(gui)
 local CatalogLayout = require(ReplicatedStorage.Shared.ShopCatalogLayout)
 for _, page in {upgradePage, weaponPage} do
 	local catalog = page:FindFirstChild("Catalog")

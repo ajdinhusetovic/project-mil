@@ -1,8 +1,9 @@
 -- Client bootstrap. Controllers execute once when required.
+if not game:IsLoaded() then game.Loaded:Wait() end
 require(script.Controllers.HotbarController)
 require(game.ReplicatedStorage:WaitForChild("Shared"):WaitForChild("MenuLayers")).Bind(game.Players.LocalPlayer:WaitForChild("PlayerGui"))
 require(script.Controllers.SurfaceUIController)
-require(game.ReplicatedStorage.Shared.HUDMenuLayout).Build(game.Players.LocalPlayer.PlayerGui)
+require(game.ReplicatedStorage.Shared.HUDMenuLayout).Bind(game.Players.LocalPlayer.PlayerGui)
 require(script.Controllers.ProgressUIController)
 require(script.Controllers.ShopUIController)
 require(script.Controllers.MiningController)

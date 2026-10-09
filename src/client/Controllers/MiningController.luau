@@ -14,7 +14,6 @@ local Impact = require(script.Parent.MiningImpactEffects)
 local BlockVisuals = require(ReplicatedStorage.Shared.BlockVisuals)
 local TrainingFeedback = require(script.Parent.TrainingFeedback)
 local touchInput = require(script.Parent.TouchMiningInput).new()
-local MobileBuilder = require(ReplicatedStorage.Shared.MobileMiningUIBuilder)
 local blocks = MineRenderer.Folder()
 local mouse = player:GetMouse()
 local cyan = Color3.fromRGB(102, 234, 255)
@@ -23,24 +22,7 @@ effects.Name = "LocalMiningEffects"
 effects.Parent = workspace
 mouse.TargetFilter = effects
 
-local gui = Instance.new("ScreenGui")
-gui.Name = "MiningDemoHUD"
-gui.ResetOnSpawn = false
-gui.Parent = player:WaitForChild("PlayerGui")
-local function label(name, text, size, position, parent)
-	local l = Instance.new("TextLabel")
-	l.Name = name
-	l.Size = size
-	l.Position = position
-	l.BackgroundTransparency = 1
-	l.Text = text
-	l.TextColor3 = Color3.fromRGB(229, 241, 255)
-	l.Font = Enum.Font.GothamBold
-	l.TextSize = 16
-	l.Parent = parent
-	return l
-end
-local healthText = label("Target", "", UDim2.fromOffset(280, 28), UDim2.new(0.5, -140, 0.72, 0), gui)
+local healthText = player:WaitForChild("PlayerGui"):WaitForChild("MiningDemoHUD"):WaitForChild("Target")
 
 local playerGui = player:WaitForChild("PlayerGui")
 -- Remove an old authored inventory list; ore pickup feedback remains separate.
@@ -52,7 +34,7 @@ for _, layer in Config.Layers do
 		materialColors[material.Name] = material.Color
 	end
 end
-local mobileGui = playerGui:FindFirstChild("MobileMiningHUD") or MobileBuilder.Build(playerGui)
+local mobileGui = playerGui:WaitForChild("MobileMiningHUD")
 local legacyButton = mobileGui:FindFirstChild("AttackButton")
 if legacyButton then legacyButton:Destroy() end
 local crosshair = mobileGui:WaitForChild("Crosshair")

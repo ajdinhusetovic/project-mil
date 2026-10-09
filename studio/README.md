@@ -1,12 +1,19 @@
 # Studio Command Bar UI builders
 
+UI is authored in Edit mode and saved in StarterGui. Runtime controllers wait
+for these screens; they never build fallback HUDs or manually clone StarterGui.
+After syncing the current code, paste [prepare_authored_ui.lua](prepare_authored_ui.lua)
+into the Edit Command Bar once before publishing. It preserves existing screens,
+adds controls that previously existed only during Play, and hides old launchers.
+Changing item slots and popups clone authored templates at runtime.
+
 The colorful lobby has already been created in the current place as editable `Workspace.Lobby`. For a new place, [build_lobby.lua](build_lobby.lua) recreates its grass plaza, paths, blocky trees, orange walls, mine gate, shop stands, sell stand, and spawn. It preserves an existing Lobby. Only the diggable ore blocks are generated during Play because they are personal to each player.
 
 The mine shell has also been saved as editable `Workspace.MineArea`. [build_mine_area.lua](build_mine_area.lua) recreates it in a fresh place and moves the mine gate into it. Edit the deck, cyan rim, walls, bedrock, and entrance here. Keep the 12×12 opening centered at `(0, 0, 0)` and the wall dimensions aligned with `Config.BlockSize` and `Config.Width`; the personal ore grid is still calculated from those values during Play.
 
 Paste [build_surface_hud.lua](build_surface_hud.lua) into Roblox Studio's **Command Bar while not playing**. It creates `StarterGui.SurfaceLoopHUD` with editable cash, bag, and sale feedback. The UI follows the supplied bright simulator reference: thick black outlines, white Fredoka text, vivid gradients, and large readable counters.
 
-Paste [build_progress_hud.lua](build_progress_hud.lua) the same way to create the editable Level, XP, and Power display. The game provides a small runtime fallback until this builder is used.
+Paste [build_progress_hud.lua](build_progress_hud.lua) the same way to create the editable Level, XP, and Power display.
 
 Paste [build_mining_ui.lua](build_mining_ui.lua) in Edit mode to create the editable Materials panel and add `DepthLabel` plus `ReturnButton` to the existing `ProgressHUD`. In the lobby the Power label shows your current power and click gain. Inside the shaft it switches to depth and the Return button; the old top-right Depth/Blocks/Bag test panel is gone. The script preserves an existing MaterialsHUD and existing Depth/Return controls, so you can edit them in Explorer and run it again safely.
 
@@ -22,11 +29,11 @@ Run [setup_sell_npc.lua](setup_sell_npc.lua) once to place `Workspace.showcase n
 
 The matching client controller will bind to those names but will not rebuild or restyle the hierarchy. This lets you edit positions, colors, strokes, gradients, and constraints directly in Studio without fighting Rojo.
 
-The builder preserves an existing `SurfaceLoopHUD`, so running it again will not erase your Studio edits. The client creates a simple fallback at runtime if you have not pasted the builder yet; it does not write that fallback into `StarterGui`.
+The builder preserves an existing `SurfaceLoopHUD`, so running it again will not erase your Studio edits. The client waits for the saved screen.
 
 Power also appears above the money counter, with a lightning icon and the same
 row styling. It follows the same predicted and server-confirmed stats as the top
-Power display. Existing HUDs receive the missing row during Play after Rojo sync.
+Power display. Author the row before Play.
 Run [add_surface_power_hud.lua](add_surface_power_hud.lua) in Edit mode to save an
 editable `Counters.PowerBar` in StarterGui.
 

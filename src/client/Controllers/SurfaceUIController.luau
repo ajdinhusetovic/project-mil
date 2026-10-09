@@ -1,66 +1,17 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Format = require(ReplicatedStorage:WaitForChild("Shared").NumberFormat)
-local StarterGui = game:GetService("StarterGui")
 local FeedbackEffects = require(script.Parent.FeedbackEffects)
 local TrainingFeedback = require(script.Parent.TrainingFeedback)
-local PowerHUD = require(ReplicatedStorage.Shared.SurfacePowerHUD)
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local remote = ReplicatedStorage:WaitForChild("MiningDemo")
 
--- Studio-authored SurfaceLoopHUD takes priority. The small fallback keeps
--- Rojo-only playtests usable before the Command Bar builder is pasted.
-local gui = playerGui:FindFirstChild("SurfaceLoopHUD") or playerGui:WaitForChild("SurfaceLoopHUD", 3)
-if not gui then
-	local authored = StarterGui:FindFirstChild("SurfaceLoopHUD")
-	if authored then
-		gui = authored:Clone()
-		gui.Parent = playerGui
-	end
-end
-if not gui then
-	gui = Instance.new("ScreenGui")
-	gui.Name = "SurfaceLoopHUD"
-	gui.ResetOnSpawn = false
-	gui.Parent = playerGui
-	local panel = Instance.new("Frame")
-	panel.Name = "Counters"
-	panel.Size = UDim2.fromOffset(260, 118)
-	panel.Position = UDim2.fromOffset(18, 325)
-	panel.BackgroundColor3 = Color3.fromRGB(18, 27, 40)
-	panel.BackgroundTransparency = 0.08
-	panel.Parent = gui
-	Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 12)
-	for index, name in { "PowerLabel", "CashLabel", "BagLabel" } do
-		local label = Instance.new("TextLabel")
-		label.Name = name
-		label.Size = UDim2.new(1, -16, 0, 34)
-		label.Position = UDim2.fromOffset(8, 6 + (index - 1) * 36)
-		label.BackgroundTransparency = 1
-		label.TextColor3 = Color3.new(1, 1, 1)
-		label.TextXAlignment = Enum.TextXAlignment.Left
-		label.Font = Enum.Font.FredokaOne
-		label.TextSize = 18
-		label.Parent = panel
-	end
-	local toast = Instance.new("TextLabel")
-	toast.Name = "ToastLabel"
-	toast.Size = UDim2.fromOffset(360, 50)
-	toast.AnchorPoint = Vector2.new(0.5, 0.5)
-	toast.Position = UDim2.fromScale(0.5, 0.38)
-	toast.BackgroundColor3 = Color3.fromRGB(16, 30, 22)
-	toast.TextColor3 = Color3.new(1, 1, 1)
-	toast.Font = Enum.Font.FredokaOne
-	toast.TextSize = 24
-	toast.Visible = false
-	toast.Parent = gui
-	Instance.new("UICorner", toast).CornerRadius = UDim.new(0, 12)
-end
+local gui = playerGui:WaitForChild("SurfaceLoopHUD")
 
 local panel = gui:WaitForChild("Counters")
-local powerLabel = PowerHUD.Ensure(gui)
+local powerLabel = panel:WaitForChild("PowerBar"):WaitForChild("PowerLabel")
 local function findLabel(name)
 	local label = panel:FindFirstChild(name, true)
 	assert(label and label:IsA("TextLabel"), `SurfaceLoopHUD is missing Counters/{name}`)

@@ -2,6 +2,7 @@ local PowerHUD = {}
 
 -- Add only the missing row, inheriting the player's authored cash-row styling.
 function PowerHUD.Ensure(gui)
+	assert(not game:GetService("RunService"):IsRunning(), "Author the power row through Studio's Edit Command Bar")
 	local counters = gui:FindFirstChild("Counters")
 	assert(counters, "SurfaceLoopHUD.Counters is missing")
 	local existing = counters:FindFirstChild("PowerLabel", true)
