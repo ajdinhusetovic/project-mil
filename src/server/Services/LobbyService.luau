@@ -8,12 +8,21 @@ local stoneLight = Color3.fromRGB(153, 171, 195)
 local wood = Color3.fromRGB(183, 105, 43)
 
 function LobbyService.Positions()
-	return {
+	local positions = {
 		Spawn = Vector3.new(0, 0.15, 143),
 		WeaponShop = Vector3.new(-45, 0, 91),
 		UpgradeShop = Vector3.new(-18, 0, 91),
 		SellNpc = Vector3.new(38, 0, 101),
 	}
+	local lobby = workspace:FindFirstChild("Lobby")
+	local anchors = lobby and lobby:FindFirstChild("GameplayAnchors")
+	if anchors then
+		for name in positions do
+			local anchor = anchors:FindFirstChild(name)
+			if anchor and anchor:IsA("BasePart") then positions[name] = anchor.Position end
+		end
+	end
+	return positions
 end
 
 local function sign(part, title, offset, width)

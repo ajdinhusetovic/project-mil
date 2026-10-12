@@ -51,9 +51,10 @@ RunService.RenderStepped:Connect(function()
 		if model.Parent and (root.Position - entry.Origin.Position).Magnitude < 140 then
 			-- Derive position from the movable pedestal, preserving Studio placement.
 			local pedestal = model:FindFirstChild("Pedestal")
-			local position = pedestal and (pedestal.Position + Vector3.new(0, 2.35, 0)) or entry.Origin.Position
+			local offset = model:GetAttribute("FloatOffset") or Vector3.new(0, 2.35, 0)
+			local position = pedestal and (pedestal.Position + offset) or entry.Origin.Position
 			entry.Block.CFrame = CFrame.new(position + Vector3.new(0, math.sin(time * 2) * 0.22, 0))
-				* CFrame.Angles(0, time * 0.45, math.rad(12))
+				* CFrame.Angles(0, time * 0.45, 0) * entry.Origin.Rotation
 		end
 	end
 end)

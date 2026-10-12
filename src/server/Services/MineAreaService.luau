@@ -31,7 +31,7 @@ function MineAreaService.AlignSeams(area)
 	local wallCenter = (wallTop + bottom) / 2
 	local borderColor = Color3.fromRGB(32, 42, 58)
 	local borderVariant = ""
-	local hasRim = false
+	local hasRim = area:GetAttribute("HasAuthoredRim") == true
 	for _, child in area:GetChildren() do
 		if child:IsA("BasePart") and child.Name == "Bedrock" then
 			child.Position = Vector3.new(0, bottom - child.Size.Y / 2, 0)

@@ -92,3 +92,14 @@ The editable GUI is `StarterGui.HotbarGui`; change `Bar`, `SlotTemplate`, and th
 navigation buttons there. Runtime clones the template for real Backpack/Character
 Tools, supports 1–9, click/tap, swipe, wheel and arrow navigation, and hides the bar
 for menus and buyer dialogue. Weapons and cores stay server-owned Tools.
+
+### Blender lobby integration
+
+`integrate_blender_lobby.lua` connects the imported EnergyCoreLobby-Colored Model.
+It normalizes import scale/orientation around the fixed mine opening, groups shops
+and the stabilizer, moves the existing sell NPC, and authors AFK triggers/signs.
+The previous lobby, AFK stations and mine shell are backed up in
+`ServerStorage.LegacyLobbyBackup`. Imported artwork stays editable in Workspace.Lobby;
+AFK art/triggers live in Workspace.AFKTrainingStations. GameplayAnchors supplies spawn,
+shop and NPC positions, so WorldService no longer forces the old lobby coordinates.
+The mine opening stays at world origin; its shell extends to the configured depth.

@@ -57,6 +57,8 @@ local function nearPrompt(player, prompt)
 	local position
 	if parent:IsA("BasePart") then
 		position = parent.Position
+	elseif parent:IsA("Attachment") then
+		position = parent.WorldPosition
 	elseif parent:IsA("Model") then
 		position = parent:GetPivot().Position
 	end
