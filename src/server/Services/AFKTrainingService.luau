@@ -9,12 +9,13 @@ local Service = {}
 local states = {}
 local remote
 
-local function publish(player, definition)
+local function publish(player, definition, model)
 	local id = definition and definition.Id or nil
 	if player:GetAttribute("AFKStation") ~= id then
 		player:SetAttribute("AFKStation", id)
 		player:SetAttribute("AFKMultiplier", definition and definition.Multiplier or nil)
 	end
+	player:SetAttribute("AFKStationModel", model and model.Name or nil)
 end
 
 function Service.Step(player, now)
@@ -22,27 +23,27 @@ function Service.Step(player, now)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	local definition
+	local definition, model
 	if profile and root and humanoid and humanoid.Health > 0
 		and not Rules.InMine(root.Position) and Training.CanTrain(player, now) then
-		definition = Definitions.At(root.Position, profile.Overcharges)
+		definition, model = Definitions.At(root.Position, profile.Overcharges)
 	end
 	if not definition then
 		states[player] = nil
 		publish(player, nil)
 		return false
 	end
-	publish(player, definition)
+	publish(player, definition, model)
 	local entry = states[player]
-	if not entry or entry.Id ~= definition.Id or entry.Character ~= character then
-		states[player] = { Id = definition.Id, Character = character, Next = now + Definitions.Interval }
+	if not entry or entry.Model ~= model or entry.Character ~= character then
+		states[player] = { Id = definition.Id, Model = model, Character = character, Next = now + Definitions.Interval }
 		return false
 	end
 	if now < entry.Next then return false end
 	-- Never bank time offline, or burst rewards after a server stall.
 	entry.Next = now + Definitions.Interval
 	local success, gain = Data.AwardTraining(player, definition.Multiplier)
-	if success and remote then remote:FireClient(player, "AFKTraining", definition.Id, gain) end
+	if success and remote then remote:FireClient(player, "AFKTraining", model.Name, gain) end
 	return success, gain
 end
 

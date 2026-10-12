@@ -14,7 +14,11 @@ local function register(model)
 	local definition = Definitions.Get(model:GetAttribute("StationId"))
 	local block = model:FindFirstChild("ChargeBlock")
 	if definition and block and block:IsA("BasePart") then
-		entries[model] = { Definition = definition, Block = block, Origin = block.CFrame }
+		local details = {}
+		for _, item in block:GetChildren() do
+			if item:IsA("BasePart") then details[item] = block.CFrame:ToObjectSpace(item.CFrame) end
+		end
+		entries[model] = { Definition = definition, Block = block, Origin = block.CFrame, Details = details }
 	end
 end
 
@@ -23,11 +27,11 @@ local function refresh()
 	for model, entry in entries do
 		if model.Parent then
 			local definition = entry.Definition
-			local sign = entry.Block:FindFirstChild("StationSign")
+			local sign = player.PlayerGui:FindFirstChild("AFKSign_" .. model.Name) or entry.Block:FindFirstChild("StationSign")
 			local unlocked = rebirths >= definition.Rebirths
 			local requirement = sign and sign:FindFirstChild("Requirement")
 			if requirement then
-				requirement.Text = unlocked and (player:GetAttribute("AFKStation") == definition.Id and "⚡ TRAINING ⚡" or "UNLOCKED • STAND HERE")
+				requirement.Text = unlocked and (player:GetAttribute("AFKStationModel") == model.Name and "⚡ TRAINING ⚡" or "UNLOCKED • STAND HERE")
 					or tostring(definition.Rebirths) .. " REBIRTHS TO UNLOCK"
 				requirement.TextColor3 = unlocked and Color3.fromRGB(116, 255, 87) or Color3.fromRGB(255, 107, 107)
 			end
@@ -38,7 +42,7 @@ end
 for _, model in folder:GetChildren() do register(model) end
 folder.ChildAdded:Connect(function(model) register(model); refresh() end)
 folder.ChildRemoved:Connect(function(model) entries[model] = nil end)
-for _, attribute in { "Overcharges", "AFKStation" } do
+for _, attribute in { "Overcharges", "AFKStation", "AFKStationModel" } do
 	player:GetAttributeChangedSignal(attribute):Connect(refresh)
 end
 refresh()
@@ -55,6 +59,9 @@ RunService.RenderStepped:Connect(function()
 			local position = pedestal and (pedestal.Position + offset) or entry.Origin.Position
 			entry.Block.CFrame = CFrame.new(position + Vector3.new(0, math.sin(time * 2) * 0.22, 0))
 				* CFrame.Angles(0, time * 0.45, 0) * entry.Origin.Rotation
+			for item, relative in entry.Details do
+				if item.Parent then item.CFrame = entry.Block.CFrame * relative end
+			end
 		end
 	end
 end)

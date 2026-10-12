@@ -29,7 +29,7 @@ local ok,err=pcall(function()
  local lobby=workspace.Lobby
  assert(lobby:GetAttribute("ImportedLobbyIntegrated"))
  assert((root.Position-lobby.GameplayAnchors.Spawn.Position).Magnitude<10,"Spawn must use the new pad")
- assert(#workspace.AFKTrainingStations:GetChildren()==5)
+ assert(#workspace.AFKTrainingStations:GetChildren()==10)
  assert(workspace.MineArea.Bedrock.Position.Y < -Config.Depth*Config.BlockSize)
  assert(not workspace.MineArea:FindFirstChild("Deck"),"No legacy decks overlapping import")
  d.Cash,d.Level,d.Power,d.XP=1000,5,60,0
@@ -61,6 +61,9 @@ local ok,err=pcall(function()
  phase("LockedAFK",workspace.AFKTrainingStations.Charged.Zone.Position)
  assert(d.Power==before and not p:GetAttribute("AFKStation"),"Locked imported AFK floor must not award")
  print("LOBBY MINING/AFK PASSED: mine opening aligned, AFK rewards and locks")
+ local secondBefore=d.Power
+ phase("AFKSecondRow",workspace.AFKTrainingStations.Starter_02.Zone.Position)
+ assert(d.Power>secondBefore and p:GetAttribute("AFKStationModel")=="Starter_02","Second AFK row must train independently")
  local mount=lobby.Stabilizer.CoreMount
  assert(mount:GetAttribute("StabilizerId"),"New mount registered")
  assert(Data.AddUnknownCore(p,{Id="LobbyIntegrationCore",Grade="Cracked"}))
@@ -69,7 +72,7 @@ local ok,err=pcall(function()
  for _,t in p.Backpack:GetChildren() do if t:GetAttribute("CoreId")=="LobbyIntegrationCore" then core=t end end
  assert(core)
  p.Character.Humanoid:EquipTool(core)
- phase("PlaceCore",mount.Position+Vector3.new(0,-2,9))
+ phase("PlaceCore",Vector3.new(mount.Position.X,3.5,mount.Position.Z+5))
  assert(d.Stabilizer.Core and d.Stabilizer.FinishAt and d.Stabilizer.FinishAt>os.time(),"Imported stabilizer starts automatically")
  d.Stabilizer.FinishAt=os.time()-1; Stabilizer.Publish(p)
  phase("ClaimCore")

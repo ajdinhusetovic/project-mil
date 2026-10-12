@@ -1,0 +1,2222 @@
+{
+  "Compact lobby ground": [
+    121,
+    218,
+    44
+  ],
+  "West mine verge": [
+    121,
+    218,
+    44
+  ],
+  "East mine verge": [
+    121,
+    218,
+    44
+  ],
+  "Rear mine verge": [
+    121,
+    218,
+    44
+  ],
+  "Terraced orange boundary": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.001": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.001": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.001": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.002": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.002": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.002": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.003": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.003": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.003": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.004": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.004": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.004": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.005": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.005": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.005": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.006": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.006": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.006": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.007": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.007": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.007": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.008": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.008": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.008": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.009": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.009": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.009": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.010": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.010": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.010": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.011": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.011": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.011": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.012": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.012": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.012": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.013": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.013": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.013": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.014": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.014": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.014": [
+    249,
+    181,
+    82
+  ],
+  "Terraced orange boundary.015": [
+    229,
+    153,
+    72
+  ],
+  "Green wall top.015": [
+    151,
+    236,
+    53
+  ],
+  "Second cliff tier.015": [
+    249,
+    181,
+    82
+  ],
+  "Rear wall": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.001": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.001": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.002": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.002": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.003": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.003": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.004": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.004": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.005": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.005": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.006": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.006": [
+    151,
+    236,
+    53
+  ],
+  "Rear wall.007": [
+    229,
+    153,
+    72
+  ],
+  "Rear turf.007": [
+    151,
+    236,
+    53
+  ],
+  "Main spawn to mine path": [
+    229,
+    230,
+    179
+  ],
+  "Short cross plaza route": [
+    229,
+    230,
+    179
+  ],
+  "Shop apron": [
+    155,
+    177,
+    197
+  ],
+  "West leaderboard approach": [
+    155,
+    177,
+    197
+  ],
+  "East AFK approach": [
+    155,
+    177,
+    197
+  ],
+  "Spawn plaza edging": [
+    155,
+    177,
+    197
+  ],
+  "Spawn plaza surface": [
+    229,
+    230,
+    179
+  ],
+  "Plaza energy motif": [
+    41,
+    56,
+    77
+  ],
+  "Plaza energy motif.001": [
+    41,
+    56,
+    77
+  ],
+  "Plaza energy motif.002": [
+    41,
+    56,
+    77
+  ],
+  "Plaza energy motif.003": [
+    41,
+    56,
+    77
+  ],
+  "Small wayfinding arrow": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.001": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.002": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.003": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.004": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.005": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.006": [
+    254,
+    225,
+    33
+  ],
+  "Small wayfinding arrow.007": [
+    254,
+    225,
+    33
+  ],
+  "Paving seam": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.001": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.002": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.003": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.004": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.005": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.006": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.007": [
+    155,
+    177,
+    197
+  ],
+  "Paving seam.008": [
+    155,
+    177,
+    197
+  ],
+  "MineSideWall": [
+    111,
+    129,
+    144
+  ],
+  "MineSideWall.001": [
+    111,
+    129,
+    144
+  ],
+  "MineEndWall": [
+    111,
+    129,
+    144
+  ],
+  "MineEndWall.001": [
+    111,
+    129,
+    144
+  ],
+  "Illustrative empty pit floor": [
+    22,
+    29,
+    39
+  ],
+  "Mine rim.004": [
+    41,
+    56,
+    77
+  ],
+  "Yellow safety stripe": [
+    254,
+    225,
+    33
+  ],
+  "Mine rim.005": [
+    41,
+    56,
+    77
+  ],
+  "Yellow safety stripe.001": [
+    254,
+    225,
+    33
+  ],
+  "Mine rim.006": [
+    41,
+    56,
+    77
+  ],
+  "Yellow safety stripe.002": [
+    254,
+    225,
+    33
+  ],
+  "Mine rim.007": [
+    41,
+    56,
+    77
+  ],
+  "Yellow safety stripe.003": [
+    254,
+    225,
+    33
+  ],
+  "Mine entrance post": [
+    223,
+    149,
+    75
+  ],
+  "Mine post shoe": [
+    41,
+    56,
+    77
+  ],
+  "Mine entrance post.001": [
+    223,
+    149,
+    75
+  ],
+  "Mine post shoe.001": [
+    41,
+    56,
+    77
+  ],
+  "Mine entrance header": [
+    254,
+    225,
+    33
+  ],
+  "Mine sign": [
+    41,
+    56,
+    77
+  ],
+  "Mine rail post": [
+    254,
+    225,
+    33
+  ],
+  "Mine rail post.001": [
+    254,
+    225,
+    33
+  ],
+  "Mine rail post.002": [
+    254,
+    225,
+    33
+  ],
+  "Mine low side rail": [
+    41,
+    56,
+    77
+  ],
+  "Mine low side rail.001": [
+    41,
+    56,
+    77
+  ],
+  "Mine rail post.003": [
+    254,
+    225,
+    33
+  ],
+  "Mine rail post.004": [
+    254,
+    225,
+    33
+  ],
+  "Mine rail post.005": [
+    254,
+    225,
+    33
+  ],
+  "Mine low side rail.002": [
+    41,
+    56,
+    77
+  ],
+  "Mine low side rail.003": [
+    41,
+    56,
+    77
+  ],
+  "WeaponStore platform": [
+    255,
+    134,
+    29
+  ],
+  "WeaponStore back wall": [
+    223,
+    149,
+    75
+  ],
+  "WeaponStore canopy post": [
+    223,
+    149,
+    75
+  ],
+  "WeaponStore side sill": [
+    223,
+    149,
+    75
+  ],
+  "WeaponStore canopy post.001": [
+    223,
+    149,
+    75
+  ],
+  "WeaponStore side sill.001": [
+    223,
+    149,
+    75
+  ],
+  "WeaponStore striped canopy": [
+    255,
+    134,
+    29
+  ],
+  "WeaponStore striped canopy.001": [
+    252,
+    253,
+    255
+  ],
+  "WeaponStore striped canopy.002": [
+    255,
+    134,
+    29
+  ],
+  "WeaponStore striped canopy.003": [
+    252,
+    253,
+    255
+  ],
+  "WeaponStore striped canopy.004": [
+    255,
+    134,
+    29
+  ],
+  "WeaponStore_Counter": [
+    223,
+    149,
+    75
+  ],
+  "WeaponStore counter lip": [
+    255,
+    134,
+    29
+  ],
+  "WeaponStore sign backing": [
+    41,
+    56,
+    77
+  ],
+  "WeaponStore sign": [
+    252,
+    253,
+    255
+  ],
+  "WeaponStore vendor torso": [
+    53,
+    137,
+    237
+  ],
+  "WeaponStore vendor head": [
+    254,
+    225,
+    33
+  ],
+  "WeaponStore vendor leg": [
+    56,
+    223,
+    121
+  ],
+  "WeaponStore vendor leg.001": [
+    56,
+    223,
+    121
+  ],
+  "WeaponStore vendor arm": [
+    254,
+    225,
+    33
+  ],
+  "WeaponStore vendor arm.001": [
+    254,
+    225,
+    33
+  ],
+  "Weapon display zapper": [
+    41,
+    56,
+    77
+  ],
+  "Weapon display tip": [
+    29,
+    226,
+    249
+  ],
+  "UpgradeStore platform": [
+    192,
+    60,
+    243
+  ],
+  "UpgradeStore back wall": [
+    223,
+    149,
+    75
+  ],
+  "UpgradeStore canopy post": [
+    223,
+    149,
+    75
+  ],
+  "UpgradeStore side sill": [
+    223,
+    149,
+    75
+  ],
+  "UpgradeStore canopy post.001": [
+    223,
+    149,
+    75
+  ],
+  "UpgradeStore side sill.001": [
+    223,
+    149,
+    75
+  ],
+  "UpgradeStore striped canopy": [
+    192,
+    60,
+    243
+  ],
+  "UpgradeStore striped canopy.001": [
+    252,
+    253,
+    255
+  ],
+  "UpgradeStore striped canopy.002": [
+    192,
+    60,
+    243
+  ],
+  "UpgradeStore striped canopy.003": [
+    252,
+    253,
+    255
+  ],
+  "UpgradeStore striped canopy.004": [
+    192,
+    60,
+    243
+  ],
+  "UpgradeStore_Counter": [
+    223,
+    149,
+    75
+  ],
+  "UpgradeStore counter lip": [
+    192,
+    60,
+    243
+  ],
+  "UpgradeStore sign backing": [
+    41,
+    56,
+    77
+  ],
+  "UpgradeStore sign": [
+    252,
+    253,
+    255
+  ],
+  "UpgradeStore vendor torso": [
+    53,
+    137,
+    237
+  ],
+  "UpgradeStore vendor head": [
+    254,
+    225,
+    33
+  ],
+  "UpgradeStore vendor leg": [
+    56,
+    223,
+    121
+  ],
+  "UpgradeStore vendor leg.001": [
+    56,
+    223,
+    121
+  ],
+  "UpgradeStore vendor arm": [
+    254,
+    225,
+    33
+  ],
+  "UpgradeStore vendor arm.001": [
+    254,
+    225,
+    33
+  ],
+  "Bag upgrade display": [
+    254,
+    225,
+    33
+  ],
+  "Upgrade bag pocket": [
+    255,
+    134,
+    29
+  ],
+  "SellStore platform": [
+    56,
+    223,
+    121
+  ],
+  "SellStore back wall": [
+    223,
+    149,
+    75
+  ],
+  "SellStore canopy post": [
+    223,
+    149,
+    75
+  ],
+  "SellStore side sill": [
+    223,
+    149,
+    75
+  ],
+  "SellStore canopy post.001": [
+    223,
+    149,
+    75
+  ],
+  "SellStore side sill.001": [
+    223,
+    149,
+    75
+  ],
+  "SellStore striped canopy": [
+    56,
+    223,
+    121
+  ],
+  "SellStore striped canopy.001": [
+    252,
+    253,
+    255
+  ],
+  "SellStore striped canopy.002": [
+    56,
+    223,
+    121
+  ],
+  "SellStore striped canopy.003": [
+    252,
+    253,
+    255
+  ],
+  "SellStore striped canopy.004": [
+    56,
+    223,
+    121
+  ],
+  "SellStore_Counter": [
+    223,
+    149,
+    75
+  ],
+  "SellStore counter lip": [
+    56,
+    223,
+    121
+  ],
+  "SellStore sign backing": [
+    41,
+    56,
+    77
+  ],
+  "SellStore sign": [
+    252,
+    253,
+    255
+  ],
+  "SellStore vendor torso": [
+    41,
+    56,
+    77
+  ],
+  "SellStore vendor head": [
+    254,
+    225,
+    33
+  ],
+  "SellStore vendor leg": [
+    56,
+    223,
+    121
+  ],
+  "SellStore vendor leg.001": [
+    56,
+    223,
+    121
+  ],
+  "SellStore vendor arm": [
+    254,
+    225,
+    33
+  ],
+  "SellStore vendor arm.001": [
+    254,
+    225,
+    33
+  ],
+  "Ore buyer cash": [
+    56,
+    223,
+    121
+  ],
+  "Ore buyer cash.001": [
+    56,
+    223,
+    121
+  ],
+  "Ore buyer cash.002": [
+    56,
+    223,
+    121
+  ],
+  "Ore buyer cash.003": [
+    56,
+    223,
+    121
+  ],
+  "Stabilizer platform": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer purple outline": [
+    192,
+    60,
+    243
+  ],
+  "Stabilizer platform top": [
+    155,
+    177,
+    197
+  ],
+  "Stabilizer pedestal.001": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer pedestal collar": [
+    254,
+    225,
+    33
+  ],
+  "CoreMount.001": [
+    29,
+    226,
+    249
+  ],
+  "Empty core socket": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer fork support": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer lit fork": [
+    192,
+    60,
+    243
+  ],
+  "Stabilizer fork support.001": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer lit fork.001": [
+    192,
+    60,
+    243
+  ],
+  "Stabilizer rear arch": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer sign backing": [
+    41,
+    56,
+    77
+  ],
+  "Stabilizer label": [
+    252,
+    253,
+    255
+  ],
+  "Stabilizer instructions": [
+    255,
+    53,
+    184
+  ],
+  "Stabilizer reveal showcase": [
+    29,
+    226,
+    249
+  ],
+  "Stabilizer reveal showcase.001": [
+    192,
+    60,
+    243
+  ],
+  "Stabilizer reveal showcase.002": [
+    254,
+    225,
+    33
+  ],
+  "Core station console": [
+    41,
+    56,
+    77
+  ],
+  "Core station small screen": [
+    29,
+    226,
+    249
+  ],
+  "AFK plaza": [
+    155,
+    177,
+    197
+  ],
+  "AFK upper tier": [
+    254,
+    225,
+    33
+  ],
+  "AFK step": [
+    254,
+    225,
+    33
+  ],
+  "AFK path carpet": [
+    41,
+    56,
+    77
+  ],
+  "AFK area title": [
+    252,
+    253,
+    255
+  ],
+  "AFK title backing": [
+    41,
+    56,
+    77
+  ],
+  "AFK 1x pad": [
+    41,
+    56,
+    77
+  ],
+  "AFK 1x colored inset": [
+    29,
+    226,
+    249
+  ],
+  "AFK 1x training tile": [
+    155,
+    177,
+    197
+  ],
+  "AFK 1x core seat": [
+    254,
+    225,
+    33
+  ],
+  "AFK 1x power cube": [
+    29,
+    226,
+    249
+  ],
+  "AFK 1x multiplier": [
+    29,
+    226,
+    249
+  ],
+  "AFK 1x requirement": [
+    252,
+    253,
+    255
+  ],
+  "AFK 1.5x pad": [
+    41,
+    56,
+    77
+  ],
+  "AFK 1.5x colored inset": [
+    56,
+    223,
+    121
+  ],
+  "AFK 1.5x training tile": [
+    155,
+    177,
+    197
+  ],
+  "AFK 1.5x core seat": [
+    254,
+    225,
+    33
+  ],
+  "AFK 1.5x power cube": [
+    56,
+    223,
+    121
+  ],
+  "AFK 1.5x multiplier": [
+    56,
+    223,
+    121
+  ],
+  "AFK 1.5x requirement": [
+    252,
+    253,
+    255
+  ],
+  "AFK 3x pad": [
+    41,
+    56,
+    77
+  ],
+  "AFK 3x colored inset": [
+    254,
+    225,
+    33
+  ],
+  "AFK 3x training tile": [
+    155,
+    177,
+    197
+  ],
+  "AFK 3x core seat": [
+    254,
+    225,
+    33
+  ],
+  "AFK 3x power cube": [
+    254,
+    225,
+    33
+  ],
+  "AFK 3x multiplier": [
+    254,
+    225,
+    33
+  ],
+  "AFK 3x requirement": [
+    252,
+    253,
+    255
+  ],
+  "AFK 5x pad": [
+    41,
+    56,
+    77
+  ],
+  "AFK 5x colored inset": [
+    192,
+    60,
+    243
+  ],
+  "AFK 5x training tile": [
+    155,
+    177,
+    197
+  ],
+  "AFK 5x core seat": [
+    254,
+    225,
+    33
+  ],
+  "AFK 5x power cube": [
+    192,
+    60,
+    243
+  ],
+  "AFK 5x multiplier": [
+    192,
+    60,
+    243
+  ],
+  "AFK 5x requirement": [
+    252,
+    253,
+    255
+  ],
+  "AFK 8x pad": [
+    41,
+    56,
+    77
+  ],
+  "AFK 8x colored inset": [
+    255,
+    53,
+    184
+  ],
+  "AFK 8x training tile": [
+    155,
+    177,
+    197
+  ],
+  "AFK 8x core seat": [
+    254,
+    225,
+    33
+  ],
+  "AFK 8x power cube": [
+    255,
+    53,
+    184
+  ],
+  "AFK 8x multiplier": [
+    255,
+    53,
+    184
+  ],
+  "AFK 8x requirement": [
+    252,
+    253,
+    255
+  ],
+  "AFK 12x pad": [
+    41,
+    56,
+    77
+  ],
+  "AFK 12x colored inset": [
+    255,
+    134,
+    29
+  ],
+  "AFK 12x training tile": [
+    155,
+    177,
+    197
+  ],
+  "AFK 12x core seat": [
+    254,
+    225,
+    33
+  ],
+  "AFK 12x power cube": [
+    255,
+    134,
+    29
+  ],
+  "AFK 12x multiplier": [
+    255,
+    134,
+    29
+  ],
+  "AFK 12x requirement": [
+    252,
+    253,
+    255
+  ],
+  "Leaderboard stage": [
+    155,
+    177,
+    197
+  ],
+  "Leaderboard red carpet": [
+    205,
+    44,
+    93
+  ],
+  "Leaderboard front step": [
+    155,
+    177,
+    197
+  ],
+  "Leaderboard gold stage edge": [
+    254,
+    225,
+    33
+  ],
+  "MOST LEVELS stand": [
+    182,
+    111,
+    53
+  ],
+  "MOST LEVELS frame": [
+    223,
+    149,
+    75
+  ],
+  "MOST LEVELS DisplaySurface": [
+    41,
+    56,
+    77
+  ],
+  "MOST LEVELS category header": [
+    29,
+    226,
+    249
+  ],
+  "MOST LEVELS title": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS row background": [
+    41,
+    56,
+    77
+  ],
+  "MOST LEVELS rank 1": [
+    254,
+    225,
+    33
+  ],
+  "MOST LEVELS empty player 1": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty value 1": [
+    29,
+    226,
+    249
+  ],
+  "MOST LEVELS row background.001": [
+    182,
+    111,
+    53
+  ],
+  "MOST LEVELS rank 2": [
+    29,
+    226,
+    249
+  ],
+  "MOST LEVELS empty player 2": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty value 2": [
+    29,
+    226,
+    249
+  ],
+  "MOST LEVELS row background.002": [
+    41,
+    56,
+    77
+  ],
+  "MOST LEVELS rank 3": [
+    255,
+    134,
+    29
+  ],
+  "MOST LEVELS empty player 3": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty value 3": [
+    29,
+    226,
+    249
+  ],
+  "MOST LEVELS row background.003": [
+    182,
+    111,
+    53
+  ],
+  "MOST LEVELS rank 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty player 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty value 4": [
+    29,
+    226,
+    249
+  ],
+  "MOST LEVELS row background.004": [
+    41,
+    56,
+    77
+  ],
+  "MOST LEVELS rank 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty player 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST LEVELS empty value 5": [
+    29,
+    226,
+    249
+  ],
+  "MOST MONEY stand": [
+    182,
+    111,
+    53
+  ],
+  "MOST MONEY frame": [
+    223,
+    149,
+    75
+  ],
+  "MOST MONEY DisplaySurface": [
+    41,
+    56,
+    77
+  ],
+  "MOST MONEY category header": [
+    56,
+    223,
+    121
+  ],
+  "MOST MONEY title": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY row background": [
+    41,
+    56,
+    77
+  ],
+  "MOST MONEY rank 1": [
+    254,
+    225,
+    33
+  ],
+  "MOST MONEY empty player 1": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty value 1": [
+    56,
+    223,
+    121
+  ],
+  "MOST MONEY row background.001": [
+    182,
+    111,
+    53
+  ],
+  "MOST MONEY rank 2": [
+    29,
+    226,
+    249
+  ],
+  "MOST MONEY empty player 2": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty value 2": [
+    56,
+    223,
+    121
+  ],
+  "MOST MONEY row background.002": [
+    41,
+    56,
+    77
+  ],
+  "MOST MONEY rank 3": [
+    255,
+    134,
+    29
+  ],
+  "MOST MONEY empty player 3": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty value 3": [
+    56,
+    223,
+    121
+  ],
+  "MOST MONEY row background.003": [
+    182,
+    111,
+    53
+  ],
+  "MOST MONEY rank 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty player 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty value 4": [
+    56,
+    223,
+    121
+  ],
+  "MOST MONEY row background.004": [
+    41,
+    56,
+    77
+  ],
+  "MOST MONEY rank 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty player 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST MONEY empty value 5": [
+    56,
+    223,
+    121
+  ],
+  "MOST DAMAGE stand": [
+    182,
+    111,
+    53
+  ],
+  "MOST DAMAGE frame": [
+    223,
+    149,
+    75
+  ],
+  "MOST DAMAGE DisplaySurface": [
+    41,
+    56,
+    77
+  ],
+  "MOST DAMAGE category header": [
+    255,
+    134,
+    29
+  ],
+  "MOST DAMAGE title": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE row background": [
+    41,
+    56,
+    77
+  ],
+  "MOST DAMAGE rank 1": [
+    254,
+    225,
+    33
+  ],
+  "MOST DAMAGE empty player 1": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty value 1": [
+    255,
+    134,
+    29
+  ],
+  "MOST DAMAGE row background.001": [
+    182,
+    111,
+    53
+  ],
+  "MOST DAMAGE rank 2": [
+    29,
+    226,
+    249
+  ],
+  "MOST DAMAGE empty player 2": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty value 2": [
+    255,
+    134,
+    29
+  ],
+  "MOST DAMAGE row background.002": [
+    41,
+    56,
+    77
+  ],
+  "MOST DAMAGE rank 3": [
+    255,
+    134,
+    29
+  ],
+  "MOST DAMAGE empty player 3": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty value 3": [
+    255,
+    134,
+    29
+  ],
+  "MOST DAMAGE row background.003": [
+    182,
+    111,
+    53
+  ],
+  "MOST DAMAGE rank 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty player 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty value 4": [
+    255,
+    134,
+    29
+  ],
+  "MOST DAMAGE row background.004": [
+    41,
+    56,
+    77
+  ],
+  "MOST DAMAGE rank 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty player 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST DAMAGE empty value 5": [
+    255,
+    134,
+    29
+  ],
+  "MOST REBIRTHS stand": [
+    182,
+    111,
+    53
+  ],
+  "MOST REBIRTHS frame": [
+    223,
+    149,
+    75
+  ],
+  "MOST REBIRTHS DisplaySurface": [
+    41,
+    56,
+    77
+  ],
+  "MOST REBIRTHS category header": [
+    192,
+    60,
+    243
+  ],
+  "MOST REBIRTHS title": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS row background": [
+    41,
+    56,
+    77
+  ],
+  "MOST REBIRTHS rank 1": [
+    254,
+    225,
+    33
+  ],
+  "MOST REBIRTHS empty player 1": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty value 1": [
+    192,
+    60,
+    243
+  ],
+  "MOST REBIRTHS row background.001": [
+    182,
+    111,
+    53
+  ],
+  "MOST REBIRTHS rank 2": [
+    29,
+    226,
+    249
+  ],
+  "MOST REBIRTHS empty player 2": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty value 2": [
+    192,
+    60,
+    243
+  ],
+  "MOST REBIRTHS row background.002": [
+    41,
+    56,
+    77
+  ],
+  "MOST REBIRTHS rank 3": [
+    255,
+    134,
+    29
+  ],
+  "MOST REBIRTHS empty player 3": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty value 3": [
+    192,
+    60,
+    243
+  ],
+  "MOST REBIRTHS row background.003": [
+    182,
+    111,
+    53
+  ],
+  "MOST REBIRTHS rank 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty player 4": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty value 4": [
+    192,
+    60,
+    243
+  ],
+  "MOST REBIRTHS row background.004": [
+    41,
+    56,
+    77
+  ],
+  "MOST REBIRTHS rank 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty player 5": [
+    252,
+    253,
+    255
+  ],
+  "MOST REBIRTHS empty value 5": [
+    192,
+    60,
+    243
+  ],
+  "Leaderboards area title": [
+    252,
+    253,
+    255
+  ],
+  "Leaderboards title backing": [
+    41,
+    56,
+    77
+  ],
+  "Small tree trunk": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.001": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.002": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.001": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.003": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.004": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.005": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.002": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.006": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.007": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.008": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.003": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.009": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.010": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.011": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.004": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.012": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.013": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.014": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.005": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.015": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.016": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.017": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.006": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.018": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.019": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.020": [
+    121,
+    218,
+    44
+  ],
+  "Small tree trunk.007": [
+    223,
+    149,
+    75
+  ],
+  "Small block tree leaves.021": [
+    121,
+    218,
+    44
+  ],
+  "Small block tree leaves.022": [
+    151,
+    236,
+    53
+  ],
+  "Small block tree leaves.023": [
+    121,
+    218,
+    44
+  ],
+  "Decorative crystal": [
+    29,
+    226,
+    249
+  ],
+  "Decorative crystal.001": [
+    192,
+    60,
+    243
+  ],
+  "Decorative crystal.002": [
+    254,
+    225,
+    33
+  ],
+  "Decorative crystal.003": [
+    29,
+    226,
+    249
+  ],
+  "Decorative crystal.004": [
+    192,
+    60,
+    243
+  ],
+  "Decorative crystal.005": [
+    254,
+    225,
+    33
+  ],
+  "Decorative crystal.006": [
+    29,
+    226,
+    249
+  ],
+  "Decorative crystal.007": [
+    192,
+    60,
+    243
+  ],
+  "Decorative crystal.008": [
+    254,
+    225,
+    33
+  ],
+  "Decorative crystal.009": [
+    29,
+    226,
+    249
+  ],
+  "Decorative crystal.010": [
+    192,
+    60,
+    243
+  ],
+  "Decorative crystal.011": [
+    254,
+    225,
+    33
+  ],
+  "Decorative crystal.012": [
+    29,
+    226,
+    249
+  ],
+  "Decorative crystal.013": [
+    192,
+    60,
+    243
+  ],
+  "Decorative crystal.014": [
+    254,
+    225,
+    33
+  ],
+  "Decorative crystal.015": [
+    29,
+    226,
+    249
+  ],
+  "Decorative crystal.016": [
+    192,
+    60,
+    243
+  ],
+  "Decorative crystal.017": [
+    254,
+    225,
+    33
+  ],
+  "Flower stem.027": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower": [
+    254,
+    225,
+    33
+  ],
+  "Flower stem.028": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.001": [
+    255,
+    53,
+    184
+  ],
+  "Flower stem.029": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.002": [
+    254,
+    225,
+    33
+  ],
+  "Flower stem.030": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.003": [
+    252,
+    253,
+    255
+  ],
+  "Flower stem.031": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.004": [
+    252,
+    253,
+    255
+  ],
+  "Flower stem.032": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.005": [
+    252,
+    253,
+    255
+  ],
+  "Flower stem.033": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.006": [
+    252,
+    253,
+    255
+  ],
+  "Flower stem.034": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.007": [
+    252,
+    253,
+    255
+  ],
+  "Flower stem.035": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.008": [
+    254,
+    225,
+    33
+  ],
+  "Flower stem.036": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.009": [
+    254,
+    225,
+    33
+  ],
+  "Flower stem.037": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.010": [
+    252,
+    253,
+    255
+  ],
+  "Flower stem.038": [
+    56,
+    223,
+    121
+  ],
+  "Small low poly flower.011": [
+    254,
+    225,
+    33
+  ]
+}

@@ -103,3 +103,12 @@ The previous lobby, AFK stations and mine shell are backed up in
 AFK art/triggers live in Workspace.AFKTrainingStations. GameplayAnchors supplies spawn,
 shop and NPC positions, so WorldService no longer forces the old lobby coordinates.
 The mine opening stays at world origin; its shell extends to the configured depth.
+
+### Finished stud lobby
+
+`integrate_stud_lobby.lua` integrates EnergyCoreMining-COLORED. It uses the two mine
+end rims and forward path to align the 72-stud opening and ground level. Artwork
+is grouped by the exported `Group__Part` names. Both AFK rows reuse the five existing
+rebirth tiers; each has a unique Model name for its active indicator and effects.
+Editable world signs are authored BillboardGuis in StarterGui (`LobbySign_*`,
+`AFKSign_*`). Previous lobby/AFK artwork is kept in ServerStorage backups.

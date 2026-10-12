@@ -1,0 +1,147 @@
+{
+  "S1 Grass": [
+    75,
+    235,
+    26
+  ],
+  "S1 PalePath": [
+    211,
+    212,
+    162
+  ],
+  "S1 Paving": [
+    137,
+    148,
+    160
+  ],
+  "Simulator Paving alternate": [
+    210,
+    213,
+    166
+  ],
+  "Simulator Pale paving tiles": [
+    220,
+    220,
+    175
+  ],
+  "Simulator Grey stone curb": [
+    138,
+    153,
+    166
+  ],
+  "Simulator Wood trim": [
+    235,
+    155,
+    70
+  ],
+  "S1 WallOrange": [
+    248,
+    132,
+    33
+  ],
+  "S1 WallTop": [
+    63,
+    221,
+    24
+  ],
+  "S1 DarkGrey": [
+    87,
+    100,
+    115
+  ],
+  "Simulator Warm booth wood": [
+    218,
+    132,
+    52
+  ],
+  "S1 WeaponsAccent": [
+    255,
+    182,
+    24
+  ],
+  "Simulator Orange stripes": [
+    255,
+    143,
+    19
+  ],
+  "Simulator Leaderboard panel": [
+    42,
+    49,
+    54
+  ],
+  "S1 Cyan": [
+    40,
+    215,
+    238
+  ],
+  "S1 UpgradeAccent": [
+    164,
+    69,
+    235
+  ],
+  "Simulator White stripes": [
+    250,
+    251,
+    248
+  ],
+  "S1 SellAccent": [
+    41,
+    206,
+    72
+  ],
+  "S1 Pink": [
+    236,
+    84,
+    176
+  ],
+  "Simulator Grass tufts": [
+    44,
+    181,
+    27
+  ],
+  "Simulator Flower centres": [
+    255,
+    212,
+    39
+  ],
+  "Simulator Small grey rocks": [
+    155,
+    165,
+    160
+  ],
+  "Simulator Leaderboard red carpet": [
+    229,
+    72,
+    74
+  ],
+  "Polish Grass tile dark": [
+    61,
+    216,
+    24
+  ],
+  "Polish Grass tile light": [
+    92,
+    239,
+    39
+  ],
+  "Polish Grass tile medium": [
+    76,
+    229,
+    30
+  ],
+  "Polish Tree leaves deep": [
+    48,
+    200,
+    24
+  ],
+  "Polish Tree leaves fresh": [
+    86,
+    235,
+    35
+  ],
+  "Polish Flowerbed soil": [
+    133,
+    79,
+    33
+  ]
+}
