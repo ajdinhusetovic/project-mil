@@ -5,6 +5,9 @@ local names = {
 	["Stone Ore"] = "Stone", ["Copper Ore"] = "Copper",
 	["Quartz Ore"] = "Quartz", ["Ion Crystal"] = "Ion",
 	["Charged Quartz"] = "ChargedQuartz",
+	["Plasma Ore"] = "Plasma", ["Reactor Shard"] = "ReactorShard",
+	["Fusion Ore"] = "Fusion", ["Antimatter Ore"] = "Antimatter",
+	["Singularity Ore"] = "Singularity", ["Omega Ore"] = "Omega",
 }
 local cache = {}
 function Visuals.Build(material, size, fitRockBody)
