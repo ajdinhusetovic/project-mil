@@ -1,0 +1,290 @@
+{
+  "layout": "Spawn-centred crossroads V3",
+  "units": "1 unit = 1 stud",
+  "front_direction": "+Y in Blender; -Z in Roblox",
+  "spawn": [
+    0,
+    0,
+    0.55
+  ],
+  "courtyard_size": [
+    360,
+    260
+  ],
+  "mine_center": [
+    0,
+    214,
+    0
+  ],
+  "reserved_zones": [
+    {
+      "id": "WeaponBuying",
+      "kind": "Weapon buying",
+      "center": [
+        -49,
+        50,
+        0.25
+      ],
+      "footprint": [
+        30,
+        24
+      ],
+      "facing": "-Y"
+    },
+    {
+      "id": "UpgradeShop",
+      "kind": "Weapon upgrades",
+      "center": [
+        -49,
+        -50,
+        0.25
+      ],
+      "footprint": [
+        30,
+        24
+      ],
+      "facing": "+Y"
+    },
+    {
+      "id": "SellingShop",
+      "kind": "Selling",
+      "center": [
+        49,
+        50,
+        0.25
+      ],
+      "footprint": [
+        30,
+        24
+      ],
+      "facing": "-Y"
+    },
+    {
+      "id": "CoreStabilizer",
+      "kind": "Core stabilizer",
+      "center": [
+        49,
+        -50,
+        0.25
+      ],
+      "footprint": [
+        30,
+        24
+      ],
+      "facing": "+Y"
+    },
+    {
+      "id": "AFK_01",
+      "kind": "AFK",
+      "center": [
+        -102,
+        64,
+        1.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_02",
+      "kind": "AFK",
+      "center": [
+        -102,
+        32,
+        1.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_03",
+      "kind": "AFK",
+      "center": [
+        -102,
+        0,
+        1.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_04",
+      "kind": "AFK",
+      "center": [
+        -102,
+        -32,
+        1.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_05",
+      "kind": "AFK",
+      "center": [
+        -102,
+        -64,
+        1.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_06",
+      "kind": "AFK",
+      "center": [
+        -134,
+        64,
+        3.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_07",
+      "kind": "AFK",
+      "center": [
+        -134,
+        32,
+        3.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_08",
+      "kind": "AFK",
+      "center": [
+        -134,
+        0,
+        3.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_09",
+      "kind": "AFK",
+      "center": [
+        -134,
+        -32,
+        3.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "AFK_10",
+      "kind": "AFK",
+      "center": [
+        -134,
+        -64,
+        3.45
+      ],
+      "footprint": [
+        20,
+        26
+      ],
+      "facing": "+X"
+    },
+    {
+      "id": "Leaderboard_01",
+      "kind": "Leaderboard",
+      "center": [
+        122,
+        60,
+        1.45
+      ],
+      "footprint": [
+        16,
+        32
+      ],
+      "facing": "-X"
+    },
+    {
+      "id": "Leaderboard_02",
+      "kind": "Leaderboard",
+      "center": [
+        122,
+        20,
+        1.45
+      ],
+      "footprint": [
+        16,
+        32
+      ],
+      "facing": "-X"
+    },
+    {
+      "id": "Leaderboard_03",
+      "kind": "Leaderboard",
+      "center": [
+        122,
+        -20,
+        1.45
+      ],
+      "footprint": [
+        16,
+        32
+      ],
+      "facing": "-X"
+    },
+    {
+      "id": "Leaderboard_04",
+      "kind": "Leaderboard",
+      "center": [
+        122,
+        -60,
+        1.45
+      ],
+      "footprint": [
+        16,
+        32
+      ],
+      "facing": "-X"
+    },
+    {
+      "id": "Mine",
+      "kind": "Mine",
+      "center": [
+        0,
+        214,
+        0
+      ],
+      "footprint": [
+        72,
+        72
+      ],
+      "depth": 720,
+      "facing": "-Y"
+    }
+  ],
+  "surface_style": "Smooth flat colour; no studs",
+  "objects_included": "Foundations and environmental structure only; no shops, machines, boards or stabilizer props"
+}

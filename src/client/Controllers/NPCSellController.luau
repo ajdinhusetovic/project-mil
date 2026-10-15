@@ -8,7 +8,10 @@ local player = Players.LocalPlayer
 local npc = workspace:FindFirstChild("showcase npc")
 local dialogModuleScript = ReplicatedStorage:FindFirstChild("DialogModule")
 if not npc or not dialogModuleScript then
-	warn("Sell NPC setup missing: expected Workspace['showcase npc'] and ReplicatedStorage.DialogModule")
+	local lobby = workspace:FindFirstChild("Lobby")
+	if not (lobby and lobby:GetAttribute("LayoutOnly")) then
+		warn("Sell NPC setup missing: expected Workspace['showcase npc'] and ReplicatedStorage.DialogModule")
+	end
 	return false
 end
 

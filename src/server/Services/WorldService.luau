@@ -155,6 +155,11 @@ function WorldService.Initialize()
 		spawnPart.Material = Enum.Material.Neon
 		spawnPart.Parent = world
 	end
+	-- An authored layout can be walked and mined before its shop models exist.
+	if authoredLobby and authoredLobby:GetAttribute("LayoutOnly") then
+		storagePrompt, weaponPrompt = nil, nil
+		return
+	end
 	storagePrompt = findOrCreateShopPrompt("UpgradeStore", "UPGRADES", "Open shop")
 		or makeStore("UpgradeStore", "UPGRADES", "Open shop", lobby.UpgradeShop, Color3.fromRGB(174, 79, 255))
 	weaponPrompt = findOrCreateShopPrompt("WeaponStore", "WEAPON SHOP", "Open shop")

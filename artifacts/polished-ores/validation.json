@@ -1,0 +1,112 @@
+[
+  {
+    "key": "Stone",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Copper",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "ChargedQuartz",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Quartz",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Ion",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Plasma",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "ReactorShard",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Fusion",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Antimatter",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Singularity",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  },
+  {
+    "key": "Omega",
+    "dimensions": [
+      6.0,
+      6.0,
+      6.0
+    ],
+    "texture_loaded": true,
+    "triangles": 44
+  }
+]

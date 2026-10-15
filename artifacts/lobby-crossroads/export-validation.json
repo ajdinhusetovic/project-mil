@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "roundtrip_mesh_count": 859,
+  "vertex_colors": "present on every mesh",
+  "afk_foundations": 10,
+  "leaderboard_foundations": 4,
+  "shaft_wall_count": 4,
+  "shaft_depth": 720,
+  "planning_geometry_exported": false,
+  "orientation": "Mine +Y; AFK left (-X); leaderboards right (+X)"
+}

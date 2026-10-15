@@ -1,0 +1,21 @@
+{
+  "surface_style": "smooth, zero stud textures",
+  "mine_position": [
+    0,
+    -212,
+    0
+  ],
+  "mine_opening": [
+    72,
+    72
+  ],
+  "mine_clear": true,
+  "center_floor_restored": true,
+  "reserved_zones": 19,
+  "mesh_count": 818,
+  "triangles": 9816,
+  "vertex_colours": true,
+  "mine_enclosed": true,
+  "entrance_width": 72,
+  "enclosure_meshes": 49
+}

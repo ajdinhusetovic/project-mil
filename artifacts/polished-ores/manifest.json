@@ -1,0 +1,146 @@
+{
+  "count": 11,
+  "body_size": [
+    6,
+    6,
+    6
+  ],
+  "texture_size": [
+    1024,
+    1024
+  ],
+  "models": [
+    {
+      "key": "Stone",
+      "material": "Stone Ore",
+      "fbx": "Stone.fbx",
+      "texture": "textures/Stone_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Copper",
+      "material": "Copper Ore",
+      "fbx": "Copper.fbx",
+      "texture": "textures/Copper_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "ChargedQuartz",
+      "material": "Charged Quartz",
+      "fbx": "ChargedQuartz.fbx",
+      "texture": "textures/ChargedQuartz_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Quartz",
+      "material": "Quartz Ore",
+      "fbx": "Quartz.fbx",
+      "texture": "textures/Quartz_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Ion",
+      "material": "Ion Crystal",
+      "fbx": "Ion.fbx",
+      "texture": "textures/Ion_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Plasma",
+      "material": "Plasma Ore",
+      "fbx": "Plasma.fbx",
+      "texture": "textures/Plasma_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "ReactorShard",
+      "material": "Reactor Shard",
+      "fbx": "ReactorShard.fbx",
+      "texture": "textures/ReactorShard_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Fusion",
+      "material": "Fusion Ore",
+      "fbx": "Fusion.fbx",
+      "texture": "textures/Fusion_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Antimatter",
+      "material": "Antimatter Ore",
+      "fbx": "Antimatter.fbx",
+      "texture": "textures/Antimatter_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Singularity",
+      "material": "Singularity Ore",
+      "fbx": "Singularity.fbx",
+      "texture": "textures/Singularity_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    },
+    {
+      "key": "Omega",
+      "material": "Omega Ore",
+      "fbx": "Omega.fbx",
+      "texture": "textures/Omega_BaseColor.png",
+      "triangles": 44,
+      "dimensions": [
+        6.0,
+        6.0,
+        6.0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,392 @@
+{
+  "interior_size": [
+    224,
+    288
+  ],
+  "units": "1 Blender unit = 1 Roblox stud",
+  "reserved_zones": [
+    {
+      "id": "Shop_WeaponBuying",
+      "kind": "Weapon buying",
+      "blender_center": [
+        -72,
+        -62,
+        0.32
+      ],
+      "footprint": [
+        42,
+        30
+      ],
+      "roblox_center": [
+        -72,
+        0.32,
+        62
+      ]
+    },
+    {
+      "id": "Shop_Upgrade",
+      "kind": "Weapon upgrades",
+      "blender_center": [
+        72,
+        -62,
+        0.32
+      ],
+      "footprint": [
+        42,
+        30
+      ],
+      "roblox_center": [
+        72,
+        0.32,
+        62
+      ]
+    },
+    {
+      "id": "Shop_Selling",
+      "kind": "Selling",
+      "blender_center": [
+        72,
+        -2,
+        0.32
+      ],
+      "footprint": [
+        42,
+        30
+      ],
+      "roblox_center": [
+        72,
+        0.32,
+        2
+      ]
+    },
+    {
+      "id": "CoreStabilizer",
+      "kind": "Core stabilizer",
+      "blender_center": [
+        -72,
+        -2,
+        0.32
+      ],
+      "footprint": [
+        42,
+        30
+      ],
+      "roblox_center": [
+        -72,
+        0.32,
+        2
+      ]
+    },
+    {
+      "id": "AFK_01",
+      "kind": "AFK",
+      "blender_center": [
+        -80,
+        87,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        -80,
+        0.32,
+        -87
+      ]
+    },
+    {
+      "id": "AFK_02",
+      "kind": "AFK",
+      "blender_center": [
+        -40,
+        87,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        -40,
+        0.32,
+        -87
+      ]
+    },
+    {
+      "id": "AFK_03",
+      "kind": "AFK",
+      "blender_center": [
+        0,
+        87,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        0,
+        0.32,
+        -87
+      ]
+    },
+    {
+      "id": "AFK_04",
+      "kind": "AFK",
+      "blender_center": [
+        40,
+        87,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        40,
+        0.32,
+        -87
+      ]
+    },
+    {
+      "id": "AFK_05",
+      "kind": "AFK",
+      "blender_center": [
+        80,
+        87,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        80,
+        0.32,
+        -87
+      ]
+    },
+    {
+      "id": "AFK_06",
+      "kind": "AFK",
+      "blender_center": [
+        -80,
+        119,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        -80,
+        0.32,
+        -119
+      ]
+    },
+    {
+      "id": "AFK_07",
+      "kind": "AFK",
+      "blender_center": [
+        -40,
+        119,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        -40,
+        0.32,
+        -119
+      ]
+    },
+    {
+      "id": "AFK_08",
+      "kind": "AFK",
+      "blender_center": [
+        0,
+        119,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        0,
+        0.32,
+        -119
+      ]
+    },
+    {
+      "id": "AFK_09",
+      "kind": "AFK",
+      "blender_center": [
+        40,
+        119,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        40,
+        0.32,
+        -119
+      ]
+    },
+    {
+      "id": "AFK_10",
+      "kind": "AFK",
+      "blender_center": [
+        80,
+        119,
+        0.32
+      ],
+      "footprint": [
+        28,
+        20
+      ],
+      "roblox_center": [
+        80,
+        0.32,
+        -119
+      ]
+    },
+    {
+      "id": "Leaderboard_01",
+      "kind": "Leaderboard",
+      "blender_center": [
+        -82,
+        -119,
+        0.32
+      ],
+      "footprint": [
+        38,
+        12
+      ],
+      "roblox_center": [
+        -82,
+        0.32,
+        119
+      ]
+    },
+    {
+      "id": "Leaderboard_02",
+      "kind": "Leaderboard",
+      "blender_center": [
+        -82,
+        -99,
+        0.32
+      ],
+      "footprint": [
+        38,
+        12
+      ],
+      "roblox_center": [
+        -82,
+        0.32,
+        99
+      ]
+    },
+    {
+      "id": "Leaderboard_03",
+      "kind": "Leaderboard",
+      "blender_center": [
+        82,
+        -119,
+        0.32
+      ],
+      "footprint": [
+        38,
+        12
+      ],
+      "roblox_center": [
+        82,
+        0.32,
+        119
+      ]
+    },
+    {
+      "id": "Leaderboard_04",
+      "kind": "Leaderboard",
+      "blender_center": [
+        82,
+        -99,
+        0.32
+      ],
+      "footprint": [
+        38,
+        12
+      ],
+      "roblox_center": [
+        82,
+        0.32,
+        99
+      ]
+    },
+    {
+      "id": "Mine",
+      "kind": "Mine",
+      "blender_center": [
+        0,
+        -212,
+        0
+      ],
+      "footprint": [
+        72,
+        72
+      ],
+      "roblox_center": [
+        0,
+        0,
+        212
+      ]
+    }
+  ],
+  "export_contains": "Smooth courtyard layout with an open central mine shaft",
+  "excluded": "No machines, shop buildings, stabilizer, leaderboard objects, UI or gameplay scripts",
+  "mine": {
+    "center": [
+      0,
+      -212,
+      0
+    ],
+    "opening": [
+      72,
+      72
+    ],
+    "depth": 720,
+    "plaza_outer_size": [
+      100,
+      108
+    ],
+    "blocks": "Not built; generated by Roblox gameplay",
+    "geometry": "Open floor, four shaft walls and bottom bedrock",
+    "roblox_center": [
+      0,
+      0,
+      212
+    ],
+    "location": "Front forecourt outside courtyard",
+    "courtyard_center": "Open and restored",
+    "forecourt_size": [
+      144,
+      140
+    ],
+    "enclosure": "Three terraced orange cliff walls with green shelves and crowns, matching the courtyard; lobby entrance remains open",
+    "enclosure_height_range": [
+      34,
+      40
+    ]
+  },
+  "surface_style": "Smooth flat colour; no stud textures or stud geometry",
+  "overall_layout_size": [
+    280,
+    484
+  ]
+}

@@ -120,7 +120,8 @@ function Service.Initialize(event)
 		if item.Name == "CoreMount" then register(item); any = any or item:GetAttribute("StabilizerId") ~= nil end
 	end
 	workspace.DescendantAdded:Connect(register)
-	if not any then
+	local lobby = workspace:FindFirstChild("Lobby")
+	if not any and not (lobby and lobby:GetAttribute("LayoutOnly")) then
 		-- Replace this test station with your friend's Stabilizer model and CoreMount.
 		local model = Instance.new("Model")
 		model.Name = "Stabilizer"
